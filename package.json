@@ -1,0 +1,44 @@
+{
+	"name": "circle-backend",
+	"version": "1.0.0",
+	"description": "backend server for circle",
+	"main": "dist/index.js",
+	"private": true,
+	"scripts": {
+		"test": "jest --watch",
+		"test:coverage": "jest --coverage",
+		"dev": "ts-node-dev --respawn src/index.ts",
+		"build": "tsc",
+		"prettify": "prettier --write 'src/**/*.ts'"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@gitlab.com/timothy1996/circle-backend.git"
+	},
+	"keywords": [
+		"circle"
+	],
+	"author": "Amo Timothy Kofi <kofiamo.timothy@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://gitlab.com/timothy1996/circle-backend/issues"
+	},
+	"homepage": "https://gitlab.com/timothy1996/circle-backend#readme",
+	"devDependencies": {
+		"@types/cors": "2.8.6",
+		"@types/express": "4.17.6",
+		"@types/jest": "25.2.3",
+		"@types/node": "14.0.5",
+		"jest": "26.0.1",
+		"ts-jest": "26.0.0",
+		"ts-node": "8.10.1",
+		"ts-node-dev": "1.0.0-pre.44",
+		"typescript": "3.9.3"
+	},
+	"dependencies": {
+		"cors": "2.8.5",
+		"express": "4.17.1",
+		"prettier": "2.0.5",
+		"typeorm": "0.2.25"
+	}
+}
