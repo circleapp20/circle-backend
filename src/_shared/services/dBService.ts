@@ -1,7 +1,7 @@
 import { createConnection, EntityManager, InsertResult } from 'typeorm';
 import { Constants } from '../constants';
 import entities from './schemaService';
-import { generateRandomCode } from './utilities';
+import { generateCodeFromNumber } from './utilities';
 
 export const getSqlInstance = (name = 'default') => {
 	return createConnection({
@@ -31,7 +31,7 @@ export const runInsertQuery = async (
 	// create a new connection to the database with a new connection name
 	// this is done to prevent unwanted closing of database connections when
 	// a process is not done executing for a different request
-	const conn = await getSqlInstance(generateRandomCode());
+	const conn = await getSqlInstance(generateCodeFromNumber());
 	const results = await queryResults(conn.manager);
 	await conn.close(); // close the connection after executing the query
 	return results;

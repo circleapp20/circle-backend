@@ -1,3 +1,11 @@
-export const generateRandomCode = () => {
-	return Math.floor(Math.random() * 10e5).toString(32);
+export const generateRandomValue = () => {
+	return Math.floor(Math.random() * 10e6);
+};
+
+// generateCodeFromNumber function generates a text from the value
+// if the value is not provided, a random value is generate using
+// generateRandomValue function and returns it's code
+export const generateCodeFromNumber = (value?: number) => {
+	const codeNumber = value ? value : generateRandomValue();
+	return codeNumber.toString(32);
 };
