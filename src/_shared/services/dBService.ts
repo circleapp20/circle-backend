@@ -17,7 +17,7 @@ export const runInsertQuery = async (
 	params: any[],
 	manager?: EntityManager
 ) => {
-	const queryResults = async (entityManager: EntityManager) => {
+	const getQueryResults = async (entityManager: EntityManager) => {
 		const results = await queryBuilder(entityManager, ...params);
 		return results.generatedMaps;
 	};
@@ -26,13 +26,38 @@ export const runInsertQuery = async (
 	// function makes use of the entity manager from the runInTransaction
 	// function. this will not terminate or close the function after it's
 	// operation is done
-	if (manager) return queryResults(manager);
+	if (manager) return getQueryResults(manager);
 
 	// create a new connection to the database with a new connection name
 	// this is done to prevent unwanted closing of database connections when
 	// a process is not done executing for a different request
 	const conn = await getSqlInstance(generateCodeFromNumber());
-	const results = await queryResults(conn.manager);
+	const results = await getQueryResults(conn.manager);
+	await conn.close(); // close the connection after executing the query
+	return results;
+};
+
+export const runQuery = async <T>(
+	queryBuilder: (manager: EntityManager, ...params: any[]) => Promise<T>,
+	params: any[] | EntityManager = [],
+	manager?: EntityManager
+) => {
+	const entityManager = !Array.isArray(params) ? (params as EntityManager) : manager;
+
+	// since params can be an entityManager or any array of values,
+	// we check for the value of params if is an array then assign
+	// it to queryParams if not a default empty array to assigned to it
+	const queryParams = Array.isArray(params) ? params : [];
+
+	const getQueryResults = async (args: EntityManager) => {
+		const results = await queryBuilder(args, ...queryParams);
+		return results;
+	};
+
+	if (entityManager) return getQueryResults(entityManager);
+
+	const conn = await getSqlInstance(generateCodeFromNumber());
+	const results = await getQueryResults(conn.manager);
 	await conn.close(); // close the connection after executing the query
 	return results;
 };

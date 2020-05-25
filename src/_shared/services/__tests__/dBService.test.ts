@@ -1,6 +1,6 @@
 import { createConnection } from 'typeorm';
 import { Constants } from '../../constants';
-import { getSqlInstance, runInsertQuery } from '../dBService';
+import { getSqlInstance, runInsertQuery, runQuery } from '../dBService';
 import entities from '../schemaService';
 
 jest.mock('typeorm', () => ({
@@ -15,11 +15,17 @@ jest.mock('typeorm', () => ({
 	Entity: () => jest.fn()
 }));
 
-beforeAll(() => {
+beforeEach(() => {
 	jest.clearAllMocks();
 });
 
 describe('#dBService', () => {
+	const queryMockFunc: any = jest.fn().mockReturnValue({
+		generatedMaps: []
+	});
+
+	const entityManager: any = { testing: 1 };
+
 	describe('#getSqlInstance', () => {
 		test('should be called with the database url', async () => {
 			await getSqlInstance();
@@ -35,10 +41,6 @@ describe('#dBService', () => {
 	});
 
 	describe('#runInsertQuery', () => {
-		const queryMockFunc: any = jest.fn().mockReturnValue({
-			generatedMaps: []
-		});
-
 		test('should call queryBuilder function with a manager and params', async () => {
 			await runInsertQuery(queryMockFunc, ['9393-8382-8832']);
 			expect(queryMockFunc).toBeCalledTimes(1);
@@ -46,8 +48,31 @@ describe('#dBService', () => {
 		});
 
 		test('should pass the manager to the queryBuilder', async () => {
-			await runInsertQuery(queryMockFunc, ['9'], { testing: 1 } as any);
-			expect(queryMockFunc).toHaveBeenCalledWith({ testing: 1 }, '9');
+			await runInsertQuery(queryMockFunc, ['9'], entityManager);
+			expect(queryMockFunc).toHaveBeenCalledWith(entityManager, '9');
+		});
+	});
+
+	describe('#runQuery', () => {
+		test('should call queryBuilder function with entity manager', async () => {
+			await runQuery(queryMockFunc);
+			expect(queryMockFunc).toHaveBeenCalledTimes(1);
+			expect(queryMockFunc).toHaveBeenCalledWith({});
+		});
+
+		test('should pass params as arguments to queryBuilder function', async () => {
+			await runQuery(queryMockFunc, ['test', 3]);
+			expect(queryMockFunc).toHaveBeenCalledWith({}, 'test', 3);
+		});
+
+		test('should call queryBuilder with entity manager args', async () => {
+			await runQuery(queryMockFunc, ['test'], entityManager);
+			expect(queryMockFunc).toHaveBeenCalledWith(entityManager, 'test');
+		});
+
+		test('should call queryBuilder with entity manager as params', async () => {
+			await runQuery(queryMockFunc, entityManager);
+			expect(queryMockFunc).toHaveBeenCalledWith(entityManager);
 		});
 	});
 });
