@@ -15,7 +15,7 @@ describe('#utilities', () => {
 		});
 
 		test('should not generate same code more than once', () => {
-			const codes = Array.from(Array(50), (_, idx) => generateCodeFromNumber(idx));
+			const codes = Array.from(Array(10), (_, idx) => generateCodeFromNumber(idx));
 			const matchingCodes = codes.filter((code, _, arr) => {
 				const frequency = arr.filter((c) => c === code).length;
 				return frequency > 1;
