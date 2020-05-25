@@ -1,4 +1,5 @@
 import express from 'express';
+import 'reflect-metadata';
 import { bootstrap } from './bootstrap';
 import { Constants } from './_shared/constants';
 

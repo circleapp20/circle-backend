@@ -25,10 +25,12 @@
 	},
 	"homepage": "https://gitlab.com/timothy1996/circle-backend#readme",
 	"devDependencies": {
+		"@types/bcryptjs": "2.4.2",
 		"@types/cors": "2.8.6",
 		"@types/express": "4.17.6",
 		"@types/jest": "25.2.3",
 		"@types/node": "14.0.5",
+		"@types/nodemailer": "6.4.0",
 		"jest": "26.0.1",
 		"ts-jest": "26.0.0",
 		"ts-node": "8.10.1",
@@ -36,9 +38,16 @@
 		"typescript": "3.9.3"
 	},
 	"dependencies": {
+		"bcryptjs": "2.4.3",
 		"cors": "2.8.5",
+		"dotenv": "8.2.0",
 		"express": "4.17.1",
+		"mysql2": "2.1.0",
+		"nodemailer": "6.4.6",
+		"pg": "8.2.1",
+		"pg-hstore": "2.3.3",
 		"prettier": "2.0.5",
+		"reflect-metadata": "0.1.13",
 		"typeorm": "0.2.25"
 	}
 }
