@@ -1,5 +1,5 @@
 import { createConnection } from 'typeorm';
-import { entityManagerMock as entityManager } from '../../../__utils__/testUtils';
+import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import { Constants } from '../../constants';
 import { getSqlInstance, runInsertQuery, runInTransaction, runQuery } from '../dBService';
 import entities from '../schemaService';
@@ -13,7 +13,7 @@ jest.mock('typeorm', () => ({
 		})
 	})
 }));
-jest.mock('../schemaService.ts');
+jest.mock('../schemaService');
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -25,13 +25,34 @@ describe('#dBService', () => {
 	describe('#getSqlInstance', () => {
 		test('should be called with the database url', async () => {
 			await getSqlInstance();
-			expect(createConnection).toBeCalled();
-			expect(createConnection).toBeCalledTimes(1);
-			expect(createConnection).toBeCalledWith({
+			expect(createConnection).toHaveBeenCalledWith({
 				type: 'mysql',
 				url: Constants.app.DATABASE_URL,
 				name: 'default',
-				entities
+				entities,
+				synchronize: false
+			});
+		});
+
+		test('should synchronize database with synchronize set to true', async () => {
+			await getSqlInstance('default', true);
+			expect(createConnection).toHaveBeenCalledWith({
+				type: 'mysql',
+				url: Constants.app.DATABASE_URL,
+				name: 'default',
+				entities,
+				synchronize: true
+			});
+		});
+
+		test('should create new connection with different name', async () => {
+			await getSqlInstance('testing');
+			expect(createConnection).toHaveBeenCalledWith({
+				type: 'mysql',
+				url: Constants.app.DATABASE_URL,
+				name: 'testing',
+				entities,
+				synchronize: false
 			});
 		});
 	});

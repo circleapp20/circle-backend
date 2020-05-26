@@ -1,9 +1,9 @@
 import { Users } from '../../../_shared/services';
-import { entityManagerMock as entityManager } from '../../../__utils__/testUtils';
+import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import { addUserProfileQuery, getUserByEmailOrPhoneNumberQuery } from '../queryBuilder';
 import { IAddUserProfile } from '../_helpers/types';
 
-jest.mock('../../../_shared/services/schemaService.ts');
+jest.mock('../../../_shared/services/schemaService');
 
 beforeEach(() => jest.clearAllMocks());
 

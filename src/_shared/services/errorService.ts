@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { IError } from '../types';
+import { getResponseData } from './utilities';
 
 export const getErrorFactory = (
 	message: string,
@@ -34,12 +35,9 @@ export const getBadRequestError = (message = 'Invalid request data') => {
 
 export const errorMiddleware = (error: IError, _: Request, res: Response, __: NextFunction) => {
 	const status = error.status || 500;
-	return res.status(status).json({
-		data: {
-			status,
-			errCode: error.errCode || 'ERR_INTERNAL_SERVER_ERROR',
-			message: error.message
-		},
-		success: false
-	});
+	const responseData = getResponseData(
+		{ status, errCode: error.errCode || 'ERR_INTERNAL_SERVER_ERROR', message: error.message },
+		false
+	);
+	return res.status(status).json(responseData);
 };

@@ -3,12 +3,13 @@ import { Constants } from '../constants';
 import entities from './schemaService';
 import { generateCodeFromNumber } from './utilities';
 
-export const getSqlInstance = (name = 'default') => {
+export const getSqlInstance = (name = 'default', synchronize = false) => {
 	return createConnection({
 		type: 'mysql',
 		url: Constants.app.DATABASE_URL,
 		name,
-		entities
+		entities,
+		synchronize
 	});
 };
 

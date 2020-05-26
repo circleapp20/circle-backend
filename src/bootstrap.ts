@@ -2,9 +2,11 @@ import cors from 'cors';
 import { Express, Router } from 'express';
 import { apiRoutes } from './api/routes';
 import { Constants } from './_shared/constants';
-import { errorMiddleware, getApiRouter } from './_shared/services';
+import { createDBSchema, errorMiddleware, getApiRouter } from './_shared/services';
 
-export const bootstrap = (app: Express, callBack?: () => void) => {
+export const bootstrap = async (app: Express, callBack?: () => void) => {
+	await createDBSchema();
+
 	app.use(cors());
 
 	// add the api routes for version 1

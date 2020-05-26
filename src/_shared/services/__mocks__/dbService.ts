@@ -1,4 +1,4 @@
-import { entityManagerMock as entityManager } from '../../../__utils__/testUtils';
+import { entityManagerMock as entityManager } from '../../../__testSetup__';
 
 export const runInsertQuery = jest
 	.fn()
@@ -15,3 +15,9 @@ export const runQuery = jest
 	});
 
 export const runInTransaction = async (callBack: any) => await callBack(entityManager);
+
+export const getSqlInstance = jest.fn().mockResolvedValue({
+	manager: entityManager,
+	close: jest.fn().mockResolvedValue(true),
+	transaction: jest.fn((callback) => callback(entityManager))
+});

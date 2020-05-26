@@ -3,7 +3,7 @@ import { verifyUserCredentials } from '../authControllers';
 
 jest.mock('typeorm');
 jest.mock('../../../_shared/services/dBService');
-jest.mock('../../../_shared/services/schemaService.ts');
+jest.mock('../../../_shared/services/schemaService');
 
 beforeEach(() => jest.clearAllMocks());
 
