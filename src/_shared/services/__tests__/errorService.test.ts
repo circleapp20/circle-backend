@@ -1,11 +1,12 @@
 import {
 	errorMiddleware,
+	getBadRequestError,
 	getErrorFactory,
 	getForbiddenError,
 	getServerError
 } from '../errorService';
 
-beforeAll(() => jest.clearAllMocks());
+beforeEach(() => jest.clearAllMocks());
 
 describe('#errorService', () => {
 	describe('#getServerError', () => {
@@ -119,6 +120,28 @@ describe('#errorService', () => {
 			process.env.NODE_ENV = 'production';
 			const error = getErrorFactory('testing error factory', 400, 'ERR_BAD_REQUEST');
 			expect(error).not.toHaveProperty('stack');
+		});
+	});
+
+	describe('#getBadRequestError', () => {
+		test('should have a status of 400', () => {
+			const error = getBadRequestError();
+			expect(error.status).toBe(400);
+		});
+
+		test('should have an errCode of ERR_BAD_REQUEST', () => {
+			const error = getBadRequestError();
+			expect(error.errCode).toBe('ERR_BAD_REQUEST');
+		});
+
+		test('should have a default message', () => {
+			const error = getBadRequestError();
+			expect(error.message).toBe('Invalid request data');
+		});
+
+		test('should have a name of Bad Request Error', () => {
+			const error = getBadRequestError();
+			expect(error.name).toBe('Bad Request Error');
 		});
 	});
 });

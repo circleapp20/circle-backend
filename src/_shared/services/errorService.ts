@@ -21,11 +21,15 @@ export const getErrorFactory = (
 };
 
 export const getForbiddenError = () => {
-	return getErrorFactory('Access forbidden', 403, 'ERR_FORBIDDEN_ACCESS');
+	return getErrorFactory('Access forbidden', 403, 'ERR_FORBIDDEN_ACCESS', 'Forbidden Error');
 };
 
 export const getServerError = (message = 'An error occurred whilst processing request') => {
-	return getErrorFactory(message, 500, 'ERR_INTERNAL_SERVER_ERROR');
+	return getErrorFactory(message, 500, 'ERR_INTERNAL_SERVER_ERROR', 'Server Error');
+};
+
+export const getBadRequestError = (message = 'Invalid request data') => {
+	return getErrorFactory(message, 400, 'ERR_BAD_REQUEST', 'Bad Request Error');
 };
 
 export const errorMiddleware = (error: IError, _: Request, res: Response, __: NextFunction) => {

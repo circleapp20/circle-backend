@@ -61,3 +61,11 @@ export const runQuery = async <T>(
 	await conn.close(); // close the connection after executing the query
 	return results;
 };
+
+export const runInTransaction = async <T = any>(
+	callBack: (manager: EntityManager) => Promise<T>
+) => {
+	const conn = await getSqlInstance(generateCodeFromNumber());
+	const results = await conn.transaction(callBack);
+	return results;
+};

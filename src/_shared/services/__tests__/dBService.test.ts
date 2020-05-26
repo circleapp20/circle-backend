@@ -1,30 +1,26 @@
 import { createConnection } from 'typeorm';
+import { entityManagerMock as entityManager } from '../../../__utils__/testUtils';
 import { Constants } from '../../constants';
-import { getSqlInstance, runInsertQuery, runQuery } from '../dBService';
+import { getSqlInstance, runInsertQuery, runInTransaction, runQuery } from '../dBService';
 import entities from '../schemaService';
 
 jest.mock('typeorm', () => ({
 	createConnection: jest.fn().mockReturnValue({
 		manager: {},
-		close: jest.fn()
-	}),
-	PrimaryGeneratedColumn: () => jest.fn(),
-	CreateDateColumn: () => jest.fn(),
-	UpdateDateColumn: () => jest.fn(),
-	Column: () => jest.fn(),
-	Entity: () => jest.fn()
+		close: jest.fn(),
+		transaction: jest.fn().mockImplementation((callBack) => {
+			return callBack(entityManager);
+		})
+	})
 }));
+jest.mock('../schemaService.ts');
 
-beforeEach(() => {
-	jest.clearAllMocks();
-});
+beforeEach(() => jest.clearAllMocks());
 
 describe('#dBService', () => {
 	const queryMockFunc: any = jest.fn().mockReturnValue({
 		generatedMaps: []
 	});
-
-	const entityManager: any = { testing: 1 };
 
 	describe('#getSqlInstance', () => {
 		test('should be called with the database url', async () => {
@@ -73,6 +69,21 @@ describe('#dBService', () => {
 		test('should call queryBuilder with entity manager as params', async () => {
 			await runQuery(queryMockFunc, entityManager);
 			expect(queryMockFunc).toHaveBeenCalledWith(entityManager);
+		});
+	});
+
+	describe('#runInTransaction', () => {
+		test('should pass an entity manager to the callBack function', async () => {
+			const mockFn = jest.fn();
+			await runInTransaction(mockFn);
+			expect(mockFn).toHaveBeenCalled();
+			expect(mockFn).toHaveBeenCalledWith(entityManager);
+		});
+
+		test('should return the value from the callback', async () => {
+			const mockFn = jest.fn().mockResolvedValueOnce('success');
+			const results = await runInTransaction(mockFn);
+			expect(results).toBe('success');
 		});
 	});
 });

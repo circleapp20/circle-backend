@@ -2,11 +2,9 @@ import { bootstrap } from '../bootstrap';
 
 jest.mock('cors');
 
-describe('#bootstrap', () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-	});
+beforeEach(() => jest.clearAllMocks());
 
+describe('#bootstrap', () => {
 	const app: any = { listen: jest.fn(), use: jest.fn() };
 
 	test('should call the listen on express', () => {
@@ -22,5 +20,6 @@ describe('#bootstrap', () => {
 	test('should add middleware to the server', () => {
 		bootstrap(app);
 		expect(app.use).toBeCalled();
+		expect(app.use).toHaveBeenCalledTimes(3);
 	});
 });
