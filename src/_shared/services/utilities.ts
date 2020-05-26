@@ -1,3 +1,5 @@
+import { IResponseData } from '../types';
+
 export const generateRandomValue = () => {
 	return Math.floor(Math.random() * 10e6);
 };
@@ -8,4 +10,10 @@ export const generateRandomValue = () => {
 export const generateCodeFromNumber = (value?: number) => {
 	const codeNumber = value ? value : generateRandomValue();
 	return codeNumber.toString(32);
+};
+
+export const getResponseData = <T = any>(data?: T, success = true) => {
+	const response: IResponseData<T> = { success };
+	if (data) response.data = data;
+	return response;
 };

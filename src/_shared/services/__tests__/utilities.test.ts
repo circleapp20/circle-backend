@@ -1,4 +1,4 @@
-import { generateCodeFromNumber } from '../utilities';
+import { generateCodeFromNumber, getResponseData } from '../utilities';
 
 describe('#utilities', () => {
 	describe('#generateCodeFromNumber', () => {
@@ -21,6 +21,28 @@ describe('#utilities', () => {
 				return frequency > 1;
 			});
 			expect(matchingCodes.length).toBe(0);
+		});
+	});
+
+	describe('#getResponseData', () => {
+		test('should return object with success and data field', () => {
+			const response = getResponseData('testing');
+			expect(response).toEqual({ data: 'testing', success: true });
+		});
+
+		test('should return object with only success if data is not provided', () => {
+			const response = getResponseData();
+			expect(response).toEqual({ success: true });
+		});
+
+		test('should return success of false if set to false', () => {
+			const response = getResponseData(undefined, false);
+			expect(response).toEqual({ success: false });
+		});
+
+		test('should return object with fields values set', () => {
+			const response = getResponseData('testing', false);
+			expect(response).toEqual({ data: 'testing', success: false });
 		});
 	});
 });

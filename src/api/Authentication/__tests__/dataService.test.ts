@@ -8,11 +8,19 @@ beforeEach(() => jest.clearAllMocks());
 describe('#dataService', () => {
 	describe('#createUserProfileWithDefaultValues', () => {
 		test('should create a new user if not exists', async () => {
-			// @ts-ignore
-			// runQuery.mockReturnValueOnce({ id: '0932kdi393jdf2' });
 			await createUserProfileWithDefaultValues({ email: 'test@test.com' });
 			expect(runQuery).toHaveBeenCalled();
 			expect(runInTransaction).toHaveBeenCalled();
+		});
+
+		test('should throw an error if user already exists', (done) => {
+			// @ts-ignore
+			runQuery.mockReturnValueOnce({ id: '0932kdi393jdf2' });
+			createUserProfileWithDefaultValues({ email: 'test@test.com' }).catch((error) => {
+				expect(error.message).toBe('User already exists');
+				expect(error.status).toBe(400);
+				done();
+			});
 		});
 	});
 });

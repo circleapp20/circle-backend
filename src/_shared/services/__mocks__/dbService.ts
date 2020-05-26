@@ -14,6 +14,4 @@ export const runQuery = jest
 		return queryBuilder(eM, ...queryParams);
 	});
 
-export const runInTransaction = jest
-	.fn()
-	.mockImplementation(async (callBack) => await callBack(entityManager));
+export const runInTransaction = async (callBack: any) => await callBack(entityManager);

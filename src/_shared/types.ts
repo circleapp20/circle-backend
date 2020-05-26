@@ -10,3 +10,8 @@ export interface IApiRoute {
 	method: 'get' | 'post' | 'put' | 'delete';
 	controller: (req: Request, res: Response) => Promise<void>;
 }
+
+export interface IResponseData<T = any> {
+	data?: T;
+	success: boolean;
+}
