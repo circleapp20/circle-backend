@@ -2,7 +2,11 @@ import { EntityManager } from 'typeorm';
 import { getBadRequestError } from '../../_shared/services';
 import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
 import { generateCodeFromNumber } from '../../_shared/services/utilities';
-import { addUserProfileQuery, getUserByEmailOrPhoneNumberQuery } from './queryBuilder';
+import {
+	addUserProfileQuery,
+	getUserByEmailOrPhoneNumberQuery,
+	getUserByIdQuery
+} from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
 
 export const addUserTransaction = (email = '', phoneNumber = '') => {
@@ -17,13 +21,15 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			dob: new Date(),
 			image: '',
 			biography: '',
-			email: email,
-			phoneNumber: phoneNumber,
+			email: email || '',
+			phoneNumber: phoneNumber || '',
 			isEmailVerified: false,
 			verificationCode
 		};
 
-		return runInsertQuery(addUserProfileQuery, [profile], manager);
+		const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
+
+		return runQuery(getUserByIdQuery, [user.id], manager);
 	};
 };
 

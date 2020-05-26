@@ -20,3 +20,7 @@ export const getUserByEmailOrPhoneNumberQuery = (
 export const addUserProfileQuery = (manager: EntityManager, values: IAddUserProfile) => {
 	return manager.getRepository(Users).createQueryBuilder().insert().values(values).execute();
 };
+
+export const getUserByIdQuery = (manager: EntityManager, id: string) => {
+	return manager.getRepository(Users).createQueryBuilder().where('id = :id', { id }).getOne();
+};

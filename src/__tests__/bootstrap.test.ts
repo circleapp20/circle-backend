@@ -24,7 +24,7 @@ describe('#bootstrap', () => {
 
 	test('should add middleware to the server', async () => {
 		await bootstrap(app);
-		expect(app.use).toHaveBeenCalledTimes(3);
+		expect(app.use).toHaveBeenCalledTimes(5);
 		expect(mockFn).toHaveBeenCalled();
 	});
 

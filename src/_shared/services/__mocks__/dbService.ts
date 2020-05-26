@@ -2,8 +2,9 @@ import { entityManagerMock as entityManager } from '../../../__testSetup__';
 
 export const runInsertQuery = jest
 	.fn()
-	.mockImplementation((queryBuilder, params, manager = entityManager) => {
-		return queryBuilder(manager, ...params);
+	.mockImplementation(async (queryBuilder, params, manager = entityManager) => {
+		const results = await queryBuilder(manager, ...params);
+		return results.generateMaps;
 	});
 
 export const runQuery = jest
