@@ -3,6 +3,7 @@
         "Kofi",
         "asynciterable",
         "esnext",
+        "gmail",
         "respawn",
         "typeorm"
     ]

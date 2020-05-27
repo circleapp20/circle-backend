@@ -17,3 +17,8 @@ export const getResponseData = <T = any>(data?: T, success = true) => {
 	if (data) response.data = data;
 	return response;
 };
+
+export const printToConsole = (args: any) => {
+	const date = new Date().toDateString();
+	console.log(`[${date}]:circle - ${args}`);
+};

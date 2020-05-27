@@ -1,9 +1,12 @@
 import { runQuery } from '../../../_shared/services/dBService';
 import { verifyUserCredentials } from '../authControllers';
+import { sendVerificationCodeByEmail } from '../authService';
+import * as service from '../dataService';
 
 jest.mock('typeorm');
 jest.mock('../../../_shared/services/dBService');
 jest.mock('../../../_shared/services/schemaService');
+jest.mock('../authService');
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -17,6 +20,7 @@ describe('#authControllers', () => {
 
 		test('should create a new user', async () => {
 			await verifyUserCredentials(requestMock, responseMock);
+
 			expect(responseMock.status).toHaveBeenCalledWith(201);
 		});
 
@@ -28,6 +32,19 @@ describe('#authControllers', () => {
 				expect(message).toBe('User already exists');
 				done();
 			});
+		});
+
+		test('should send email', async () => {
+			const createMock = jest.spyOn(service, 'createUserProfileWithDefaultValues');
+			createMock.mockImplementation().mockResolvedValueOnce({
+				id: '393029',
+				verificationCode: '89ej5',
+				email: 'test@test.com'
+			} as any);
+
+			await verifyUserCredentials(requestMock, responseMock);
+			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith('89ej5', 'test@test.com');
+			createMock.mockRestore();
 		});
 	});
 });

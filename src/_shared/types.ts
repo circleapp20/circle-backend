@@ -15,3 +15,10 @@ export interface IResponseData<T = any> {
 	data?: T;
 	success: boolean;
 }
+
+export interface IRecipientMaiConfig {
+	to: string;
+	subject: string;
+	text?: string;
+	html?: string;
+}
