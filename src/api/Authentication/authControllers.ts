@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getResponseData } from '../../_shared/services/utilities';
 import { sendVerificationCodeByEmail } from './authService';
-import { createUserProfileWithDefaultValues } from './dataService';
+import { checkUserVerificationCode, createUserProfileWithDefaultValues } from './dataService';
 
 export const verifyUserCredentials = async (req: Request, res: Response) => {
 	const user = await createUserProfileWithDefaultValues(req.body.data);
@@ -12,5 +12,11 @@ export const verifyUserCredentials = async (req: Request, res: Response) => {
 	}
 
 	const responseData = getResponseData(user);
+	res.status(201).json(responseData);
+};
+
+export const verifyUserVerificationCode = async (req: Request, res: Response) => {
+	const status = await checkUserVerificationCode(req.body.data);
+	const responseData = getResponseData(status);
 	res.status(201).json(responseData);
 };

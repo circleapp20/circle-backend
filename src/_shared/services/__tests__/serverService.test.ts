@@ -1,6 +1,11 @@
 import next from 'next';
 import { IApiRoute } from '../../types';
-import { getApiRouter, getNextRequestHandler, wrapController } from '../serverService';
+import {
+	getApiRouter,
+	getNextRequestHandler,
+	getNextRouter,
+	wrapController
+} from '../serverService';
 
 jest.mock('next', () => {
 	return jest.fn().mockReturnValue({
@@ -66,6 +71,15 @@ describe('#serverService', () => {
 		test('should run in production when specified', async () => {
 			await getNextRequestHandler(false);
 			expect(next).toHaveBeenCalledWith({ dev: false });
+		});
+	});
+
+	describe('#getNextRouter', () => {
+		test('should call the handler function', () => {
+			const handleMock = jest.fn();
+			const router = getNextRouter(handleMock);
+			router({} as any, {} as any);
+			expect(handleMock).toHaveBeenCalledTimes(1);
 		});
 	});
 });

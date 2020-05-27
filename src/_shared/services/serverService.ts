@@ -25,3 +25,7 @@ export const getNextRequestHandler = async (dev = process.env.NODE_ENV !== 'prod
 	await server.prepare();
 	return handler;
 };
+
+export const getNextRouter = (handler: (...args: any[]) => Promise<void>) => {
+	return (req: Request, res: Response) => handler(req, res);
+};

@@ -2,6 +2,7 @@ import { Users } from '../../../_shared/services';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	addUserProfileQuery,
+	countMatchingIdAndCodeQuery,
 	getUserByEmailOrPhoneNumberQuery,
 	getUserByIdQuery
 } from '../queryBuilder';
@@ -94,6 +95,19 @@ describe('#queryBuilder', () => {
 			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
 			expect(entityManager.where).toHaveBeenCalledWith('id = :id', { id });
 			expect(entityManager.getOne).toHaveBeenCalled();
+		});
+	});
+
+	describe('#countMatchingIdAndCodeQuery', () => {
+		test('should call where with id and code', async () => {
+			const id = '8409-853';
+			const verificationCode = '23ngt';
+			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
+			expect(entityManager.where).toHaveBeenCalledWith('id = :id', { id });
+			expect(entityManager.andWhere).toHaveBeenCalledWith('verificationCode = :code', {
+				code: verificationCode
+			});
+			expect(entityManager.getCount).toHaveBeenCalled();
 		});
 	});
 });

@@ -40,9 +40,6 @@ export class Users extends BaseModel {
 	@Column()
 	phoneNumber: string;
 
-	@Column({ default: false })
-	isEmailVerified: boolean;
-
 	@Column()
 	verificationCode: string;
 }

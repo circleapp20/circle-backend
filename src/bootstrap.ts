@@ -6,7 +6,8 @@ import {
 	createDBSchema,
 	errorMiddleware,
 	getApiRouter,
-	getNextRequestHandler
+	getNextRequestHandler,
+	getNextRouter
 } from './_shared/services';
 
 export const bootstrap = async (app: Express, callBack?: () => void) => {
@@ -22,7 +23,7 @@ export const bootstrap = async (app: Express, callBack?: () => void) => {
 	app.use('/api/v1', getApiRouter(Router(), apiRoutes));
 
 	// add next app routes
-	app.all('*', (req, res) => handle(req, res));
+	app.all('*', getNextRouter(handle));
 
 	// add an error middleware to handle errors thrown during request
 	// processing, which will gracefully return the proper error response

@@ -24,3 +24,16 @@ export const addUserProfileQuery = (manager: EntityManager, values: IAddUserProf
 export const getUserByIdQuery = (manager: EntityManager, id: string) => {
 	return manager.getRepository(Users).createQueryBuilder().where('id = :id', { id }).getOne();
 };
+
+export const countMatchingIdAndCodeQuery = (
+	manager: EntityManager,
+	id: string,
+	verificationCode: string
+) => {
+	return manager
+		.getRepository(Users)
+		.createQueryBuilder()
+		.where('id = :id', { id })
+		.andWhere('verificationCode = :code', { code: verificationCode })
+		.getCount();
+};

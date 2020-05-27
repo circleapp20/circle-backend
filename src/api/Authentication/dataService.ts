@@ -4,6 +4,7 @@ import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/servic
 import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
+	countMatchingIdAndCodeQuery,
 	getUserByEmailOrPhoneNumberQuery,
 	getUserByIdQuery
 } from './queryBuilder';
@@ -44,4 +45,17 @@ export const createUserProfileWithDefaultValues = async (data: {
 	const userProfile = await runInTransaction(addUserTransaction(data.email, data.phoneNumber));
 
 	return userProfile;
+};
+
+export const checkUserVerificationCode = async (data: { id: string; verificationCode: string }) => {
+	const { id, verificationCode } = data;
+
+	if (!id || !verificationCode) {
+		throw getBadRequestError('user id and verification code are required');
+	}
+
+	const count = await runQuery(countMatchingIdAndCodeQuery, [id, verificationCode]);
+	if (!Boolean(count)) throw getBadRequestError('invalid verification code');
+
+	return true;
 };

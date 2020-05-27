@@ -14,7 +14,6 @@ export class Users extends BaseModel {
 	biography: string;
 	email: string;
 	phoneNumber: string;
-	isEmailVerified: boolean;
 	verificationCode: string;
 }
 
