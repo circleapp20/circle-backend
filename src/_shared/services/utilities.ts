@@ -19,6 +19,6 @@ export const getResponseData = <T = any>(data?: T, success = true) => {
 };
 
 export const printToConsole = (args: any) => {
-	const date = new Date().toDateString();
-	console.log(`[${date}]:circle - ${args}`);
+	const date = new Date().toUTCString();
+	console.log(`[${date}]:circle-backend - ${String(args).toString()}`);
 };

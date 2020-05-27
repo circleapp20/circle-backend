@@ -2,10 +2,17 @@ import cors from 'cors';
 import { Express, json, Router, urlencoded } from 'express';
 import { apiRoutes } from './api/routes';
 import { Constants } from './_shared/constants';
-import { createDBSchema, errorMiddleware, getApiRouter } from './_shared/services';
+import {
+	createDBSchema,
+	errorMiddleware,
+	getApiRouter,
+	getNextRequestHandler
+} from './_shared/services';
 
 export const bootstrap = async (app: Express, callBack?: () => void) => {
 	await createDBSchema();
+
+	const handle = await getNextRequestHandler();
 
 	app.use(cors());
 	app.use(json());
@@ -13,6 +20,9 @@ export const bootstrap = async (app: Express, callBack?: () => void) => {
 
 	// add the api routes for version 1
 	app.use('/api/v1', getApiRouter(Router(), apiRoutes));
+
+	// add next app routes
+	app.all('*', (req, res) => handle(req, res));
 
 	// add an error middleware to handle errors thrown during request
 	// processing, which will gracefully return the proper error response

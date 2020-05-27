@@ -11,6 +11,6 @@ export const Constants = {
 		MAIL_PASSWORD: process.env.MAIL_PASSWORD
 	},
 	accounts: {
-		EMAIL_ADDRESS: 'developers.jaatech@gmail.com'
+		EMAIL_ADDRESS: 'circleapp20@gmail.com'
 	}
 };

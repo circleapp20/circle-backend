@@ -1,0 +1,18 @@
+{
+	"extends": "./tsconfig.base.json",
+	"complierOptions": {
+		"module": "commonjs",
+		"noEmit": true,
+		"outDir": "./dist"
+	},
+	"exclude": [
+		"**/*.tsx",
+		".next",
+		"next.config.js",
+		"**/__mocks__",
+		"**/__testSetup__",
+		"**/__tests__",
+		"src/setupTests.ts"
+	],
+	"include": ["src"]
+}

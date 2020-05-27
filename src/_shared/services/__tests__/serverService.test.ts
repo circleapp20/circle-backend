@@ -1,5 +1,13 @@
+import next from 'next';
 import { IApiRoute } from '../../types';
-import { getApiRouter, wrapController } from '../serverService';
+import { getApiRouter, getNextRequestHandler, wrapController } from '../serverService';
+
+jest.mock('next', () => {
+	return jest.fn().mockReturnValue({
+		getRequestHandler: jest.fn(),
+		prepare: jest.fn().mockResolvedValue(true)
+	});
+});
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -46,6 +54,18 @@ describe('#serverService', () => {
 			const wrappedController = wrapController(controllerMock);
 			await wrappedController(request, response, next);
 			expect(next).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('#getNextRequestHandler', () => {
+		test('should run next in dev mode', async () => {
+			await getNextRequestHandler();
+			expect(next).toHaveBeenCalledWith({ dev: true });
+		});
+
+		test('should run in production when specified', async () => {
+			await getNextRequestHandler(false);
+			expect(next).toHaveBeenCalledWith({ dev: false });
 		});
 	});
 });

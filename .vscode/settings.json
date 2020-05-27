@@ -4,6 +4,7 @@
         "asynciterable",
         "esnext",
         "gmail",
+        "hstore",
         "respawn",
         "typeorm"
     ]

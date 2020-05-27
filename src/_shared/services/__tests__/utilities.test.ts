@@ -1,4 +1,4 @@
-import { generateCodeFromNumber, getResponseData } from '../utilities';
+import { generateCodeFromNumber, getResponseData, printToConsole } from '../utilities';
 
 describe('#utilities', () => {
 	describe('#generateCodeFromNumber', () => {
@@ -43,6 +43,17 @@ describe('#utilities', () => {
 		test('should return object with fields values set', () => {
 			const response = getResponseData('testing', false);
 			expect(response).toEqual({ data: 'testing', success: false });
+		});
+	});
+
+	describe('#printToConsole', () => {
+		test('prints strings to console', () => {
+			const logMock = jest.spyOn(console, 'log').mockImplementation();
+			printToConsole('testing print');
+			expect(logMock).toHaveBeenCalledTimes(1);
+			const text = `[${new Date().toUTCString()}]:circle-backend - testing print`;
+			expect(logMock).toHaveBeenCalledWith(text);
+			logMock.mockRestore();
 		});
 	});
 });
