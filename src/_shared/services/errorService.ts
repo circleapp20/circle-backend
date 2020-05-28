@@ -57,3 +57,12 @@ export const errorMiddleware = (error: IError, _: Request, res: Response, __: Ne
 	);
 	return res.status(status).json(responseData);
 };
+
+export const getUnauthorizedError = (message = 'Unauthorized access') => {
+	return getErrorFactory(
+		message,
+		Constants.status.UNAUTHORIZED,
+		'ERR_UNAUTHORIZED_ACCESS',
+		'Unauthorized Error'
+	);
+};
