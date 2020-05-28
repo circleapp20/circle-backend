@@ -1,3 +1,4 @@
+import { Constants } from '../../../_shared/constants';
 import { Users } from '../../../_shared/services';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
@@ -66,7 +67,8 @@ describe('#queryBuilder', () => {
 			email: '',
 			phoneNumber: '',
 			isEmailVerified: false,
-			verificationCode: ''
+			verificationCode: '',
+			roles: [Constants.privileges.USER]
 		};
 
 		test('should be called with an entity manager', async () => {
