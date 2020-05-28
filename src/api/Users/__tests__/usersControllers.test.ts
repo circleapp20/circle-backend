@@ -1,3 +1,4 @@
+import { Constants } from '../../../_shared/constants';
 import { runInTransaction } from '../../../_shared/services/dBService';
 import { updateProfile } from '../usersControllers';
 
@@ -31,7 +32,7 @@ describe('#usersControllers', () => {
 			await updateProfile(requestMock, responseMock);
 
 			const { password, ...other } = values;
-			expect(responseMock.status).toHaveBeenCalledWith(200);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
 			expect(responseMock.json).toHaveBeenCalledWith({
 				data: other,
 				success: true

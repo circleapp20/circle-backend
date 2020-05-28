@@ -1,3 +1,4 @@
+import { Constants } from '../../../_shared/constants';
 import { getBadRequestError } from '../../../_shared/services';
 import { runQuery } from '../../../_shared/services/dBService';
 import { verifyUserCredentials, verifyUserVerificationCode } from '../authControllers';
@@ -22,7 +23,7 @@ describe('#authControllers', () => {
 
 		test('should create a new user', async () => {
 			await verifyUserCredentials(requestMock, responseMock);
-			expect(responseMock.status).toHaveBeenCalledWith(201);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 
 		test('should not create a user if exists', (done) => {
@@ -59,7 +60,7 @@ describe('#authControllers', () => {
 		test('should send a status of 201 with the json data', async () => {
 			await verifyUserVerificationCode(requestMock, responseMock);
 			verifyMock.mockRestore();
-			expect(responseMock.status).toHaveBeenCalledWith(201);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 			expect(responseMock.json).toHaveBeenCalledWith({
 				data: true,
 				success: true

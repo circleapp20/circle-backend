@@ -2,6 +2,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const Status = {
+	SUCCESS: 200,
+	CREATED: 201,
+	FORBIDDEN: 403,
+	NOT_FOUND: 404,
+	BAD_REQUEST: 400,
+	SERVER_ERROR: 500,
+	UNAUTHORIZED: 401
+};
+
 export const Constants = {
 	app: {
 		PORT: process.env.PORT || 4000,
@@ -12,5 +22,6 @@ export const Constants = {
 	},
 	accounts: {
 		EMAIL_ADDRESS: 'circleapp20@gmail.com'
-	}
+	},
+	status: { ...Status }
 };

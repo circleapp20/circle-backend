@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
 import { sendVerificationCodeByEmail } from './authService';
 import { checkUserVerificationCode, createUserProfileWithDefaultValues } from './dataService';
@@ -12,11 +13,11 @@ export const verifyUserCredentials = async (req: Request, res: Response) => {
 	}
 
 	const responseData = getResponseData(user);
-	res.status(201).json(responseData);
+	res.status(Constants.status.CREATED).json(responseData);
 };
 
 export const verifyUserVerificationCode = async (req: Request, res: Response) => {
 	const status = await checkUserVerificationCode(req.body.data);
 	const responseData = getResponseData(status);
-	res.status(201).json(responseData);
+	res.status(Constants.status.CREATED).json(responseData);
 };
