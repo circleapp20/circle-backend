@@ -22,3 +22,8 @@ export interface IRecipientMaiConfig {
 	text?: string;
 	html?: string;
 }
+
+export interface IAuthUser {
+	id: string;
+	roles: string[];
+}

@@ -1,3 +1,4 @@
+export * from './authService';
 export * from './errorService';
 export * from './mailService';
 export * from './schemaService';
