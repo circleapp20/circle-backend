@@ -3,8 +3,7 @@ import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByEmailOrPhoneNumberQuery,
-	getUserByIdQuery
+	getUserByEmailOrPhoneNumberQuery
 } from '../queryBuilder';
 import { IAddUserProfile } from '../_helpers/types';
 
@@ -85,16 +84,6 @@ describe('#queryBuilder', () => {
 		test('should return insert query results', async () => {
 			const results = await addUserProfileQuery(entityManager, profile);
 			expect(results).toEqual({ generatedMaps: [] });
-		});
-	});
-
-	describe('#getUserByIdQuery', () => {
-		test('should create query builder from Users with the id', async () => {
-			const id = 'dec2ace6-4fd2-4386-b75a-eabbcf0efa77';
-			await getUserByIdQuery(entityManager, id);
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
-			expect(entityManager.where).toHaveBeenCalledWith('id = :id', { id });
-			expect(entityManager.getOne).toHaveBeenCalled();
 		});
 	});
 

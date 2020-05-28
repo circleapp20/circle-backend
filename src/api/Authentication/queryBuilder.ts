@@ -21,10 +21,6 @@ export const addUserProfileQuery = (manager: EntityManager, values: IAddUserProf
 	return manager.getRepository(Users).createQueryBuilder().insert().values(values).execute();
 };
 
-export const getUserByIdQuery = (manager: EntityManager, id: string) => {
-	return manager.getRepository(Users).createQueryBuilder().where('id = :id', { id }).getOne();
-};
-
 export const countMatchingIdAndCodeQuery = (
 	manager: EntityManager,
 	id: string,

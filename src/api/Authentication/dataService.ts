@@ -1,12 +1,12 @@
 import { EntityManager } from 'typeorm';
 import { getBadRequestError } from '../../_shared/services';
+import { getUserByIdQuery } from '../../_shared/services/dataService';
 import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
 import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByEmailOrPhoneNumberQuery,
-	getUserByIdQuery
+	getUserByEmailOrPhoneNumberQuery
 } from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
 

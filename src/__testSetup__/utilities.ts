@@ -9,5 +9,7 @@ export const entityManagerMock: any = {
 		generatedMaps: []
 	}),
 	getCount: jest.fn(),
-	andWhere: jest.fn().mockReturnThis()
+	andWhere: jest.fn().mockReturnThis(),
+	update: jest.fn().mockReturnThis(),
+	set: jest.fn().mockReturnThis()
 };

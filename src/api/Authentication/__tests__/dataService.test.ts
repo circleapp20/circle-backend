@@ -5,25 +5,44 @@ import {
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues
 } from '../dataService';
+import * as queryBuilder from '../queryBuilder';
 
 jest.mock('../../../_shared/services/dBService');
+jest.mock('bcryptjs', () => ({
+	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92')
+}));
 
 beforeEach(() => jest.clearAllMocks());
 
 describe('#dataService', () => {
 	describe('#addUserTransaction', () => {
-		test('should create a new user with email', async () => {
+		const addMock = jest.spyOn(queryBuilder, 'addUserProfileQuery');
+		addMock.mockImplementation();
+
+		test('should create user with email', async () => {
 			// @ts-ignore
-			runInsertQuery.mockResolvedValueOnce([{ id: 'dec2ace6-4fd2-4386-b75a-eabbcf0efa77' }]);
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce({ id: 'dec2ace6-4fd2-4386-b75a-eabbcf0efa77' });
+			runInsertQuery.mockImplementationOnce((callBack, data) => {
+				callBack(entityManager, data);
+				return [{ id: 'x7i9-3l-n3k4-3i8bi2' }];
+			});
 
 			const transaction = addUserTransaction('test@test.com');
-			const results = await transaction(entityManager);
+			await transaction(entityManager);
 
+			expect(addMock).toHaveBeenCalled();
+		});
+
+		test('should create user with phoneNumber', async () => {
 			// @ts-ignore
-			runQuery.mockRestore();
-			expect(results).toHaveProperty('id');
+			runInsertQuery.mockImplementationOnce((callBack, data) => {
+				callBack(entityManager, data);
+				return [{ id: 'x7i9-3l-n3k4-3i8bi2' }];
+			});
+
+			const transaction = addUserTransaction('', '+2339874563');
+			await transaction(entityManager);
+
+			expect(addMock).toHaveBeenCalled();
 		});
 	});
 
@@ -36,7 +55,7 @@ describe('#dataService', () => {
 
 		test('should throw an error if user already exists', (done) => {
 			// @ts-ignore
-			runQuery.mockReturnValueOnce({ id: '0932kdi393jdf2' });
+			runQuery.mockReturnValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			createUserProfileWithDefaultValues({ email: 'test@test.com' }).catch((error) => {
 				expect(error.message).toBe('User already exists');
 				expect(error.status).toBe(400);
@@ -51,7 +70,7 @@ describe('#dataService', () => {
 		test('should return true if code and id matches', async () => {
 			// @ts-ignore
 			runQuery.mockResolvedValueOnce(1);
-			const data = { id: '5738', verificationCode: '3452' };
+			const data = { id: 'x7i9-3l-n3k4-3i8bi2', verificationCode: '3452' };
 			const results = await checkUserVerificationCode(data);
 			// @ts-ignore
 			runQuery.mockRestore();
@@ -68,7 +87,7 @@ describe('#dataService', () => {
 		});
 
 		test('should throw if verificationCode is empty', (done) => {
-			const data = { id: '380284', verificationCode: '' };
+			const data = { id: 'x7i9-3l-n3k4-3i8bi2', verificationCode: '' };
 			checkUserVerificationCode(data).catch((error) => {
 				expect(error.message).toBe('user id and verification code are required');
 				expect(runQuery).not.toHaveBeenCalled();
@@ -79,9 +98,10 @@ describe('#dataService', () => {
 		test('should throw if runQuery returns 0', (done) => {
 			// @ts-ignore
 			runQuery.mockResolvedValueOnce(0);
-			const data = { id: '5738', verificationCode: '3452' };
+			const data = { id: 'x7i9-3l-n3k4-3i8bi2', verificationCode: '3452' };
 			checkUserVerificationCode(data).catch((error) => {
 				expect(error.message).toBe('invalid verification code');
+
 				// @ts-ignore
 				runQuery.mockRestore();
 				done();

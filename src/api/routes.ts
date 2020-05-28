@@ -1,5 +1,6 @@
 import { IApiRoute } from '../_shared/types';
 import { verifyUserCredentials, verifyUserVerificationCode } from './Authentication';
+import { updateProfile } from './Users';
 
 export const apiRoutes: IApiRoute[] = [
 	{
@@ -11,5 +12,10 @@ export const apiRoutes: IApiRoute[] = [
 		path: '/auth/verify/code',
 		method: 'post',
 		controller: verifyUserVerificationCode
+	},
+	{
+		path: '/users/profile',
+		method: 'put',
+		controller: updateProfile
 	}
 ];
