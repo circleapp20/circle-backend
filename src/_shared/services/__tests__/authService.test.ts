@@ -62,6 +62,16 @@ describe('#authService', () => {
 			const result = decodeAuthToken('ih298ht3h9h398');
 			expect(result).toBeNull();
 		});
+
+		test('should return null if decode throws', () => {
+			const decodeMock = jest.spyOn(jwt, 'decode');
+			decodeMock.mockImplementationOnce(() => {
+				throw new Error();
+			});
+			const result = decodeAuthToken('ih298ht3h9h398');
+			decodeMock.mockRestore();
+			expect(result).toBeNull();
+		});
 	});
 
 	describe('#getDecodedAuthTokenInHeaders', () => {
