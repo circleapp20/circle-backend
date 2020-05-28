@@ -22,7 +22,7 @@ jobs:
             - run: yarn --frozen-lockfile
             - run: yarn run build --if-present
             - run: yarn test
-            env:
-                DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
-                MAIL_USER: 'circleapp20@gmail.com'
-                MAIL_PASSWORD: 'circle'
+              env:
+                  DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
+                  MAIL_USER: 'circleapp20@gmail.com'
+                  MAIL_PASSWORD: 'circle'
