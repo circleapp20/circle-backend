@@ -24,5 +24,9 @@ export const Constants = {
 	accounts: {
 		EMAIL_ADDRESS: 'circleapp20@gmail.com'
 	},
-	status: { ...Status }
+	status: { ...Status },
+	privileges: {
+		SUPER_ADMIN: 'super_admin',
+		USER: 'user'
+	}
 };

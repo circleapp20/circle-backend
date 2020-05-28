@@ -9,6 +9,7 @@ export interface IApiRoute {
 	path: string;
 	method: 'get' | 'post' | 'put' | 'delete';
 	controller: (req: Request, res: Response) => Promise<void>;
+	privileges?: string[];
 }
 
 export interface IResponseData<T = any> {

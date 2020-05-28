@@ -8,4 +8,5 @@ export interface IAddUserProfile {
 	phoneNumber: string;
 	isEmailVerified: boolean;
 	verificationCode: string;
+	roles: string[];
 }

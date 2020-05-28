@@ -15,6 +15,7 @@ export class Users extends BaseModel {
 	email: string;
 	phoneNumber: string;
 	verificationCode: string;
+	roles: string[];
 }
 
 export class Campuses extends BaseModel {

@@ -42,6 +42,9 @@ export class Users extends BaseModel {
 
 	@Column()
 	verificationCode: string;
+
+	@Column('simple-array')
+	roles: string[];
 }
 
 @Entity()

@@ -48,6 +48,8 @@ describe('#dataService', () => {
 
 	describe('#createUserProfileWithDefaultValues', () => {
 		test('should create a new user if not exists', async () => {
+			// @ts-ignore
+			runInTransaction.mockResolvedValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			await createUserProfileWithDefaultValues({ email: 'test@test.com' });
 			expect(runQuery).toHaveBeenCalled();
 			expect(runInTransaction).toHaveBeenCalled();

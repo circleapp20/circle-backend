@@ -1,5 +1,6 @@
 import { EntityManager } from 'typeorm';
-import { getBadRequestError } from '../../_shared/services';
+import { Constants } from '../../_shared/constants';
+import { getBadRequestError, getSignedAuthToken } from '../../_shared/services';
 import { getUserByIdQuery } from '../../_shared/services/dataService';
 import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
 import { generateCodeFromNumber } from '../../_shared/services/utilities';
@@ -25,7 +26,8 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			email: email || '',
 			phoneNumber: phoneNumber || '',
 			isEmailVerified: false,
-			verificationCode
+			verificationCode,
+			roles: [Constants.privileges.USER]
 		};
 
 		const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
@@ -44,7 +46,11 @@ export const createUserProfileWithDefaultValues = async (data: {
 	// save user profile into the database
 	const userProfile = await runInTransaction(addUserTransaction(data.email, data.phoneNumber));
 
-	return userProfile;
+	// add token to user profile
+	const token = getSignedAuthToken({ id: userProfile!.id, roles: [Constants.privileges.USER] });
+	const profile = Object.assign({}, userProfile, { token });
+
+	return profile;
 };
 
 export const checkUserVerificationCode = async (data: { id: string; verificationCode: string }) => {

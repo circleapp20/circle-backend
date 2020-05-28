@@ -28,7 +28,9 @@ describe('#usersControllers', () => {
 
 			// @ts-ignore
 			runInTransaction.mockResolvedValueOnce(values);
-			const requestMock: any = { body: { data: values } };
+			const requestMock: any = {
+				body: { data: values, user: { id: 'x7i9-3l-n3k4-3i8bi2' } }
+			};
 			await updateProfile(requestMock, responseMock);
 
 			const { password, ...other } = values;

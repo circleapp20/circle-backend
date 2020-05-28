@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
+import { IAuthUser } from '../../_shared/types';
 import { sendVerificationCodeByEmail } from './authService';
 import { checkUserVerificationCode, createUserProfileWithDefaultValues } from './dataService';
 
@@ -17,7 +18,9 @@ export const verifyUserCredentials = async (req: Request, res: Response) => {
 };
 
 export const verifyUserVerificationCode = async (req: Request, res: Response) => {
-	const status = await checkUserVerificationCode(req.body.data);
+	const authUser: IAuthUser = req.body.user;
+	const data = Object.assign({}, req.body.data, { id: authUser.id });
+	const status = await checkUserVerificationCode(data);
 	const responseData = getResponseData(status);
 	res.status(Constants.status.CREATED).json(responseData);
 };

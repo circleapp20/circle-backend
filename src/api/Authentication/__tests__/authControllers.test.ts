@@ -1,6 +1,6 @@
 import { Constants } from '../../../_shared/constants';
 import { getBadRequestError } from '../../../_shared/services';
-import { runQuery } from '../../../_shared/services/dBService';
+import { runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { verifyUserCredentials, verifyUserVerificationCode } from '../authControllers';
 import { sendVerificationCodeByEmail } from '../authService';
 import * as service from '../dataService';
@@ -22,6 +22,8 @@ describe('#authControllers', () => {
 		const requestMock: any = { body: { data: { email: 'test@test.com' } } };
 
 		test('should create a new user', async () => {
+			// @ts-ignore
+			runInTransaction.mockResolvedValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			await verifyUserCredentials(requestMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
@@ -53,7 +55,9 @@ describe('#authControllers', () => {
 	});
 
 	describe('#verifyUserVerificationCode', () => {
-		const requestMock: any = { body: { data: { id: '9384j', verificationCode: '9384k' } } };
+		const requestMock: any = {
+			body: { data: { verificationCode: '9384k' }, user: { id: 'x7i9-3l-n3k4-3i8bi2' } }
+		};
 		const verifyMock = jest.spyOn(service, 'checkUserVerificationCode');
 		verifyMock.mockImplementation().mockResolvedValueOnce(true);
 
