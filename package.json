@@ -5,8 +5,9 @@
 	"main": "dist/index.js",
 	"private": true,
 	"scripts": {
-		"test": "jest --watch",
+		"test": "jest --all",
 		"test:coverage": "jest --coverage",
+		"test:watch": "jest --watch",
 		"dev": "ts-node-dev --project tsconfig.server.json --respawn src/index.ts",
 		"build": "next build && rimraf dist && tsc --project tsconfig.server.json",
 		"prettify": "prettier --write 'src/**/*.ts'",
