@@ -4,26 +4,25 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
 
 jobs:
-  build:
+    build:
+        runs-on: ubuntu-latest
 
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: yarn install
-    - run: yarn run build --if-present
-    - run: yarn test
+        steps:
+            - uses: actions/checkout@v2
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '10.x'
+            - run: yarn --frozen-lockfile
+            - run: yarn run build --if-present
+            - run: yarn test
+            env:
+                DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
+                MAIL_USER: 'circleapp20@gmail.com'
+                MAIL_PASSWORD: 'circle'
