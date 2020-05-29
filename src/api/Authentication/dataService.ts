@@ -1,3 +1,4 @@
+import bcryptjs from 'bcryptjs';
 import { EntityManager } from 'typeorm';
 import { Constants } from '../../_shared/constants';
 import { getBadRequestError, getSignedAuthToken } from '../../_shared/services';
@@ -7,6 +8,7 @@ import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
+	getUserByCredentialsQuery,
 	getUserByEmailOrPhoneNumberQuery
 } from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
@@ -64,4 +66,32 @@ export const checkUserVerificationCode = async (data: { id: string; verification
 	if (!Boolean(count)) throw getBadRequestError('invalid verification code');
 
 	return true;
+};
+
+export const verifyUserLoginCredentials = async (data: {
+	email?: string;
+	phoneNumber?: string;
+	username?: string;
+	password: string;
+}) => {
+	const { phoneNumber, password, email, username } = data;
+	if (!phoneNumber && !email && !username) {
+		throw getBadRequestError('phoneNumber, email or username is required');
+	}
+	if (!password) throw getBadRequestError('password is required');
+
+	const user = await runQuery(getUserByCredentialsQuery, [data]);
+	if (!user) throw getBadRequestError('Invalid user account');
+
+	if (!bcryptjs.compareSync(password, user.password)) {
+		throw getBadRequestError('Invalid user account');
+	}
+
+	const { password: hashedPassword, ...other } = user;
+
+	// create user token
+	const token = getSignedAuthToken({ id: user.id, roles: user.roles });
+	const profile = Object.assign({}, other, { token });
+
+	return profile;
 };

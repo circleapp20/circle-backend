@@ -49,12 +49,29 @@ export const getBadRequestError = (message = 'Invalid request data') => {
 	);
 };
 
+export const processError = (error: IError) => {
+	let {
+		status = Constants.status.SERVER_ERROR,
+		errCode = 'ERR_INTERNAL_SERVER_ERROR',
+		message,
+		error: err,
+		stack
+	} = error;
+	if (err && err.isJoi) {
+		status = Constants.status.BAD_REQUEST;
+		message = err.message;
+		errCode = 'ERR_BAD_REQUEST';
+	}
+	let data = { status, errCode, message };
+	if (process.env.NODE_ENV !== 'production') {
+		data = Object.assign({}, data, { stack });
+	}
+	return getResponseData(data, false);
+};
+
 export const errorMiddleware = (error: IError, _: Request, res: Response, __: NextFunction) => {
 	const status = error.status || Constants.status.SERVER_ERROR;
-	const responseData = getResponseData(
-		{ status, errCode: error.errCode || 'ERR_INTERNAL_SERVER_ERROR', message: error.message },
-		false
-	);
+	const responseData = processError(error);
 	return res.status(status).json(responseData);
 };
 

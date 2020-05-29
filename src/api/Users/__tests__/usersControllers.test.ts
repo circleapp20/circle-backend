@@ -1,10 +1,6 @@
 import { Constants } from '../../../_shared/constants';
-import { runInTransaction } from '../../../_shared/services/dBService';
-import { updateProfile } from '../usersControllers';
-
-jest.mock('typeorm');
-jest.mock('../../../_shared/services/dBService');
-jest.mock('../../../_shared/services/schemaService');
+import * as dataService from '../dataService';
+import { checkUsername, updateProfile } from '../usersControllers';
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -26,19 +22,28 @@ describe('#usersControllers', () => {
 				username: ''
 			};
 
-			// @ts-ignore
-			runInTransaction.mockResolvedValueOnce(values);
 			const requestMock: any = {
-				body: { data: values, user: { id: 'x7i9-3l-n3k4-3i8bi2' } }
+				body: { data: values },
+				user: { id: 'x7i9-3l-n3k4-3i8bi2' }
 			};
-			await updateProfile(requestMock, responseMock);
 
-			const { password, ...other } = values;
+			const updateMock = jest.spyOn(dataService, 'updateUserProfile');
+			updateMock.mockImplementationOnce(jest.fn()).mockResolvedValueOnce(values);
+
+			await updateProfile(requestMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
-			expect(responseMock.json).toHaveBeenCalledWith({
-				data: other,
-				success: true
-			});
+		});
+	});
+
+	describe('#checkUsername', () => {
+		test('should send status of 201 if username exists or not', async () => {
+			const checkMock = jest.spyOn(dataService, 'checkUsernameExists');
+			checkMock.mockImplementation(async () => false);
+
+			const req: any = { query: { username: 'username' } };
+
+			await checkUsername(req, responseMock);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
 		});
 	});
 });

@@ -126,12 +126,12 @@ describe('#authService', () => {
 			}).toThrow();
 		});
 
-		test('should add token data to req body as user field', () => {
+		test('should add user to the request object', () => {
 			const middleware = authorizedApiRoute(['super_admin']);
 			const token = getSignedAuthToken({ roles: ['super_admin'] });
 			req.headers.authorization = `Bearer ${token}`;
 			middleware(req, res, next);
-			expect(req.body.user).toEqual({ roles: ['super_admin'] });
+			expect(req.user).toEqual({ roles: ['super_admin'] });
 			expect(next).toHaveBeenCalled();
 		});
 	});

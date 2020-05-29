@@ -1,15 +1,23 @@
+import { Schema } from '@hapi/joi';
 import { Request, Response } from 'express';
 
 export interface IError extends Error {
 	status: number;
 	errCode: string;
+	error?: any;
+}
+
+export interface IRequest extends Request {
+	user: IAuthUser;
 }
 
 export interface IApiRoute {
 	path: string;
 	method: 'get' | 'post' | 'put' | 'delete';
-	controller: (req: Request, res: Response) => Promise<void>;
+	controller: (req: IRequest, res: Response) => Promise<void>;
 	privileges?: string[];
+	schema?: Schema;
+	type?: 'body' | 'query';
 }
 
 export interface IResponseData<T = any> {

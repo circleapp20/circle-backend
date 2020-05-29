@@ -1,6 +1,6 @@
 import { runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
-import { updateUserProfile, updateUserTransaction } from '../dataService';
+import { checkUsernameExists, updateUserProfile, updateUserTransaction } from '../dataService';
 import * as queryBuilder from '../queryBuilder';
 import { IUpdateUserProfile } from '../_helpers/types';
 
@@ -89,6 +89,22 @@ describe('#dataService', () => {
 				expect(error.message).toBe('password is required');
 				done();
 			});
+		});
+	});
+
+	describe('#checkUsernameExists', () => {
+		test('should return false if username does not exists', async () => {
+			// @ts-ignore
+			runQuery.mockResolvedValueOnce(0);
+			const result = await checkUsernameExists('username');
+			expect(result).toBeFalsy();
+		});
+
+		test('should return true if username exists', async () => {
+			// @ts-ignore
+			runQuery.mockResolvedValueOnce(1);
+			const result = await checkUsernameExists('username');
+			expect(result).toBeTruthy();
 		});
 	});
 });

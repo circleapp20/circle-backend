@@ -29,3 +29,8 @@ export const updateUserProfile = async (data: IUpdateUserProfile) => {
 
 	return other;
 };
+
+export const checkUsernameExists = async (username: string) => {
+	const count = await runQuery(countMatchingUsernameQuery, [username]);
+	return Boolean(count);
+};

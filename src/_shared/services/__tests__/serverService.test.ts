@@ -1,9 +1,12 @@
+import { object, string } from '@hapi/joi';
+import { createValidator } from 'express-joi-validation';
 import next from 'next';
 import { IApiRoute } from '../../types';
 import {
 	getApiRouter,
 	getNextRequestHandler,
 	getNextRouter,
+	getRouteSchema,
 	wrapController
 } from '../serverService';
 
@@ -13,6 +16,12 @@ jest.mock('next', () => {
 		prepare: jest.fn().mockResolvedValue(true)
 	});
 });
+jest.mock('express-joi-validation', () => ({
+	createValidator: jest.fn().mockReturnValue({
+		body: jest.fn().mockReturnValue(jest.fn()),
+		query: jest.fn().mockReturnValue(jest.fn())
+	})
+}));
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -80,6 +89,32 @@ describe('#serverService', () => {
 			const router = getNextRouter(handleMock);
 			router({} as any, {} as any);
 			expect(handleMock).toHaveBeenCalledTimes(1);
+		});
+	});
+
+	describe('#getRouteSchema', () => {
+		const req: any = {};
+		const res: any = {};
+		const next = jest.fn();
+		const schema = object({ id: string() });
+
+		test('should call next when schema is undefined', () => {
+			const middleware = getRouteSchema();
+			middleware(req, res, next);
+			expect(next).toHaveBeenCalled();
+		});
+
+		test('should call the validator when schema is defined', () => {
+			const middleware = getRouteSchema(schema);
+			middleware(req, res, next);
+			expect(createValidator).toHaveBeenCalledWith({ passError: true });
+			expect(next).not.toHaveBeenCalled();
+		});
+
+		test('should validate query when specified', () => {
+			const middleware = getRouteSchema(schema, 'query');
+			middleware(req, res, next);
+			expect(next).not.toHaveBeenCalled();
 		});
 	});
 });

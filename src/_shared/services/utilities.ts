@@ -14,7 +14,7 @@ export const generateCodeFromNumber = (value?: number) => {
 
 export const getResponseData = <T = any>(data?: T, success = true) => {
 	const response: IResponseData<T> = { success };
-	if (data) response.data = data;
+	if (typeof data !== 'undefined') response.data = data;
 	return response;
 };
 
