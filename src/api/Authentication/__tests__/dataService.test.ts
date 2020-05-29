@@ -1,15 +1,18 @@
+import { compareSync } from 'bcryptjs';
 import { runInsertQuery, runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	addUserTransaction,
 	checkUserVerificationCode,
-	createUserProfileWithDefaultValues
+	createUserProfileWithDefaultValues,
+	verifyUserLoginCredentials
 } from '../dataService';
 import * as queryBuilder from '../queryBuilder';
 
 jest.mock('../../../_shared/services/dBService');
 jest.mock('bcryptjs', () => ({
-	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92')
+	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92'),
+	compareSync: jest.fn()
 }));
 
 beforeEach(() => jest.clearAllMocks());
@@ -106,6 +109,82 @@ describe('#dataService', () => {
 
 				// @ts-ignore
 				runQuery.mockRestore();
+				done();
+			});
+		});
+	});
+
+	describe('#verifyUserLoginCredentials', () => {
+		test('should throw error if username, email and phoneNumber is null', (done) => {
+			verifyUserLoginCredentials({
+				password: 'jellybean',
+				email: '',
+				phoneNumber: '',
+				username: ''
+			}).catch((error) => {
+				expect(error.message).toBe('phoneNumber, email or username is required');
+				done();
+			});
+		});
+
+		test('should throw if there is no password', (done) => {
+			verifyUserLoginCredentials({
+				password: '',
+				email: 'test@test.com',
+				phoneNumber: '',
+				username: ''
+			}).catch((error) => {
+				expect(error.message).toBe('password is required');
+				done();
+			});
+		});
+
+		test('should throw error if user is not found', (done) => {
+			// @ts-ignore
+			runQuery.mockResolvedValueOnce(null);
+			verifyUserLoginCredentials({
+				password: 'testing',
+				email: 'test@test.com',
+				phoneNumber: '',
+				username: 'tester'
+			}).catch((error) => {
+				expect(error.message).toBe('Invalid user account');
+				done();
+			});
+		});
+
+		test('should throw error if password does not match', (done) => {
+			// @ts-ignore
+			compareSync.mockReturnValueOnce(false);
+			// @ts-ignore
+			runQuery.mockResolvedValueOnce({ password: '$9j9h48v3ge92' });
+			verifyUserLoginCredentials({
+				password: 'testing',
+				email: 'test@test.com',
+				phoneNumber: '',
+				username: 'tester'
+			}).catch((error) => {
+				expect(error.message).toBe('Invalid user account');
+				done();
+			});
+		});
+
+		test('should return user details with token', (done) => {
+			// @ts-ignore
+			compareSync.mockReturnValueOnce(true);
+			// @ts-ignore
+			runQuery.mockResolvedValueOnce({
+				password: '$9j9h48v3ge92',
+				id: 'x7i9-3l-n3k4-3i8bi2'
+			});
+			verifyUserLoginCredentials({
+				password: 'testing',
+				email: 'test@test.com',
+				phoneNumber: '',
+				username: 'tester'
+			}).then((user) => {
+				expect(user.id).toBe('x7i9-3l-n3k4-3i8bi2');
+				expect(user.token).toBeDefined();
 				done();
 			});
 		});

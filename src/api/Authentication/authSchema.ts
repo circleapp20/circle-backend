@@ -12,3 +12,12 @@ export const VerifyUserCredentialsSchema = object({
 		phoneNumber: string().allow(null, '')
 	})
 });
+
+export const VerifyUserLoginSchema = object({
+	data: object({
+		email: string().allow(null, ''),
+		phoneNumber: string().allow(null, ''),
+		username: string().allow(null, ''),
+		password: string().required().min(6)
+	})
+});

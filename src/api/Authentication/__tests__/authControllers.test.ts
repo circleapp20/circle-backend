@@ -1,7 +1,11 @@
 import { Constants } from '../../../_shared/constants';
 import { getBadRequestError } from '../../../_shared/services';
 import { runInTransaction, runQuery } from '../../../_shared/services/dBService';
-import { verifyUserCredentials, verifyUserVerificationCode } from '../authControllers';
+import {
+	verifyUserCredentials,
+	verifyUserLogin,
+	verifyUserVerificationCode
+} from '../authControllers';
 import { sendVerificationCodeByEmail } from '../authService';
 import * as service from '../dataService';
 
@@ -79,6 +83,19 @@ describe('#authControllers', () => {
 				expect(error.message).toBe('invalid verification code');
 				done();
 			});
+		});
+	});
+
+	describe('#verifyUserLogin', () => {
+		const req: any = { body: { data: { email: 'test@test.com' } } };
+		test('should send a status of 201 for successful login', async () => {
+			const verifyMock = jest.spyOn(service, 'verifyUserLoginCredentials');
+			verifyMock.mockImplementationOnce(jest.fn()).mockRejectedValueOnce({
+				id: 'x7i9-3l-n3k4-3i8bi2',
+				token: '05vj93j9r39th0'
+			});
+			await verifyUserLogin(req, responseMock);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 	});
 });

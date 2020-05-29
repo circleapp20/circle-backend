@@ -3,6 +3,8 @@ import { IApiRoute } from '../_shared/types';
 import {
 	verifyUserCredentials,
 	VerifyUserCredentialsSchema,
+	verifyUserLogin,
+	VerifyUserLoginSchema,
 	verifyUserVerificationCode,
 	VerifyVerificationCodeSchema
 } from './Authentication';
@@ -10,7 +12,7 @@ import { updateProfile, UpdateUserProfileSchema } from './Users';
 
 export const apiRoutes: IApiRoute[] = [
 	{
-		path: '/auth/verify',
+		path: '/auth/verify/sign-up',
 		method: 'post',
 		controller: verifyUserCredentials,
 		schema: VerifyUserCredentialsSchema
@@ -28,5 +30,11 @@ export const apiRoutes: IApiRoute[] = [
 		controller: updateProfile,
 		privileges: [Constants.privileges.USER],
 		schema: UpdateUserProfileSchema
+	},
+	{
+		path: '/auth/verify/sign-in',
+		method: 'post',
+		controller: verifyUserLogin,
+		schema: VerifyUserLoginSchema
 	}
 ];
