@@ -66,7 +66,7 @@ describe('#dBService', () => {
 				name: 'testing',
 				entities,
 				synchronize: false,
-				ssl: true
+				extra: { ssl: true }
 			});
 		});
 	});

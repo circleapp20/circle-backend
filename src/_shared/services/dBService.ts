@@ -13,7 +13,7 @@ export const getSqlInstance = (name = 'default', synchronize = false) => {
 	};
 
 	if (process.env.NODE_ENV === 'production') {
-		options = Object.assign({}, options, { ssl: true, type: 'postgres' });
+		options = Object.assign({}, options, { extra: { ssl: true }, type: 'postgres' });
 	}
 
 	return createConnection(options);
