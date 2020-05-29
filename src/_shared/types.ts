@@ -14,7 +14,7 @@ export interface IRequest extends Request {
 export interface IApiRoute {
 	path: string;
 	method: 'get' | 'post' | 'put' | 'delete';
-	controller: (req: any, res: Response) => Promise<void>;
+	controller: (req: IRequest, res: Response) => Promise<void>;
 	privileges?: string[];
 	schema?: Schema;
 }

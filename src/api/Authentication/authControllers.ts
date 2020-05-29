@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
 import { IAuthUser, IRequest } from '../../_shared/types';
@@ -9,7 +9,7 @@ import {
 	verifyUserLoginCredentials
 } from './dataService';
 
-export const verifyUserCredentials = async (req: Request, res: Response) => {
+export const verifyUserCredentials = async (req: IRequest, res: Response) => {
 	const user = await createUserProfileWithDefaultValues(req.body.data);
 
 	// send email
@@ -29,7 +29,7 @@ export const verifyUserVerificationCode = async (req: IRequest, res: Response) =
 	res.status(Constants.status.CREATED).json(responseData);
 };
 
-export const verifyUserLogin = async (req: Request, res: Response) => {
+export const verifyUserLogin = async (req: IRequest, res: Response) => {
 	const user = await verifyUserLoginCredentials(req.body.data);
 	const responseData = getResponseData(user);
 	res.status(Constants.status.CREATED).json(responseData);
