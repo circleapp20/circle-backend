@@ -1,4 +1,6 @@
+import { Schema } from '@hapi/joi';
 import { NextFunction, Request, Response, Router } from 'express';
+import { createValidator } from 'express-joi-validation';
 import next from 'next';
 import { IApiRoute } from '../types';
 import { authorizedApiRoute } from './authService';
@@ -13,9 +15,22 @@ export const wrapController = (controller: (req: Request, res: Response) => Prom
 	};
 };
 
+export const getRouteSchema = (schema?: Schema) => {
+	if (!schema) {
+		return (_: Request, __: Response, next: NextFunction) => next();
+	}
+	const validator = createValidator({ passError: true });
+	return validator.body(schema);
+};
+
 export const getApiRouter = (router: Router, routes: IApiRoute[]) => {
-	routes.forEach(({ path, controller, method, privileges }) => {
-		router[method](path, authorizedApiRoute(privileges), wrapController(controller));
+	routes.forEach(({ path, controller, method, privileges, schema }) => {
+		router[method](
+			path,
+			authorizedApiRoute(privileges),
+			getRouteSchema(schema),
+			wrapController(controller)
+		);
 	});
 	return router;
 };

@@ -56,7 +56,8 @@ describe('#authControllers', () => {
 
 	describe('#verifyUserVerificationCode', () => {
 		const requestMock: any = {
-			body: { data: { verificationCode: '9384k' }, user: { id: 'x7i9-3l-n3k4-3i8bi2' } }
+			body: { data: { verificationCode: '9384k' } },
+			user: { id: 'x7i9-3l-n3k4-3i8bi2' }
 		};
 		const verifyMock = jest.spyOn(service, 'checkUserVerificationCode');
 		verifyMock.mockImplementation().mockResolvedValueOnce(true);

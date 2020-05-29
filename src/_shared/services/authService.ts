@@ -1,7 +1,7 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { Constants } from '../constants';
-import { IAuthUser } from '../types';
+import { IAuthUser, IRequest } from '../types';
 import { getForbiddenError, getUnauthorizedError } from './errorService';
 
 export const getSignedAuthToken = (
@@ -43,7 +43,7 @@ export const getDecodedAuthTokenInHeaders = (headers: { authorization?: string }
 };
 
 export const authorizedApiRoute = (roles?: string[]) => {
-	return (req: Request, _: Response, next: NextFunction) => {
+	return (req: IRequest, _: Response, next: NextFunction) => {
 		if (!roles) return next();
 
 		const user = getDecodedAuthTokenInHeaders(req.headers);
@@ -52,8 +52,7 @@ export const authorizedApiRoute = (roles?: string[]) => {
 		const isAccessible = user.roles.some((role) => roles.includes(role));
 		if (!isAccessible) throw getForbiddenError();
 
-		const body = { ...req.body };
-		req.body = Object.assign({}, body, { user });
+		req.user = user;
 
 		next();
 	};
