@@ -5,6 +5,7 @@
         "esnext",
         "gmail",
         "hstore",
+        "postgres",
         "respawn",
         "typeorm"
     ]

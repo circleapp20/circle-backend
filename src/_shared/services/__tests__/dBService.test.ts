@@ -55,6 +55,20 @@ describe('#dBService', () => {
 				synchronize: false
 			});
 		});
+
+		test('should add postgres and ssl for production env', async () => {
+			// @ts-ignore
+			process.env.NODE_ENV = 'production';
+			await getSqlInstance('testing');
+			expect(createConnection).toHaveBeenCalledWith({
+				type: 'postgres',
+				url: Constants.app.DATABASE_URL,
+				name: 'testing',
+				entities,
+				synchronize: false,
+				ssl: true
+			});
+		});
 	});
 
 	describe('#runInsertQuery', () => {

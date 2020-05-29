@@ -1,16 +1,22 @@
-import { createConnection, EntityManager, InsertResult } from 'typeorm';
+import { ConnectionOptions, createConnection, EntityManager, InsertResult } from 'typeorm';
 import { Constants } from '../constants';
 import entities from './schemaService';
 import { generateCodeFromNumber } from './utilities';
 
 export const getSqlInstance = (name = 'default', synchronize = false) => {
-	return createConnection({
+	let options: ConnectionOptions = {
 		type: 'mysql',
 		url: Constants.app.DATABASE_URL,
 		name,
 		entities,
 		synchronize
-	});
+	};
+
+	if (process.env.NODE_ENV === 'production') {
+		options = Object.assign({}, options, { ssl: true, type: 'postgres' });
+	}
+
+	return createConnection(options);
 };
 
 export const runInsertQuery = async (
