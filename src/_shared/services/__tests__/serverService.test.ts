@@ -35,7 +35,9 @@ describe('#serverService', () => {
 			{
 				path: '/users/auth',
 				method: 'post',
-				controller: (): any => {}
+				controller: (): any => {
+					return;
+				}
 			}
 		];
 

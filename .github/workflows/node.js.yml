@@ -27,7 +27,8 @@ jobs:
                       ${{ runner.OS }}-
             - run: yarn --frozen-lockfile
             - run: yarn run build
-            - run: yarn test
+            - run: yarn run lint
+            - run: yarn run test
               env:
                   DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
                   MAIL_USER: 'circleapp20@gmail.com'

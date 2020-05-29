@@ -5,8 +5,8 @@ import { IAuthUser, IRequest } from '../types';
 import { getForbiddenError, getUnauthorizedError } from './errorService';
 
 export const getSignedAuthToken = (
-	data: string | object,
-	options: object | undefined = { noTimestamp: true }
+	data: string | Record<string, unknown>,
+	options: Record<string, unknown> | undefined = { noTimestamp: true }
 ) => {
 	if (typeof data === 'string') {
 		options = undefined;

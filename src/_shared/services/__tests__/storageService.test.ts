@@ -25,8 +25,7 @@ describe('#storageService', () => {
 		});
 
 		test('should return false if runQuery rejects', async () => {
-			// @ts-ignore
-			runQuery.mockRejectedValueOnce(new Error());
+			(runQuery as any).mockRejectedValueOnce(new Error());
 			const exists = await checkIfDataBaseExists();
 			expect(exists).toBeFalsy();
 		});
@@ -34,8 +33,7 @@ describe('#storageService', () => {
 
 	describe('#createDBSchema', () => {
 		beforeEach(() => {
-			// @ts-ignore
-			getSqlInstance.mockResolvedValue({
+			(getSqlInstance as any).mockResolvedValue({
 				close: jest.fn().mockResolvedValue(true)
 			});
 		});

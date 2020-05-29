@@ -63,7 +63,7 @@ export const checkUserVerificationCode = async (data: { id: string; verification
 	}
 
 	const count = await runQuery(countMatchingIdAndCodeQuery, [id, verificationCode]);
-	if (!Boolean(count)) throw getBadRequestError('invalid verification code');
+	if (!count) throw getBadRequestError('invalid verification code');
 
 	return true;
 };

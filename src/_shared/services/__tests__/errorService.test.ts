@@ -90,6 +90,19 @@ describe('#errorService', () => {
 	});
 
 	describe('#getErrorFactory', () => {
+		// https://stackoverflow.com/questions/48033841/test-process-env-with-jest
+		const OLD_ENV = process.env;
+
+		beforeEach(() => {
+			jest.resetModules(); // this is important - it clears the cache
+			process.env = { ...OLD_ENV };
+			delete (process.env as any).NODE_ENV;
+		});
+
+		afterEach(() => {
+			process.env = OLD_ENV;
+		});
+
 		test('should return an object', () => {
 			const error = getErrorFactory(
 				'testing error factory',
@@ -131,8 +144,7 @@ describe('#errorService', () => {
 		});
 
 		test('should not add stack to object in production', () => {
-			// @ts-ignore
-			process.env.NODE_ENV = 'production';
+			(process.env as any).NODE_ENV = 'production';
 			const error = getErrorFactory(
 				'testing error factory',
 				Constants.status.BAD_REQUEST,
@@ -210,7 +222,6 @@ describe('#errorService', () => {
 		});
 
 		test('should return internal server error if status & errCode not defined', () => {
-			// @ts-ignore
 			const obj = processError({
 				message: 'bad request formatting',
 				name: 'Bad Request Error'
@@ -244,8 +255,6 @@ describe('#errorService', () => {
 		});
 
 		test('should add stack for non production env', () => {
-			// @ts-ignore
-			process.env.NODE_ENV = 'test';
 			const obj = processError({
 				errCode: 'ERR_FORBIDDEN_ACCESS',
 				message: 'Forbidden Access',
