@@ -66,7 +66,8 @@ describe('#dBService', () => {
 				name: 'testing',
 				entities,
 				synchronize: false,
-				extra: { ssl: true }
+				extra: { ssl: { rejectUnauthorized: false } },
+				ssl: true
 			});
 		});
 	});
