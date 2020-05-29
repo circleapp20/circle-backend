@@ -8,7 +8,12 @@ import {
 	verifyUserVerificationCode,
 	VerifyVerificationCodeSchema
 } from './Authentication';
-import { updateProfile, UpdateUserProfileSchema } from './Users';
+import {
+	checkUsername,
+	CheckUsernameSchema,
+	updateProfile,
+	UpdateUserProfileSchema
+} from './Users';
 
 export const apiRoutes: IApiRoute[] = [
 	{
@@ -36,5 +41,12 @@ export const apiRoutes: IApiRoute[] = [
 		method: 'post',
 		controller: verifyUserLogin,
 		schema: VerifyUserLoginSchema
+	},
+	{
+		path: '/users/search',
+		method: 'get',
+		controller: checkUsername,
+		schema: CheckUsernameSchema,
+		type: 'query'
 	}
 ];

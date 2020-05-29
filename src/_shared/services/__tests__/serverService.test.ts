@@ -18,7 +18,8 @@ jest.mock('next', () => {
 });
 jest.mock('express-joi-validation', () => ({
 	createValidator: jest.fn().mockReturnValue({
-		body: jest.fn().mockReturnValue(jest.fn())
+		body: jest.fn().mockReturnValue(jest.fn()),
+		query: jest.fn().mockReturnValue(jest.fn())
 	})
 }));
 
@@ -95,6 +96,7 @@ describe('#serverService', () => {
 		const req: any = {};
 		const res: any = {};
 		const next = jest.fn();
+		const schema = object({ id: string() });
 
 		test('should call next when schema is undefined', () => {
 			const middleware = getRouteSchema();
@@ -103,10 +105,15 @@ describe('#serverService', () => {
 		});
 
 		test('should call the validator when schema is defined', () => {
-			const schema = object({ id: string() });
 			const middleware = getRouteSchema(schema);
 			middleware(req, res, next);
 			expect(createValidator).toHaveBeenCalledWith({ passError: true });
+			expect(next).not.toHaveBeenCalled();
+		});
+
+		test('should validate query when specified', () => {
+			const middleware = getRouteSchema(schema, 'query');
+			middleware(req, res, next);
 			expect(next).not.toHaveBeenCalled();
 		});
 	});

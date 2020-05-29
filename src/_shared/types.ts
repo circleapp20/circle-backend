@@ -17,6 +17,7 @@ export interface IApiRoute {
 	controller: (req: IRequest, res: Response) => Promise<void>;
 	privileges?: string[];
 	schema?: Schema;
+	type?: 'body' | 'query';
 }
 
 export interface IResponseData<T = any> {

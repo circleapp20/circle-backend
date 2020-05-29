@@ -9,3 +9,7 @@ export const UpdateUserProfileSchema = object({
 		dob: date().allow(null, '')
 	})
 });
+
+export const CheckUsernameSchema = object({
+	username: string().required().min(4)
+});
