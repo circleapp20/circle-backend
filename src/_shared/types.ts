@@ -7,10 +7,14 @@ export interface IError extends Error {
 	error?: any;
 }
 
+export interface IRequest extends Request {
+	user: IAuthUser;
+}
+
 export interface IApiRoute {
 	path: string;
 	method: 'get' | 'post' | 'put' | 'delete';
-	controller: (req: Request, res: Response) => Promise<void>;
+	controller: (req: any, res: Response) => Promise<void>;
 	privileges?: string[];
 	schema?: Schema;
 }
@@ -30,8 +34,4 @@ export interface IRecipientMaiConfig {
 export interface IAuthUser {
 	id: string;
 	roles: string[];
-}
-
-export interface IRequest extends Request {
-	user: IAuthUser;
 }
