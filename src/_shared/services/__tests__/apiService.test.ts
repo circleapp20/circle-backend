@@ -46,11 +46,12 @@ describe('#apiService', () => {
 
 	describe('#apiPost', () => {
 		let postMock: jest.Mock;
+		let instanceMock: jest.SpyInstance;
 
 		beforeEach(() => {
 			postMock = jest.fn();
-			const mock = jest.spyOn(apiService, 'getSecureAxiosInstance');
-			(mock as any).mockReturnValue({ post: postMock });
+			instanceMock = jest.spyOn(apiService, 'getSecureAxiosInstance');
+			instanceMock.mockReturnValue({ post: postMock });
 		});
 
 		test('should send post request to url with data', async () => {
@@ -68,6 +69,37 @@ describe('#apiService', () => {
 			postMock.mockRejectedValueOnce(new Error());
 			const response = await apiPost('/test/url', 'test');
 			expect(response).toBeNull();
+		});
+
+		test('should post request to service', async () => {
+			instanceMock.mockRestore();
+			await apiPost('/test/url', 'test', 'https://json.appservice.com');
+			expect(axios.create).toHaveBeenCalledWith(
+				expect.objectContaining({
+					headers: expect.objectContaining({
+						accept: expect.stringMatching('application/json'),
+						'content-type': expect.stringMatching('application/json')
+					}),
+					baseURL: expect.stringMatching('https://json.appservice.com')
+				})
+			);
+		});
+
+		test('should add unique headers for post request', async () => {
+			instanceMock.mockRestore();
+			await apiPost('/test/url', 'test', 'https://json.appservice.com', {
+				authorization: 'testing header bro'
+			});
+			expect(axios.create).toHaveBeenCalledWith(
+				expect.objectContaining({
+					headers: expect.objectContaining({
+						authorization: expect.any(String),
+						accept: expect.stringMatching('application/json'),
+						'content-type': expect.stringMatching('application/json')
+					}),
+					baseURL: expect.stringMatching('https://json.appservice.com')
+				})
+			);
 		});
 	});
 });

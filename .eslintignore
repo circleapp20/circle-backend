@@ -5,3 +5,4 @@ coverage
 dist
 .github
 node_modules
+jest.config.js

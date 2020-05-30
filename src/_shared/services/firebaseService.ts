@@ -55,7 +55,7 @@ export const saveFileToBucket = (filename: string, buffer: Buffer, contentType: 
 	});
 };
 
-export const uploadFileDataToFirebaseBucket = async (
+export const uploadImageToFirebaseStorage = async (
 	data: string,
 	filename: string,
 	mimeType = 'image/jpeg',

@@ -1,10 +1,10 @@
-import * as Google from 'googleapis';
+import { google } from 'googleapis';
 import nodemailer from 'nodemailer';
 import { Constants } from '../constants';
 import { IRecipientMaiConfig } from '../types';
 
 export const getGoogleOAuth2AccessToken = () => {
-	const client = new Google.google.auth.OAuth2(
+	const client = new google.auth.OAuth2(
 		Constants.app.GOOGLE_CLIENT_ID,
 		Constants.app.GOOGLE_CLIENT_SECRET,
 		Constants.externals.OAUTH2_REDIRECT_URL
