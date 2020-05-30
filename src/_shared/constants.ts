@@ -21,7 +21,8 @@ export const Constants = {
 		SECRET: '02gv8989je9n8209nj089a089hq39t4v09',
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-		GOOGLE_CLIENT_REFRESH_TOKEN: process.env.GOOGLE_CLIENT_REFRESH_TOKEN
+		GOOGLE_CLIENT_REFRESH_TOKEN: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
+		MNOTIFY_API_KEY: process.env.MNOTIFY_API_KEY
 	},
 	accounts: {
 		EMAIL_ADDRESS: 'circleapp20@gmail.com'
@@ -38,5 +39,8 @@ export const Constants = {
 		FIREBASE_DATABASE_URL: 'https://circle-backend-92fb6.firebaseio.com',
 		FIREBASE_STORAGE_BUCKET: 'circle-backend-92fb6.appspot.com',
 		OAUTH2_REDIRECT_URL: 'https://developers.google.com/oauthplayground'
+	},
+	services: {
+		SMS: 'https://api.mnotify.com/api'
 	}
 };
