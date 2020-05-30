@@ -14,8 +14,7 @@ beforeEach(() => jest.clearAllMocks());
 describe('#dataService', () => {
 	describe('#updateUserTransaction', () => {
 		test('should update a user profile', async () => {
-			// @ts-ignore
-			runQuery.mockImplementationOnce((callBack, values) => {
+			(runQuery.mockImplementationOnce as any)((callBack: any, values: any) => {
 				return callBack(entityManager, values);
 			});
 
@@ -54,11 +53,8 @@ describe('#dataService', () => {
 		};
 
 		test('should update profile with valid details', async () => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(0);
-
-			// @ts-ignore
-			runInTransaction.mockImplementation(jest.fn()).mockResolvedValueOnce({
+			(runQuery.mockResolvedValueOnce as any)(0);
+			(runInTransaction.mockImplementation as any)(jest.fn()).mockResolvedValueOnce({
 				id: ''
 			});
 
@@ -67,8 +63,7 @@ describe('#dataService', () => {
 		});
 
 		test('should throw error if username already exists', (done) => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(1);
+			(runQuery.mockResolvedValueOnce as any)(1);
 			updateUserProfile(values).catch((error) => {
 				expect(error.message).toBe('username already exists');
 				done();
@@ -94,15 +89,13 @@ describe('#dataService', () => {
 
 	describe('#checkUsernameExists', () => {
 		test('should return false if username does not exists', async () => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(0);
+			(runQuery.mockResolvedValueOnce as any)(0);
 			const result = await checkUsernameExists('username');
 			expect(result).toBeFalsy();
 		});
 
 		test('should return true if username exists', async () => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(1);
+			(runQuery.mockResolvedValueOnce as any)(1);
 			const result = await checkUsernameExists('username');
 			expect(result).toBeTruthy();
 		});

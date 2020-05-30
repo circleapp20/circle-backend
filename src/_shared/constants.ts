@@ -28,5 +28,8 @@ export const Constants = {
 	privileges: {
 		SUPER_ADMIN: 'super_admin',
 		USER: 'user'
+	},
+	misc: {
+		NODE_ENV: process.env.NODE_ENV
 	}
 };

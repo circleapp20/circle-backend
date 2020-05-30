@@ -49,21 +49,20 @@ export const getBadRequestError = (message = 'Invalid request data') => {
 	);
 };
 
-export const processError = (error: IError) => {
+export const processError = (error: Partial<IError>) => {
 	let {
 		status = Constants.status.SERVER_ERROR,
 		errCode = 'ERR_INTERNAL_SERVER_ERROR',
-		message,
-		error: err,
-		stack
+		message
 	} = error;
-	if (err && err.isJoi) {
+	if (error.error && error.error.isJoi) {
 		status = Constants.status.BAD_REQUEST;
-		message = err.message;
+		message = error.error.message;
 		errCode = 'ERR_BAD_REQUEST';
 	}
 	let data = { status, errCode, message };
 	if (process.env.NODE_ENV !== 'production') {
+		const stack = error.stack;
 		data = Object.assign({}, data, { stack });
 	}
 	return getResponseData(data, false);

@@ -26,20 +26,16 @@ describe('#authControllers', () => {
 		const requestMock: any = { body: { data: { email: 'test@test.com' } } };
 
 		test('should create a new user', async () => {
-			// @ts-ignore
-			runInTransaction.mockResolvedValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
+			(runInTransaction.mockResolvedValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			await verifyUserCredentials(requestMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 
 		test('should not create a user if exists', (done) => {
-			// @ts-ignore
-			runQuery.mockReturnValueOnce({ id: '9383iwe382' });
+			(runQuery.mockReturnValueOnce as any)({ id: '9383iwe382' });
 			verifyUserCredentials(requestMock, responseMock).catch(({ message }) => {
 				expect(responseMock.status).not.toHaveBeenCalled();
 				expect(message).toBe('User already exists');
-				// @ts-ignore
-				runQuery.mockRestore();
 				done();
 			});
 		});

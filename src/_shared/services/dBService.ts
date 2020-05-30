@@ -1,4 +1,10 @@
-import { ConnectionOptions, createConnection, EntityManager, InsertResult } from 'typeorm';
+import {
+	ConnectionOptions,
+	createConnection,
+	EntityManager,
+	InsertResult,
+	ObjectLiteral
+} from 'typeorm';
 import { Constants } from '../constants';
 import entities from './schemaService';
 import { generateCodeFromNumber } from './utilities';
@@ -23,7 +29,15 @@ export const getSqlInstance = (name = 'default', synchronize = false) => {
 	return createConnection(options);
 };
 
-export const runInsertQuery = async (
+interface RunInsertQueryType extends Partial<jest.Mock> {
+	(
+		queryBuilder: (manager: EntityManager, ...params: any[]) => Promise<InsertResult>,
+		params: any[],
+		manager?: EntityManager
+	): Promise<ObjectLiteral[]>;
+}
+
+export const runInsertQuery: RunInsertQueryType = async (
 	queryBuilder: (manager: EntityManager, ...params: any[]) => Promise<InsertResult>,
 	params: any[],
 	manager?: EntityManager
@@ -48,7 +62,15 @@ export const runInsertQuery = async (
 	return results;
 };
 
-export const runQuery = async <T>(
+interface RunQueryType extends Partial<jest.Mock> {
+	<T>(
+		queryBuilder: (manager: EntityManager, ...params: any[]) => Promise<T>,
+		params?: any[] | EntityManager,
+		manager?: EntityManager
+	): Promise<T>;
+}
+
+export const runQuery: RunQueryType = async <T>(
 	queryBuilder: (manager: EntityManager, ...params: any[]) => Promise<T>,
 	params: any[] | EntityManager = [],
 	manager?: EntityManager
@@ -73,7 +95,11 @@ export const runQuery = async <T>(
 	return results;
 };
 
-export const runInTransaction = async <T = any>(
+interface RunInTransactionType extends Partial<jest.Mock> {
+	<T = any>(callBack: (manager: EntityManager) => Promise<T>): Promise<T>;
+}
+
+export const runInTransaction: RunInTransactionType = async <T>(
 	callBack: (manager: EntityManager) => Promise<T>
 ) => {
 	const conn = await getSqlInstance(generateCodeFromNumber());

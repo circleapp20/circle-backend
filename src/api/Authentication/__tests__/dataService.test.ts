@@ -23,8 +23,7 @@ describe('#dataService', () => {
 		addMock.mockImplementation();
 
 		test('should create user with email', async () => {
-			// @ts-ignore
-			runInsertQuery.mockImplementationOnce((callBack, data) => {
+			(runInsertQuery.mockImplementationOnce as any)((callBack: any, data: any) => {
 				callBack(entityManager, data);
 				return [{ id: 'x7i9-3l-n3k4-3i8bi2' }];
 			});
@@ -36,8 +35,7 @@ describe('#dataService', () => {
 		});
 
 		test('should create user with phoneNumber', async () => {
-			// @ts-ignore
-			runInsertQuery.mockImplementationOnce((callBack, data) => {
+			(runInsertQuery.mockImplementationOnce as any)((callBack: any, data: any) => {
 				callBack(entityManager, data);
 				return [{ id: 'x7i9-3l-n3k4-3i8bi2' }];
 			});
@@ -51,21 +49,18 @@ describe('#dataService', () => {
 
 	describe('#createUserProfileWithDefaultValues', () => {
 		test('should create a new user if not exists', async () => {
-			// @ts-ignore
-			runInTransaction.mockResolvedValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
+			(runInTransaction.mockResolvedValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			await createUserProfileWithDefaultValues({ email: 'test@test.com' });
 			expect(runQuery).toHaveBeenCalled();
 			expect(runInTransaction).toHaveBeenCalled();
 		});
 
 		test('should throw an error if user already exists', (done) => {
-			// @ts-ignore
-			runQuery.mockReturnValueOnce({ id: 'x7i9-3l-n3k4-3i8bi2' });
+			(runQuery.mockReturnValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
 			createUserProfileWithDefaultValues({ email: 'test@test.com' }).catch((error) => {
 				expect(error.message).toBe('User already exists');
 				expect(error.status).toBe(400);
-				// @ts-ignore
-				runQuery.mockRestore();
+				(runQuery.mockRestore as any)();
 				done();
 			});
 		});
@@ -73,12 +68,10 @@ describe('#dataService', () => {
 
 	describe('#checkUserVerificationCode', () => {
 		test('should return true if code and id matches', async () => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(1);
+			(runQuery.mockResolvedValueOnce as any)(1);
 			const data = { id: 'x7i9-3l-n3k4-3i8bi2', verificationCode: '3452' };
 			const results = await checkUserVerificationCode(data);
-			// @ts-ignore
-			runQuery.mockRestore();
+			(runQuery.mockRestore as any)();
 			expect(results).toBeTruthy();
 		});
 
@@ -101,14 +94,11 @@ describe('#dataService', () => {
 		});
 
 		test('should throw if runQuery returns 0', (done) => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(0);
+			(runQuery.mockResolvedValueOnce as any)(0);
 			const data = { id: 'x7i9-3l-n3k4-3i8bi2', verificationCode: '3452' };
 			checkUserVerificationCode(data).catch((error) => {
 				expect(error.message).toBe('invalid verification code');
-
-				// @ts-ignore
-				runQuery.mockRestore();
+				(runQuery.mockRestore as any)();
 				done();
 			});
 		});
@@ -140,8 +130,7 @@ describe('#dataService', () => {
 		});
 
 		test('should throw error if user is not found', (done) => {
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce(null);
+			(runQuery.mockResolvedValueOnce as any)(null);
 			verifyUserLoginCredentials({
 				password: 'testing',
 				email: 'test@test.com',
@@ -154,10 +143,8 @@ describe('#dataService', () => {
 		});
 
 		test('should throw error if password does not match', (done) => {
-			// @ts-ignore
-			compareSync.mockReturnValueOnce(false);
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce({ password: '$9j9h48v3ge92' });
+			(compareSync as any).mockReturnValueOnce(false);
+			(runQuery.mockResolvedValueOnce as any)({ password: '$9j9h48v3ge92' });
 			verifyUserLoginCredentials({
 				password: 'testing',
 				email: 'test@test.com',
@@ -170,10 +157,8 @@ describe('#dataService', () => {
 		});
 
 		test('should return user details with token', (done) => {
-			// @ts-ignore
-			compareSync.mockReturnValueOnce(true);
-			// @ts-ignore
-			runQuery.mockResolvedValueOnce({
+			(compareSync as any).mockReturnValueOnce(true);
+			(runQuery.mockResolvedValueOnce as any)({
 				password: '$9j9h48v3ge92',
 				id: 'x7i9-3l-n3k4-3i8bi2'
 			});

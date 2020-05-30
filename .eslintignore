@@ -1,0 +1,7 @@
+.eslintrc.js
+.prettierrc.js
+.next
+coverage
+dist
+.github
+node_modules

@@ -23,6 +23,19 @@ describe('#dBService', () => {
 	});
 
 	describe('#getSqlInstance', () => {
+		// https://stackoverflow.com/questions/48033841/test-process-env-with-jest
+		const OLD_ENV = process.env;
+
+		beforeEach(() => {
+			jest.resetModules(); // this is important - it clears the cache
+			process.env = { ...OLD_ENV };
+			delete (process.env as any).NODE_ENV;
+		});
+
+		afterEach(() => {
+			process.env = OLD_ENV;
+		});
+
 		test('should be called with the database url', async () => {
 			await getSqlInstance();
 			expect(createConnection).toHaveBeenCalledWith({
@@ -57,8 +70,7 @@ describe('#dBService', () => {
 		});
 
 		test('should add postgres and ssl for production env', async () => {
-			// @ts-ignore
-			process.env.NODE_ENV = 'production';
+			(process.env as any).NODE_ENV = 'production';
 			await getSqlInstance('testing');
 			expect(createConnection).toHaveBeenCalledWith({
 				type: 'postgres',

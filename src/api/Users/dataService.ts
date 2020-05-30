@@ -22,7 +22,7 @@ export const updateUserProfile = async (data: IUpdateUserProfile) => {
 	if (!rawPassword) throw getBadRequestError('password is required');
 
 	const count = await runQuery(countMatchingUsernameQuery, [username]);
-	if (Boolean(count)) throw getBadRequestError('username already exists');
+	if (count) throw getBadRequestError('username already exists');
 
 	const user: any = await runInTransaction(updateUserTransaction(data));
 	const { password, ...other } = user;
