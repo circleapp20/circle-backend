@@ -31,5 +31,9 @@ export const Constants = {
 	},
 	misc: {
 		NODE_ENV: process.env.NODE_ENV
+	},
+	externals: {
+		FIREBASE_DATABASE_URL: 'https://circle-backend-92fb6.firebaseio.com',
+		FIREBASE_STORAGE_BUCKET: 'circle-backend-92fb6.appspot.com'
 	}
 };
