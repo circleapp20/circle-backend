@@ -2,7 +2,7 @@ import * as admin from 'firebase-admin';
 import ServiceAccountKey from '../../configs/service-account-key.json';
 import { Constants } from '../../constants';
 import * as firebaseService from '../firebaseService';
-import { getFirebaseAppInstance, getStorageBucket } from '../firebaseService';
+import { getFileDownloadURL, getFirebaseAppInstance, getStorageBucket } from '../firebaseService';
 
 jest.mock('firebase-admin', () => ({
 	initializeApp: jest.fn().mockReturnValue({
@@ -63,6 +63,28 @@ describe('#firebaseService', () => {
 		test('should call bucket on storage', () => {
 			getStorageBucket();
 			expect(bucket).toHaveBeenCalledWith();
+		});
+	});
+
+	describe('#getFileDownloadURL', () => {
+		let bucketMock: jest.SpyInstance<any, []>;
+
+		beforeEach(() => {
+			bucketMock = jest.spyOn(firebaseService, 'getStorageBucket');
+			bucketMock.mockReturnValue({ name: 'circle-backend-92fb6' });
+		});
+
+		afterEach(() => {
+			bucketMock.mockRestore();
+		});
+
+		test('should return a url', () => {
+			const token = 'di493mc-4ufm43r-u4m';
+			const urlPath = '/users/si9n395-9n99n33fm9/profile1';
+			const downloadURL = getFileDownloadURL(urlPath, token);
+			expect(() => {
+				new URL(downloadURL);
+			}).not.toThrow();
 		});
 	});
 });

@@ -1,7 +1,7 @@
 import { IResponseData } from '../types';
 
 export const generateRandomValue = () => {
-	return Math.floor(Math.random() * 10e6);
+	return Math.floor(Math.random() * 10e7);
 };
 
 // generateCodeFromNumber function generates a text from the value
@@ -21,4 +21,17 @@ export const getResponseData = <T = any>(data?: T, success = true) => {
 export const printToConsole = (args: any) => {
 	const date = new Date().toUTCString();
 	console.log(`[${date}]:circle-backend - ${String(args).toString()}`);
+};
+
+export const getMetaDataFromDataURI = (
+	dataUri: string,
+	mimeType = 'image/jpeg',
+	encoding = 'data:image/jpeg;base64'
+) => {
+	if (dataUri.startsWith('data')) {
+		mimeType = dataUri.slice(11, 12) === 'j' ? 'image/jpeg' : 'image/png';
+		encoding = `data:${mimeType};base64,`;
+	}
+	const data = dataUri.replace(encoding, '');
+	return { uri: data, contentType: mimeType };
 };
