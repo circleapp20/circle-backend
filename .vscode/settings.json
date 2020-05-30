@@ -9,6 +9,7 @@
 		"hstore",
 		"postgres",
 		"respawn",
+		"smtp",
 		"typeorm"
 	],
 	"editor.codeActionsOnSave": {
