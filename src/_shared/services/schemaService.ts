@@ -28,7 +28,7 @@ export class Users extends BaseModel {
 	@Column()
 	dob: Date;
 
-	@Column({ default: '' })
+	@Column('text', { default: '' })
 	image: string;
 
 	@Column({ default: '' })
