@@ -8,6 +8,7 @@ import {
 	countMatchingUsernameQuery,
 	updateUserProfileQuery
 } from './queryBuilder';
+import { uploadUserProfileImage } from './usersService';
 import { IUpdateUserProfile } from './_helpers/types';
 
 export const updateUserTransaction = (data: IUpdateUserProfile) => {
@@ -20,7 +21,7 @@ export const updateUserTransaction = (data: IUpdateUserProfile) => {
 };
 
 export const updateUserProfile = async (data: IUpdateUserProfile) => {
-	const { username, id, password: rawPassword } = data;
+	const { username, id, password: rawPassword, image } = data;
 	if (!id) throw getBadRequestError('id is required');
 
 	if (!rawPassword) throw getBadRequestError('password is required');
@@ -28,7 +29,12 @@ export const updateUserProfile = async (data: IUpdateUserProfile) => {
 	const count = await runQuery(countMatchingUsernameQuery, [username]);
 	if (count) throw getBadRequestError('username already exists');
 
-	const user: any = await runInTransaction(updateUserTransaction(data));
+	// upload image to firebase storage bucket
+	const downloadURL = await uploadUserProfileImage(id, image);
+
+	const profile = Object.assign({}, data, { image: downloadURL });
+
+	const user: any = await runInTransaction(updateUserTransaction(profile));
 	const { password, ...other } = user;
 
 	return other;

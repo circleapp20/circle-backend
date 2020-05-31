@@ -23,15 +23,20 @@ export const printToConsole = (args: any) => {
 	console.log(`[${date}]:circle-backend - ${String(args).toString()}`);
 };
 
-export const getMetaDataFromDataURI = (
-	dataUri: string,
-	mimeType = 'image/jpeg',
-	encoding = 'data:image/jpeg;base64'
-) => {
-	if (dataUri.startsWith('data')) {
-		mimeType = dataUri.slice(11, 12) === 'j' ? 'image/jpeg' : 'image/png';
-		encoding = `data:${mimeType};base64,`;
+export const getMetaDataFromDataURI = (dataUri: string) => {
+	const obj = { uri: '', contentType: 'image/jpeg' };
+	if (!dataUri) return obj;
+
+	// trim edges for the data uri
+	const trimmedDataURI = dataUri.trimStart().trimEnd();
+
+	// check if trimmed data uri starts with data
+	if (trimmedDataURI.startsWith('data')) {
+		const contentType = trimmedDataURI.match(/[^:]\w+\/[\w-+\d.]+(?=;|,)/)![0];
+		const uri = trimmedDataURI.replace(`data:${contentType};base64,`, '');
+		return { uri, contentType };
 	}
-	const data = dataUri.replace(encoding, '');
-	return { uri: data, contentType: mimeType };
+
+	const uri = trimmedDataURI.replace('data:image/jpeg;base64,', '');
+	return Object.assign({}, obj, { uri });
 };

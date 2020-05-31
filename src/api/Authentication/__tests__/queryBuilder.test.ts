@@ -96,7 +96,7 @@ describe('#queryBuilder', () => {
 			const verificationCode = '23ngt';
 			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
 			expect(entityManager.where).toHaveBeenCalledWith('id = :id', { id });
-			expect(entityManager.andWhere).toHaveBeenCalledWith('verificationCode = :code', {
+			expect(entityManager.andWhere).toHaveBeenCalledWith('u.verificationCode = :code', {
 				code: verificationCode
 			});
 			expect(entityManager.getCount).toHaveBeenCalled();

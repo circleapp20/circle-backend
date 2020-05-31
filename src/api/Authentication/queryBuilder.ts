@@ -28,9 +28,9 @@ export const countMatchingIdAndCodeQuery = (
 ) => {
 	return manager
 		.getRepository(Users)
-		.createQueryBuilder()
+		.createQueryBuilder('u')
 		.where('id = :id', { id })
-		.andWhere('verificationCode = :code', { code: verificationCode })
+		.andWhere('u.verificationCode = :code', { code: verificationCode })
 		.getCount();
 };
 
