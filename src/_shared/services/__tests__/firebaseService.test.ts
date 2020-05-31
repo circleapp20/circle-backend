@@ -147,9 +147,7 @@ describe('#firebaseService', () => {
 		test('should return downloadURL for png images', async () => {
 			const url = await uploadImageToFirebaseStorage(
 				'/9j/4RiDRXhpZgAATU0AKgA',
-				'/images/users/393f98r/profile1',
-				'image/jpeg',
-				'data:image/png;base64,'
+				'/images/users/393f98r/profile1'
 			);
 			expect(() => new URL(url)).not.toThrow();
 		});

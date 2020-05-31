@@ -55,13 +55,8 @@ export const saveFileToBucket = (filename: string, buffer: Buffer, contentType: 
 	});
 };
 
-export const uploadImageToFirebaseStorage = async (
-	data: string,
-	filename: string,
-	mimeType = 'image/jpeg',
-	encoding = 'data:image/jpeg;base64'
-) => {
-	const { uri, contentType } = getMetaDataFromDataURI(data, mimeType, encoding);
+export const uploadImageToFirebaseStorage = async (data: string, filename: string) => {
+	const { uri, contentType } = getMetaDataFromDataURI(data);
 	const buffer = Buffer.from(uri, 'base64');
 	const url = await saveFileToBucket(filename, buffer, contentType);
 	return url;
