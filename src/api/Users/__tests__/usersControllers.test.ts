@@ -1,6 +1,6 @@
 import { Constants } from '../../../_shared/constants';
 import * as dataService from '../dataService';
-import { checkUsername, updateProfile } from '../usersControllers';
+import { searchUsernameOrEmail, updateProfile } from '../usersControllers';
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -35,15 +35,32 @@ describe('#usersControllers', () => {
 		});
 	});
 
-	describe('#checkUsername', () => {
-		test('should send status of 201 if username exists or not', async () => {
-			const checkMock = jest.spyOn(dataService, 'checkUsernameExists');
-			checkMock.mockImplementation(async () => false);
+	describe('#searchUsernameOrEmail', () => {
+		let checkMock: jest.SpyInstance;
 
+		beforeAll(() => {
+			checkMock = jest.spyOn(dataService, 'checkUsernameOrEmailExists');
+			checkMock.mockImplementation(async () => ({ username: true, email: false }));
+		});
+
+		test('should send status of 200 if username exists or not', async () => {
 			const req: any = { query: { username: 'username' } };
-
-			await checkUsername(req, responseMock);
+			await searchUsernameOrEmail(req, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
+		});
+
+		test('should send a json object giving state for each search results', async () => {
+			const req: any = { query: { username: 'username' } };
+			await searchUsernameOrEmail(req, responseMock);
+			expect(responseMock.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({
+						username: expect.any(Boolean),
+						email: expect.any(Boolean)
+					}),
+					success: expect.any(Boolean)
+				})
+			);
 		});
 	});
 });
