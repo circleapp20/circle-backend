@@ -1,6 +1,7 @@
 import { Constants } from '../_shared/constants';
 import { IApiRoute } from '../_shared/types';
 import {
+	resendUserVerificationCode,
 	verifyUserCredentials,
 	VerifyUserCredentialsSchema,
 	verifyUserLogin,
@@ -9,8 +10,8 @@ import {
 	VerifyVerificationCodeSchema
 } from './Authentication';
 import {
-	checkUsername,
 	CheckUsernameSchema,
+	searchUsernameOrEmail,
 	updateProfile,
 	UpdateUserProfileSchema
 } from './Users';
@@ -45,8 +46,14 @@ export const apiRoutes: IApiRoute[] = [
 	{
 		path: '/users/search',
 		method: 'get',
-		controller: checkUsername,
+		controller: searchUsernameOrEmail,
 		schema: CheckUsernameSchema,
 		type: 'query'
+	},
+	{
+		path: '/auth/verify/code/resend',
+		method: 'post',
+		controller: resendUserVerificationCode,
+		privileges: [Constants.privileges.USER]
 	}
 ];

@@ -95,3 +95,9 @@ export const verifyUserLoginCredentials = async (data: {
 
 	return profile;
 };
+
+export const getUserProfileById = async (id: string) => {
+	const user = await runQuery(getUserByIdQuery, [id]);
+	if (!user) throw getBadRequestError('Invalid user account');
+	return user;
+};

@@ -5,6 +5,7 @@ import {
 	addUserTransaction,
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues,
+	getUserProfileById,
 	verifyUserLoginCredentials
 } from '../dataService';
 import * as queryBuilder from '../queryBuilder';
@@ -170,6 +171,25 @@ describe('#dataService', () => {
 			}).then((user) => {
 				expect(user.id).toBe('x7i9-3l-n3k4-3i8bi2');
 				expect(user.token).toBeDefined();
+				done();
+			});
+		});
+	});
+
+	describe('#getUserProfileById', () => {
+		test('should call getUserByIdQuery with the user id', async () => {
+			(runQuery.mockResolvedValueOnce as any)({ id: 'x39-39ng39-nf39' });
+			await getUserProfileById('x39-39ng39-nf39');
+			expect(runQuery).toHaveBeenCalledWith(
+				expect.any(Function),
+				expect.arrayContaining(['x39-39ng39-nf39'])
+			);
+		});
+
+		test('should throw error if user does not exists', (done) => {
+			(runQuery.mockResolvedValueOnce as any)(null);
+			getUserProfileById('x39-39ng39-nf39').catch((error) => {
+				expect(error.message).toBe('Invalid user account');
 				done();
 			});
 		});

@@ -6,6 +6,7 @@ import { sendVerificationCodeByEmail } from './authService';
 import {
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues,
+	getUserProfileById,
 	verifyUserLoginCredentials
 } from './dataService';
 
@@ -32,5 +33,17 @@ export const verifyUserVerificationCode = async (req: IRequest, res: Response) =
 export const verifyUserLogin = async (req: IRequest, res: Response) => {
 	const user = await verifyUserLoginCredentials(req.body.data);
 	const responseData = getResponseData(user);
+	res.status(Constants.status.CREATED).json(responseData);
+};
+
+export const resendUserVerificationCode = async (req: IRequest, res: Response) => {
+	const user = await getUserProfileById(req.user.id);
+
+	// resend verification code to user email
+	if (user && user.email) {
+		sendVerificationCodeByEmail(user.verificationCode, user.email);
+	}
+
+	const responseData = getResponseData(true);
 	res.status(Constants.status.CREATED).json(responseData);
 };

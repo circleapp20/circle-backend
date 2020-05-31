@@ -1,12 +1,16 @@
 {
 	"cSpell.words": [
 		"Kofi",
+		"MNOTIFY",
+		"appspot",
 		"asynciterable",
+		"circleapp",
 		"esnext",
 		"gmail",
 		"hstore",
 		"postgres",
 		"respawn",
+		"smtp",
 		"typeorm"
 	],
 	"editor.codeActionsOnSave": {

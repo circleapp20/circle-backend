@@ -18,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@gitlab.com/timothy1996/circle-backend.git"
+		"url": "git+ssh://git@github.com/circleapp20/circle-backend.git"
 	},
 	"keywords": [
 		"circle"
@@ -26,9 +26,9 @@
 	"author": "Amo Timothy Kofi <kofiamo.timothy@gmail.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://gitlab.com/timothy1996/circle-backend/issues"
+		"url": "https://github.com/circleapp20/circle-backend/issues"
 	},
-	"homepage": "https://gitlab.com/timothy1996/circle-backend#readme",
+	"homepage": "https://github.com/circleapp20/circle-backend#readme",
 	"devDependencies": {
 		"@types/bcryptjs": "2.4.2",
 		"@types/cors": "2.8.6",
@@ -40,6 +40,7 @@
 		"@types/nodemailer": "6.4.0",
 		"@types/react": "16.9.35",
 		"@types/react-dom": "16.9.8",
+		"@types/uuid": "8.0.0",
 		"@typescript-eslint/eslint-plugin": "3.0.2",
 		"@typescript-eslint/parser": "3.0.2",
 		"cross-env": "7.0.2",
@@ -58,12 +59,16 @@
 		"typescript": "3.9.3"
 	},
 	"dependencies": {
+		"@google-cloud/storage": "5.0.1",
 		"@hapi/joi": "17.1.1",
+		"axios": "0.19.2",
 		"bcryptjs": "2.4.3",
 		"cors": "2.8.5",
 		"dotenv": "8.2.0",
 		"express": "4.17.1",
 		"express-joi-validation": "4.0.3",
+		"firebase-admin": "8.12.1",
+		"googleapis": "51.0.0",
 		"jsonwebtoken": "8.5.1",
 		"mysql2": "2.1.0",
 		"next": "9.4.2",
@@ -73,7 +78,8 @@
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
 		"reflect-metadata": "0.1.13",
-		"typeorm": "0.2.25"
+		"typeorm": "0.2.25",
+		"uuid": "8.1.0"
 	},
 	"lint-staged": {
 		"src/**/*.{ts,tsx}": [

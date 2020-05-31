@@ -20,3 +20,11 @@ export const countMatchingUsernameQuery = (manager: EntityManager, username: str
 		.where('username = :username', { username })
 		.getCount();
 };
+
+export const countMatchingEmailQuery = (manager: EntityManager, email: string) => {
+	return manager
+		.getRepository(Users)
+		.createQueryBuilder()
+		.where('email = :email', { email })
+		.getCount();
+};

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
 import { IAuthUser, IRequest } from '../../_shared/types';
-import { checkUsernameExists, updateUserProfile } from './dataService';
+import { checkUsernameOrEmailExists, updateUserProfile } from './dataService';
 
 export const updateProfile = async (req: IRequest, res: Response) => {
 	const { id }: IAuthUser = req.user;
@@ -12,9 +12,9 @@ export const updateProfile = async (req: IRequest, res: Response) => {
 	res.status(Constants.status.SUCCESS).json(responseData);
 };
 
-export const checkUsername = async (req: IRequest, res: Response) => {
-	const { username } = req.query!;
-	const isExists = await checkUsernameExists(username as string);
-	const responseData = getResponseData(isExists);
+export const searchUsernameOrEmail = async (req: IRequest, res: Response) => {
+	const { username = '', email = '' }: any = req.query!;
+	const exists = await checkUsernameOrEmailExists(username, email);
+	const responseData = getResponseData(exists);
 	res.status(Constants.status.SUCCESS).json(responseData);
 };

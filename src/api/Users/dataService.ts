@@ -3,7 +3,11 @@ import { EntityManager } from 'typeorm';
 import { getBadRequestError } from '../../_shared/services';
 import { getUserByIdQuery } from '../../_shared/services/dataService';
 import { runInTransaction, runQuery } from '../../_shared/services/dBService';
-import { countMatchingUsernameQuery, updateUserProfileQuery } from './queryBuilder';
+import {
+	countMatchingEmailQuery,
+	countMatchingUsernameQuery,
+	updateUserProfileQuery
+} from './queryBuilder';
 import { IUpdateUserProfile } from './_helpers/types';
 
 export const updateUserTransaction = (data: IUpdateUserProfile) => {
@@ -30,7 +34,13 @@ export const updateUserProfile = async (data: IUpdateUserProfile) => {
 	return other;
 };
 
-export const checkUsernameExists = async (username: string) => {
-	const count = await runQuery(countMatchingUsernameQuery, [username]);
-	return Boolean(count);
+export const checkUsernameOrEmailExists = async (username: string, email: string) => {
+	const totalMatchingUsernameCount = !username
+		? 0
+		: await runQuery(countMatchingUsernameQuery, [username]);
+	const totalMatchingEmailCount = !email ? 0 : await runQuery(countMatchingEmailQuery, [email]);
+	return {
+		username: Boolean(totalMatchingUsernameCount),
+		email: Boolean(totalMatchingEmailCount)
+	};
 };

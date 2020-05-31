@@ -3,7 +3,8 @@
 	"complierOptions": {
 		"module": "commonjs",
 		"noEmit": true,
-		"outDir": "./dist"
+		"outDir": "./dist",
+		"jsx": "preserve"
 	},
 	"exclude": [
 		"**/*.tsx",

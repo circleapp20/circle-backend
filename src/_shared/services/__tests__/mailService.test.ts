@@ -3,19 +3,34 @@ import { Constants } from '../../constants';
 import * as mailService from '../mailService';
 import { getMailHeaders, getMailTransportInstance, sendMail } from '../mailService';
 
+jest.mock('googleapis');
+
 beforeEach(() => jest.resetAllMocks());
-// afterEach(() => jest.resetAllMocks())
 
 describe('#mailService', () => {
 	describe('#getMailTransportInstance', () => {
-		test('should create a new transporter with config', () => {
+		let getAccessTokenMock;
+
+		beforeEach(() => {
+			getAccessTokenMock = jest.spyOn(mailService, 'getGoogleOAuth2AccessToken');
+			getAccessTokenMock.mockImplementation(jest.fn()).mockResolvedValue({} as any);
+		});
+
+		test('should create a new transporter with config', async () => {
 			const mockFn = jest.spyOn(nodemailer, 'createTransport');
-			getMailTransportInstance();
+			await getMailTransportInstance();
 			expect(mockFn).toHaveBeenCalledWith({
-				service: Constants.app.MAIL_SERVICE,
+				host: 'smtp.gmail.com',
+				port: 465,
+				secure: true,
 				auth: {
 					user: Constants.app.MAIL_USER,
-					pass: Constants.app.MAIL_PASSWORD
+					pass: Constants.app.MAIL_PASSWORD,
+					type: 'OAuth2',
+					clientId: Constants.app.GOOGLE_CLIENT_ID,
+					clientSecret: Constants.app.GOOGLE_CLIENT_SECRET,
+					refreshToken: Constants.app.GOOGLE_CLIENT_REFRESH_TOKEN,
+					accessToken: {}
 				}
 			});
 		});
@@ -66,32 +81,42 @@ describe('#mailService', () => {
 	});
 
 	describe('#sendMail', () => {
+		let instanceMock: jest.SpyInstance<Promise<any>, []>;
+		const sendMailMock = jest.fn();
+
+		beforeEach(() => {
+			instanceMock = jest.spyOn(mailService, 'getMailTransportInstance');
+			instanceMock.mockImplementation().mockResolvedValue({ sendMail: sendMailMock });
+		});
+
 		const headers = getMailHeaders({
 			to: 'recipient@gmail.com',
 			subject: 'Testing services',
 			html: '<b>Testing html</b>'
 		});
-		const sendMailMock = jest.fn();
 
 		test('should send mail with valid headers', async () => {
-			const mockFn = jest.spyOn(mailService, 'getMailTransportInstance');
-			mockFn.mockReturnValue({ sendMail: sendMailMock } as any);
 			await sendMail(headers);
-			expect(mockFn).toHaveBeenCalled();
-			expect(sendMailMock).toHaveBeenCalledWith(headers);
+			expect(instanceMock).toHaveBeenCalled();
+			expect(sendMailMock).toHaveBeenCalledWith(
+				expect.objectContaining({
+					to: expect.any(String),
+					subject: expect.any(String),
+					from: expect.stringMatching(Constants.accounts.EMAIL_ADDRESS),
+					html: expect.any(String)
+				})
+			);
 		});
 
 		test('should not send mail if error occurs', async () => {
 			sendMailMock.mockRejectedValueOnce(new Error());
-			const mockFn = jest.spyOn(mailService, 'getMailTransportInstance');
-			mockFn.mockReturnValue({ sendMail: sendMailMock } as any);
+			instanceMock.mockResolvedValueOnce({ sendMail: sendMailMock });
 			const wrapper = () => sendMail(headers);
 			expect(wrapper).rejects.toThrow();
 		});
 
 		test('should return null if error occurs', async () => {
-			const mockFn = jest.spyOn(mailService, 'getMailTransportInstance');
-			mockFn.mockReturnValue({
+			instanceMock.mockResolvedValueOnce({
 				sendMail: jest.fn().mockImplementationOnce(() => {
 					throw new Error();
 				})

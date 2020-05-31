@@ -11,5 +11,6 @@ export const UpdateUserProfileSchema = object({
 });
 
 export const CheckUsernameSchema = object({
-	username: string().required().min(4)
+	username: string().allow(null, ''),
+	email: string().allow(null, '')
 });
