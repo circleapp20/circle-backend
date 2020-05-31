@@ -1,6 +1,7 @@
 import { Constants } from '../_shared/constants';
 import { IApiRoute } from '../_shared/types';
 import {
+	resendUserVerificationCode,
 	verifyUserCredentials,
 	VerifyUserCredentialsSchema,
 	verifyUserLogin,
@@ -48,5 +49,11 @@ export const apiRoutes: IApiRoute[] = [
 		controller: searchUsernameOrEmail,
 		schema: CheckUsernameSchema,
 		type: 'query'
+	},
+	{
+		path: '/auth/verify/code/resend',
+		method: 'post',
+		controller: resendUserVerificationCode,
+		privileges: [Constants.privileges.USER]
 	}
 ];
