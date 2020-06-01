@@ -22,7 +22,8 @@ export const Constants = {
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 		GOOGLE_CLIENT_REFRESH_TOKEN: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
-		MNOTIFY_API_KEY: process.env.MNOTIFY_API_KEY
+		MNOTIFY_API_KEY: process.env.MNOTIFY_API_KEY,
+		MNOTIFY_SENDER_ID: 'CircleApp'
 	},
 	accounts: {
 		EMAIL_ADDRESS: 'circleapp20@gmail.com'

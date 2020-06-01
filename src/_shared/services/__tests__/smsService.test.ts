@@ -19,7 +19,7 @@ describe('#smsService', () => {
 					message: expect.stringMatching('testing sms message'),
 					recipient: expect.arrayContaining(['+233248252444']),
 					schedule_date: expect.any(String),
-					sender: expect.stringMatching('circle')
+					sender: expect.stringMatching(Constants.app.MNOTIFY_SENDER_ID)
 				}),
 				expect.stringMatching(Constants.services.SMS)
 			);
