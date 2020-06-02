@@ -6,6 +6,7 @@ import {
 	addUserTransaction,
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues,
+	getUserAccountWithCredentials,
 	getUserProfileById,
 	verifyUserLoginCredentials
 } from '../dataService';
@@ -239,6 +240,54 @@ describe('#dataService', () => {
 				expect(error.message).toBe('Invalid user account');
 				done();
 			});
+		});
+	});
+
+	describe('#getUserAccountWithCredentials', () => {
+		const credentials = {
+			username: 'tester',
+			phoneNumber: '+2339456234',
+			email: 'test@test.com'
+		};
+		const profile = {
+			id: 'x7i9-3l-n3k4-3i8bi2',
+			roles: [Constants.privileges.USER],
+			password: '8292dj49dj2u'
+		};
+
+		test('should throw if user is not found', (done) => {
+			(runQuery.mockResolvedValueOnce as any)(null);
+			getUserAccountWithCredentials(credentials).catch((error) => {
+				expect(error.message).toBe('Invalid user account');
+				done();
+			});
+		});
+
+		test('should add token to the return object', async () => {
+			(runQuery.mockResolvedValueOnce as any)(profile);
+			const user = await getUserAccountWithCredentials(credentials);
+			expect(user.token).toEqual(expect.any(String));
+		});
+
+		test('should not return the password', async () => {
+			(runQuery.mockResolvedValueOnce as any)(profile);
+			const user = await getUserAccountWithCredentials(credentials);
+			expect(user).not.toHaveProperty('password');
+		});
+
+		test('should update user with new verification code', async () => {
+			(runQuery.mockResolvedValueOnce as any)(profile);
+			await getUserAccountWithCredentials(credentials);
+			expect(runQuery).toHaveBeenNthCalledWith(
+				2,
+				expect.any(Function),
+				expect.arrayContaining([
+					expect.objectContaining({
+						id: expect.any(String),
+						verificationCode: expect.any(String)
+					})
+				])
+			);
 		});
 	});
 });

@@ -4,6 +4,7 @@ import { runInTransaction, runQuery } from '../../../_shared/services/dBService'
 import {
 	resendUserVerificationCode,
 	verifyUserCredentials,
+	verifyUserCredentialsForPasswordReset,
 	verifyUserLogin,
 	verifyUserVerificationCode
 } from '../authControllers';
@@ -148,6 +149,108 @@ describe('#authControllers', () => {
 			(runQuery.mockResolvedValueOnce as any)(data);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(sendVerificationCodeBySMS).toHaveBeenCalled();
+		});
+	});
+
+	describe('#verifyUserCredentialsForPasswordReset', () => {
+		const req: any = { body: { data: { email: 'test@test.com' } } };
+
+		test('should send verification code to user email', async () => {
+			(runQuery.mockResolvedValueOnce as any)({
+				id: '3939202',
+				verificationCode: 'jf983w',
+				email: 'test@test.com'
+			});
+			await verifyUserCredentialsForPasswordReset(req, responseMock);
+			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.stringMatching('test@test.com')
+			);
+			expect(sendVerificationCodeBySMS).not.toHaveBeenCalled();
+			expect(responseMock.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({
+						user: expect.objectContaining({
+							id: expect.any(String),
+							verificationCode: expect.any(String),
+							email: expect.any(String),
+							token: expect.any(String)
+						}),
+						message: expect.stringContaining("Verification code sent to user's email")
+					}),
+					success: expect.any(Boolean)
+				})
+			);
+		});
+
+		test('should send verification code to user phone number', async () => {
+			(runQuery.mockResolvedValueOnce as any)({
+				id: '3939202',
+				verificationCode: 'jf983w',
+				phoneNumber: '+2339876543'
+			});
+			await verifyUserCredentialsForPasswordReset(req, responseMock);
+			expect(sendVerificationCodeBySMS).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.any(String)
+			);
+			expect(sendVerificationCodeByEmail).not.toHaveBeenCalled();
+			expect(responseMock.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({
+						user: expect.objectContaining({
+							id: expect.any(String),
+							verificationCode: expect.any(String),
+							phoneNumber: expect.any(String),
+							token: expect.any(String)
+						}),
+						message: expect.stringContaining(
+							"Verification code sent to user's phone number"
+						)
+					}),
+					success: expect.any(Boolean)
+				})
+			);
+		});
+
+		test('should not send verification code if user has both phone number and email', async () => {
+			(runQuery.mockResolvedValueOnce as any)({
+				id: '3939202',
+				verificationCode: 'jf983w',
+				phoneNumber: '+2339876543',
+				email: 'test@test.com'
+			});
+			await verifyUserCredentialsForPasswordReset(req, responseMock);
+			expect(sendVerificationCodeByEmail).not.toHaveBeenCalled();
+			expect(sendVerificationCodeBySMS).not.toHaveBeenCalled();
+			expect(responseMock.json).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({
+						user: expect.objectContaining({
+							id: expect.any(String),
+							verificationCode: expect.any(String),
+							phoneNumber: expect.any(String),
+							token: expect.any(String),
+							email: expect.any(String)
+						}),
+						message: expect.stringContaining(
+							'Verification code cannot be sent. User has both email and phone number'
+						)
+					}),
+					success: expect.any(Boolean)
+				})
+			);
+		});
+
+		test('should send status of 201', async () => {
+			(runQuery.mockResolvedValueOnce as any)({
+				id: '3939202',
+				verificationCode: 'jf983w',
+				phoneNumber: '+2339876543',
+				email: 'test@test.com'
+			});
+			await verifyUserCredentialsForPasswordReset(req, responseMock);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 	});
 });

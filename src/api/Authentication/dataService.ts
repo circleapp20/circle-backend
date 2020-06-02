@@ -8,7 +8,8 @@ import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByCredentialsQuery
+	getUserByCredentialsQuery,
+	updateUserVerificationCodeQuery
 } from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
 
@@ -99,4 +100,32 @@ export const getUserProfileById = async (id: string) => {
 	const user = await runQuery(getUserByIdQuery, [id]);
 	if (!user) throw getBadRequestError('Invalid user account');
 	return user;
+};
+
+/**
+ * the service function validates the user's credentials in the
+ * database to check if the user exists
+ * if the user does exists, a new verification code is generated
+ * and stored in the database
+ */
+export const getUserAccountWithCredentials = async (args: {
+	email?: string;
+	phoneNumber?: string;
+	username?: string;
+}) => {
+	const user = await runQuery(getUserByCredentialsQuery, [args]);
+	if (!user) throw getBadRequestError('Invalid user account');
+
+	// generate new verification code
+	const verificationCode = generateCodeFromNumber();
+
+	// update user profile
+	await runQuery(updateUserVerificationCodeQuery, [{ id: user.id, verificationCode }]);
+
+	const { password, ...other } = user;
+
+	const token = getSignedAuthToken({ id: user.id, roles: user.roles });
+	const profile = Object.assign({}, other, { token, verificationCode });
+
+	return profile;
 };

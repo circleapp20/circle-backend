@@ -30,3 +30,17 @@ export const getUserByCredentialsQuery = (
 	else query.where('email = :email', { email });
 	return query.getOne();
 };
+
+export const updateUserVerificationCodeQuery = (
+	manager: EntityManager,
+	values: { id: string; verificationCode: string }
+) => {
+	const { id, verificationCode } = values;
+	return manager
+		.getRepository(Users)
+		.createQueryBuilder()
+		.update()
+		.set({ verificationCode })
+		.where('id = :id', { id })
+		.execute();
+};

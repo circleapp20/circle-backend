@@ -4,7 +4,8 @@ import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByCredentialsQuery
+	getUserByCredentialsQuery,
+	updateUserVerificationCodeQuery
 } from '../queryBuilder';
 import { IAddUserProfile } from '../_helpers/types';
 
@@ -95,6 +96,38 @@ describe('#queryBuilder', () => {
 			expect(entityManager.where).toHaveBeenCalledWith('email = :email', {
 				email: values.email
 			});
+		});
+	});
+
+	describe('#updateUserVerificationCodeQuery', () => {
+		const values = { id: '39fn939f9', verificationCode: '384kde' };
+		test('should update the users table', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+		});
+
+		test('should set the new verification code', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.set).toHaveBeenCalledWith(
+				expect.objectContaining({
+					verificationCode: expect.any(String)
+				})
+			);
+		});
+
+		test('should update only where the id matches the user id', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.where).toHaveBeenCalledWith(
+				'id = :id',
+				expect.objectContaining({
+					id: expect.any(String)
+				})
+			);
+		});
+
+		test('should execute the query builder', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.execute).toHaveBeenCalled();
 		});
 	});
 });
