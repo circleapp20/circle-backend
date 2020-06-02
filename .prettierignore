@@ -1,0 +1,9 @@
+node_modules
+.next
+yarn.lock
+package-lock.json
+public
+dist
+coverage
+.vscode
+yarn-error.log

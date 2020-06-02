@@ -1,7 +1,9 @@
+import bcryptjs from 'bcryptjs';
 import { runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	checkUsernameOrEmailExists,
+	updateUserPassword,
 	updateUserProfile,
 	updateUserTransaction
 } from '../dataService';
@@ -9,8 +11,10 @@ import * as queryBuilder from '../queryBuilder';
 import { IUpdateUserProfile } from '../_helpers/types';
 
 jest.mock('../../../_shared/services/dBService');
+jest.mock('../../../_shared/services/schemaService');
 jest.mock('bcryptjs', () => ({
-	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92')
+	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92'),
+	compareSync: jest.fn()
 }));
 
 beforeEach(() => jest.clearAllMocks());
@@ -123,6 +127,50 @@ describe('#dataService', () => {
 					username: expect.any(Boolean),
 					email: expect.any(Boolean)
 				})
+			);
+		});
+	});
+
+	describe('#updateUserPassword', () => {
+		beforeEach(() => {
+			runQuery.mockResolvedValue({ id: 'xi93m', password: '2f3n92' });
+			(bcryptjs as any).compareSync.mockReturnValue(false);
+		});
+
+		test('should throw error if user does not exists', (done) => {
+			runQuery.mockResolvedValueOnce(null);
+			updateUserPassword('xi93xm', 'testing').catch((error) => {
+				expect(error.message).toBe('Invalid user account');
+				done();
+			});
+		});
+
+		test('should throw error if password matches old password', (done) => {
+			(bcryptjs as any).compareSync.mockReturnValueOnce(true);
+			updateUserPassword('xi93m', 'testing').catch((error) => {
+				expect(error.message).toBe('Cannot enter the same password');
+				done();
+			});
+		});
+
+		test('should hash the new password', async () => {
+			await updateUserPassword('xi93m', 'testing');
+			expect(bcryptjs.hashSync).toHaveBeenCalledWith(
+				expect.stringMatching('testing'),
+				expect.any(Number)
+			);
+		});
+
+		test('should update user password', async () => {
+			await updateUserPassword('xi93m', 'testing');
+			expect(runQuery).toHaveBeenLastCalledWith(
+				expect.any(Function),
+				expect.arrayContaining([
+					expect.objectContaining({
+						id: expect.any(String),
+						password: expect.any(String)
+					})
+				])
 			);
 		});
 	});

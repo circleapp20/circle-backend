@@ -1,4 +1,4 @@
-import { object, string } from '@hapi/joi';
+import Joi from '@hapi/joi';
 import { createValidator } from 'express-joi-validation';
 import next from 'next';
 import { IApiRoute } from '../../types';
@@ -98,23 +98,23 @@ describe('#serverService', () => {
 		const req: any = {};
 		const res: any = {};
 		const next = jest.fn();
-		const schema = object({ id: string() });
+		const schema = Joi.object({ id: Joi.string() });
 
 		test('should call next when schema is undefined', () => {
-			const middleware = getRouteSchema();
+			const middleware: any = getRouteSchema();
 			middleware(req, res, next);
 			expect(next).toHaveBeenCalled();
 		});
 
 		test('should call the validator when schema is defined', () => {
-			const middleware = getRouteSchema(schema);
+			const middleware: any = getRouteSchema(schema);
 			middleware(req, res, next);
 			expect(createValidator).toHaveBeenCalledWith({ passError: true });
 			expect(next).not.toHaveBeenCalled();
 		});
 
 		test('should validate query when specified', () => {
-			const middleware = getRouteSchema(schema, 'query');
+			const middleware: any = getRouteSchema(schema, 'query');
 			middleware(req, res, next);
 			expect(next).not.toHaveBeenCalled();
 		});

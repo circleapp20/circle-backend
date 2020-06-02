@@ -5,7 +5,7 @@ import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
 	getUserByCredentialsQuery,
-	getUserByEmailOrPhoneNumberQuery
+	updateUserVerificationCodeQuery
 } from '../queryBuilder';
 import { IAddUserProfile } from '../_helpers/types';
 
@@ -14,50 +14,6 @@ jest.mock('../../../_shared/services/schemaService');
 beforeEach(() => jest.clearAllMocks());
 
 describe('#queryBuilder', () => {
-	describe('#getUserByEmailOrPhoneNumberQuery', () => {
-		const email = 'test@test.com';
-		const phoneNumber = '+2332456987';
-
-		test('should call the Users schema', async () => {
-			await getUserByEmailOrPhoneNumberQuery(entityManager, {
-				email
-			});
-			expect(entityManager.getRepository).toBeCalledWith(Users);
-		});
-
-		test('should construct a query builder using createQueryBuilder', async () => {
-			await getUserByEmailOrPhoneNumberQuery(entityManager, {
-				email
-			});
-			expect(entityManager.createQueryBuilder).toBeCalledWith();
-		});
-
-		test('should use the email in the where function when set', async () => {
-			await getUserByEmailOrPhoneNumberQuery(entityManager, {
-				email
-			});
-			expect(entityManager.where).toBeCalledWith('email = :email', { email });
-			expect(entityManager.where).toBeCalledTimes(1);
-		});
-
-		test('should check with phone number when set', async () => {
-			await getUserByEmailOrPhoneNumberQuery(entityManager, {
-				phoneNumber
-			});
-			expect(entityManager.where).toBeCalledWith('phoneNumber = :phoneNumber', {
-				phoneNumber
-			});
-			expect(entityManager.where).toBeCalledTimes(1);
-		});
-
-		test('should call getOne', async () => {
-			await getUserByEmailOrPhoneNumberQuery(entityManager, {
-				phoneNumber
-			});
-			expect(entityManager.getOne).toBeCalledTimes(1);
-		});
-	});
-
 	describe('#addUserProfileQuery', () => {
 		const profile: IAddUserProfile = {
 			username: '',
@@ -91,14 +47,28 @@ describe('#queryBuilder', () => {
 	});
 
 	describe('#countMatchingIdAndCodeQuery', () => {
-		test('should call where with id and code', async () => {
-			const id = '8409-853';
-			const verificationCode = '23ngt';
+		const id = '8409-853';
+		const verificationCode = '23ngt';
+
+		test('should search users table', async () => {
 			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
-			expect(entityManager.where).toHaveBeenCalledWith('id = :id', { id });
+			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+		});
+
+		test('should use id in the where clause', async () => {
+			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
+			expect(entityManager.where).toHaveBeenCalledWith('u.id = :id', { id });
+		});
+
+		test('should add the verification code to where clause', async () => {
+			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
 			expect(entityManager.andWhere).toHaveBeenCalledWith('u.verificationCode = :code', {
 				code: verificationCode
 			});
+		});
+
+		test('should get the total count results of the search', async () => {
+			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
 			expect(entityManager.getCount).toHaveBeenCalled();
 		});
 	});
@@ -126,6 +96,38 @@ describe('#queryBuilder', () => {
 			expect(entityManager.where).toHaveBeenCalledWith('email = :email', {
 				email: values.email
 			});
+		});
+	});
+
+	describe('#updateUserVerificationCodeQuery', () => {
+		const values = { id: '39fn939f9', verificationCode: '384kde' };
+		test('should update the users table', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+		});
+
+		test('should set the new verification code', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.set).toHaveBeenCalledWith(
+				expect.objectContaining({
+					verificationCode: expect.any(String)
+				})
+			);
+		});
+
+		test('should update only where the id matches the user id', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.where).toHaveBeenCalledWith(
+				'id = :id',
+				expect.objectContaining({
+					id: expect.any(String)
+				})
+			);
+		});
+
+		test('should execute the query builder', async () => {
+			await updateUserVerificationCodeQuery(entityManager, values);
+			expect(entityManager.execute).toHaveBeenCalled();
 		});
 	});
 });

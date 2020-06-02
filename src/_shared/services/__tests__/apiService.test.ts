@@ -1,5 +1,4 @@
 import axios from 'axios';
-import * as apiService from '../apiService';
 import { apiPost, getSecureAxiosInstance } from '../apiService';
 
 jest.mock('axios', () => ({
@@ -10,10 +9,6 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('#apiService', () => {
 	describe('#getSecureAxiosInstance', () => {
-		beforeEach(() => {
-			(axios.create as any).mockRestore();
-		});
-
 		test('should create an axios instance with default config', () => {
 			getSecureAxiosInstance('https://api.circleapp.com');
 			expect(axios.create).toHaveBeenCalledWith(
@@ -45,34 +40,29 @@ describe('#apiService', () => {
 	});
 
 	describe('#apiPost', () => {
-		let postMock: jest.Mock;
-		let instanceMock: jest.SpyInstance;
+		const post = jest.fn(async () => ({ data: 'test' }));
 
-		beforeEach(() => {
-			postMock = jest.fn();
-			instanceMock = jest.spyOn(apiService, 'getSecureAxiosInstance');
-			instanceMock.mockReturnValue({ post: postMock });
+		beforeAll(() => {
+			(axios.create as any).mockReturnValue({ post });
 		});
 
 		test('should send post request to url with data', async () => {
 			await apiPost('/api/v1/auth/users', { id: '20ht2jc0m93j49' });
-			expect(postMock).toHaveBeenCalledWith('/api/v1/auth/users', { id: '20ht2jc0m93j49' });
+			expect(post).toHaveBeenCalledWith('/api/v1/auth/users', { id: '20ht2jc0m93j49' });
 		});
 
 		test('should return data in response', async () => {
-			postMock.mockResolvedValueOnce({ data: 'testing data' });
 			const response = await apiPost('/test/url', 'test');
-			expect(response).toBe('testing data');
+			expect(response).toBe('test');
 		});
 
 		test('should return null if post request fails', async () => {
-			postMock.mockRejectedValueOnce(new Error());
+			post.mockRejectedValueOnce(new Error());
 			const response = await apiPost('/test/url', 'test');
 			expect(response).toBeNull();
 		});
 
 		test('should post request to service', async () => {
-			instanceMock.mockRestore();
 			await apiPost('/test/url', 'test', 'https://json.appservice.com');
 			expect(axios.create).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -86,7 +76,6 @@ describe('#apiService', () => {
 		});
 
 		test('should add unique headers for post request', async () => {
-			instanceMock.mockRestore();
 			await apiPost('/test/url', 'test', 'https://json.appservice.com', {
 				authorization: 'testing header bro'
 			});

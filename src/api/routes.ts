@@ -3,6 +3,7 @@ import { IApiRoute } from '../_shared/types';
 import {
 	resendUserVerificationCode,
 	verifyUserCredentials,
+	verifyUserCredentialsForPasswordReset,
 	VerifyUserCredentialsSchema,
 	verifyUserLogin,
 	VerifyUserLoginSchema,
@@ -11,6 +12,8 @@ import {
 } from './Authentication';
 import {
 	CheckUsernameSchema,
+	ResetPasswordSchema,
+	resetUserPassword,
 	searchUsernameOrEmail,
 	updateProfile,
 	UpdateUserProfileSchema
@@ -18,13 +21,13 @@ import {
 
 export const apiRoutes: IApiRoute[] = [
 	{
-		path: '/auth/verify/sign-up',
+		path: '/auth/sign-up',
 		method: 'post',
 		controller: verifyUserCredentials,
 		schema: VerifyUserCredentialsSchema
 	},
 	{
-		path: '/auth/verify/code',
+		path: '/auth/code',
 		method: 'post',
 		controller: verifyUserVerificationCode,
 		privileges: [Constants.privileges.SUPER_ADMIN, Constants.privileges.USER],
@@ -38,7 +41,7 @@ export const apiRoutes: IApiRoute[] = [
 		schema: UpdateUserProfileSchema
 	},
 	{
-		path: '/auth/verify/sign-in',
+		path: '/auth/sign-in',
 		method: 'post',
 		controller: verifyUserLogin,
 		schema: VerifyUserLoginSchema
@@ -51,9 +54,21 @@ export const apiRoutes: IApiRoute[] = [
 		type: 'query'
 	},
 	{
-		path: '/auth/verify/code/resend',
+		path: '/auth/code/resend',
 		method: 'post',
 		controller: resendUserVerificationCode,
+		privileges: [Constants.privileges.USER]
+	},
+	{
+		path: '/auth/credentials',
+		method: 'post',
+		controller: verifyUserCredentialsForPasswordReset
+	},
+	{
+		path: '/users/reset/password',
+		method: 'put',
+		controller: resetUserPassword,
+		schema: ResetPasswordSchema,
 		privileges: [Constants.privileges.USER]
 	}
 ];

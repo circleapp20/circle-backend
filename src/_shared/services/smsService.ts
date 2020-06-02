@@ -8,7 +8,7 @@ export const sendSMSWithMNotify = async (to: string[], message: string) => {
 		message,
 		recipient: to,
 		schedule_date: '',
-		sender: 'circle'
+		sender: Constants.app.MNOTIFY_SENDER_ID
 	};
 	const url = `/sms/quick?key=${Constants.app.MNOTIFY_API_KEY}`;
 	const res = await apiPost(url, data, Constants.services.SMS);
@@ -21,7 +21,7 @@ export const sendSMSMessage = async (args: { message: string; to: string }) => {
 		if (process.env.NODE_ENV === 'production') {
 			await sendSMSWithMNotify([to], message);
 		}
-		printToConsole('SMS message: ' + message);
+		printToConsole(message);
 	} catch (error) {
 		printToConsole(error);
 	}

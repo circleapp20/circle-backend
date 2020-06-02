@@ -1,7 +1,6 @@
 import { entityManagerMock as manager } from '../../../__testSetup__';
 import { getSqlInstance, runQuery } from '../dBService';
 import { Users } from '../schemaService';
-import * as service from '../storageService';
 import { checkDatabaseExistsQuery, checkIfDataBaseExists, createDBSchema } from '../storageService';
 
 jest.mock('../schemaService');
@@ -32,27 +31,21 @@ describe('#storageService', () => {
 	});
 
 	describe('#createDBSchema', () => {
-		beforeEach(() => {
-			(getSqlInstance as any).mockResolvedValue({
-				close: jest.fn().mockResolvedValue(true)
-			});
-		});
-
-		test('should create the database schema', async () => {
-			const mockFn = jest.spyOn(service, 'checkIfDataBaseExists');
-			mockFn.mockResolvedValueOnce(false);
-			const results = await createDBSchema();
-			expect(results).toEqual({ state: 'created', success: true });
-		});
-
 		test('should not create database schema if exists', async () => {
 			const results = await createDBSchema();
 			expect(results).toEqual({ state: 'exists', success: true });
 		});
 
+		test('should create the database schema', async () => {
+			(runQuery.mockRejectedValueOnce as any)(new Error());
+			(getSqlInstance as any).mockResolvedValueOnce({ close: jest.fn() });
+			const results = await createDBSchema();
+			expect(results).toEqual({ state: 'created', success: true });
+		});
+
 		test('should fail if synchronization fails', async () => {
-			const mockFn = jest.spyOn(service, 'checkIfDataBaseExists');
-			mockFn.mockRejectedValue(new Error());
+			(runQuery.mockRejectedValueOnce as any)(new Error());
+			(getSqlInstance as any).mockRejectedValueOnce(new Error());
 			const results = await createDBSchema();
 			expect(results).toEqual({ state: 'failed', success: false });
 		});

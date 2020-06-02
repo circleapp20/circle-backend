@@ -2,21 +2,6 @@ import { EntityManager } from 'typeorm';
 import { Users } from '../../_shared/services';
 import { IAddUserProfile } from './_helpers/types';
 
-// getUserByEmailOrPhoneNumberQuery function creates a queryBuilder
-// which will get an existing user from the users table if the email
-// or the phoneNumber matches with any in the table.
-// the email takes precedence over the phoneNumber if both are set
-export const getUserByEmailOrPhoneNumberQuery = (
-	manager: EntityManager,
-	value: { email?: string; phoneNumber?: string }
-) => {
-	const { email = null, phoneNumber = null } = value;
-	const query = manager.getRepository(Users).createQueryBuilder();
-	if (email) query.where('email = :email', { email });
-	else query.where('phoneNumber = :phoneNumber', { phoneNumber });
-	return query.getOne();
-};
-
 export const addUserProfileQuery = (manager: EntityManager, values: IAddUserProfile) => {
 	return manager.getRepository(Users).createQueryBuilder().insert().values(values).execute();
 };
@@ -29,7 +14,7 @@ export const countMatchingIdAndCodeQuery = (
 	return manager
 		.getRepository(Users)
 		.createQueryBuilder('u')
-		.where('id = :id', { id })
+		.where('u.id = :id', { id })
 		.andWhere('u.verificationCode = :code', { code: verificationCode })
 		.getCount();
 };
@@ -44,4 +29,18 @@ export const getUserByCredentialsQuery = (
 	else if (phoneNumber) query.where('phoneNumber = :phoneNumber', { phoneNumber });
 	else query.where('email = :email', { email });
 	return query.getOne();
+};
+
+export const updateUserVerificationCodeQuery = (
+	manager: EntityManager,
+	values: { id: string; verificationCode: string }
+) => {
+	const { id, verificationCode } = values;
+	return manager
+		.getRepository(Users)
+		.createQueryBuilder()
+		.update()
+		.set({ verificationCode })
+		.where('id = :id', { id })
+		.execute();
 };

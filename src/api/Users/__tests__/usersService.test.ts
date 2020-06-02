@@ -14,6 +14,7 @@ jest.mock('firebase-admin', () => ({
 		cert: jest.fn().mockReturnValue({})
 	}
 }));
+jest.mock('../../../_shared/services/schemaService');
 
 describe('#usersService', () => {
 	describe('#uploadUserProfileImage', () => {

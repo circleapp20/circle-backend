@@ -4,6 +4,7 @@ import * as storageService from '../_shared/services/storageService';
 
 jest.mock('cors');
 jest.mock('../_shared/services/serverService');
+jest.mock('../_shared/services/schemaService');
 
 describe('#bootstrap', () => {
 	beforeEach(() => jest.clearAllMocks());
