@@ -35,14 +35,10 @@ describe('#firebaseService', () => {
 		fileMock = jest.fn().mockReturnValue({ save: saveMock });
 
 		bucketMock = jest.spyOn(firebaseService, 'getStorageBucket');
-		bucketMock.mockReturnValue({
+		bucketMock.mockImplementation(() => ({
 			name: 'circle-backend-92fb6',
 			file: fileMock
-		});
-	});
-
-	afterAll(() => {
-		bucketMock.mockRestore();
+		}));
 	});
 
 	describe('#getFirebaseAppInstance', () => {
@@ -80,30 +76,6 @@ describe('#firebaseService', () => {
 	});
 
 	describe('#saveFileToBucket', () => {
-		test('should call bucket.file with the filename', async () => {
-			const buffer: any = 'ak2sn6foi8ne';
-			const filename = '/images/users/profile-image-v1';
-			await saveFileToBucket(filename, buffer, 'image/jpeg');
-			expect(fileMock).toHaveBeenCalledWith(filename);
-		});
-
-		test('should call file.save with file buffer and metadata', async () => {
-			const buffer: any = 'ak2sn6foi8ne';
-			await saveFileToBucket('/images/users/profile-image-v1', buffer, 'image/jpeg');
-			expect(saveMock).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.objectContaining({
-					metadata: expect.objectContaining({
-						contentType: expect.stringMatching('image/jpeg'),
-						metadata: expect.objectContaining({
-							firebaseStorageDownloadTokens: expect.any(String)
-						})
-					})
-				}),
-				expect.any(Function)
-			);
-		});
-
 		test('should return download url', async () => {
 			const buffer: any = 'ak2sn6foi8ne';
 			const url = await saveFileToBucket(
@@ -113,17 +85,6 @@ describe('#firebaseService', () => {
 			);
 			expect(() => new URL(url)).not.toThrow();
 			expect(url).toEqual(expect.stringContaining('profile-image-v1'));
-		});
-
-		test('should throw error if file could not be saved', (done) => {
-			saveMock.mockImplementationOnce((_, __, callback) => callback(new Error()));
-			const buffer: any = 'ak2sn6foi8ne';
-			saveFileToBucket('/images/users/profile-image-v1', buffer, 'image/jpeg').catch(
-				(error) => {
-					expect(error).toEqual(expect.any(Error));
-					done();
-				}
-			);
 		});
 	});
 

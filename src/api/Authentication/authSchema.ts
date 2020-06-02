@@ -1,23 +1,23 @@
-import { object, string } from '@hapi/joi';
+import Joi from '@hapi/joi';
 
-export const VerifyVerificationCodeSchema = object({
-	data: object({
-		verificationCode: string().required().min(3)
+export const VerifyVerificationCodeSchema = Joi.object({
+	data: Joi.object({
+		verificationCode: Joi.string().required().min(3)
 	})
 });
 
-export const VerifyUserCredentialsSchema = object({
-	data: object({
-		email: string().allow(null, ''),
-		phoneNumber: string().allow(null, '')
+export const VerifyUserCredentialsSchema = Joi.object({
+	data: Joi.object({
+		email: Joi.string().allow(null, ''),
+		phoneNumber: Joi.string().allow(null, '')
 	})
 });
 
-export const VerifyUserLoginSchema = object({
-	data: object({
-		email: string().allow(null, ''),
-		phoneNumber: string().allow(null, ''),
-		username: string().allow(null, ''),
-		password: string().required().min(6)
+export const VerifyUserLoginSchema = Joi.object({
+	data: Joi.object({
+		email: Joi.string().allow(null, ''),
+		phoneNumber: Joi.string().allow(null, ''),
+		username: Joi.string().allow(null, ''),
+		password: Joi.string().required().min(6)
 	})
 });

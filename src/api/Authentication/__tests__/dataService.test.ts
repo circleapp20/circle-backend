@@ -12,6 +12,7 @@ import {
 } from '../dataService';
 import * as queryBuilder from '../queryBuilder';
 
+jest.mock('../../../_shared/services/schemaService');
 jest.mock('../../../_shared/services/dBService');
 jest.mock('bcryptjs', () => ({
 	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92'),

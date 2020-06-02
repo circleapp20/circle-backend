@@ -1,16 +1,16 @@
-import { date, object, string } from '@hapi/joi';
+import Joi from '@hapi/joi';
 
-export const UpdateUserProfileSchema = object({
-	data: object({
-		username: string().required().min(4),
-		password: string().required().min(6),
-		image: string().allow(null, ''),
-		biography: string().allow(null, ''),
-		dob: date().allow(null, '')
+export const UpdateUserProfileSchema = Joi.object({
+	data: Joi.object({
+		username: Joi.string().required().min(4),
+		password: Joi.string().required().min(6),
+		image: Joi.string().allow(null, ''),
+		biography: Joi.string().allow(null, ''),
+		dob: Joi.date().allow(null, '')
 	})
 });
 
-export const CheckUsernameSchema = object({
-	username: string().allow(null, ''),
-	email: string().allow(null, '')
+export const CheckUsernameSchema = Joi.object({
+	username: Joi.string().allow(null, ''),
+	email: Joi.string().allow(null, '')
 });

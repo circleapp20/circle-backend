@@ -2,6 +2,7 @@ import { Constants } from '../../../_shared/constants';
 import * as dataService from '../dataService';
 import { searchUsernameOrEmail, updateProfile } from '../usersControllers';
 
+jest.mock('../../../_shared/services/schemaService');
 beforeEach(() => jest.clearAllMocks());
 
 describe('#usersControllers', () => {

@@ -9,7 +9,21 @@ jest.mock('typeorm', () => ({
 		manager: {},
 		close: jest.fn(),
 		transaction: jest.fn().mockImplementation((callBack) => {
-			return callBack(entityManager);
+			return callBack({
+				getRepository: jest.fn().mockReturnThis(),
+				createQueryBuilder: jest.fn().mockReturnThis(),
+				where: jest.fn().mockReturnThis(),
+				getOne: jest.fn(),
+				insert: jest.fn().mockReturnThis(),
+				values: jest.fn().mockReturnThis(),
+				execute: jest.fn().mockReturnValue({
+					generatedMaps: []
+				}),
+				getCount: jest.fn(),
+				andWhere: jest.fn().mockReturnThis(),
+				update: jest.fn().mockReturnThis(),
+				set: jest.fn().mockReturnThis()
+			});
 		})
 	})
 }));
@@ -125,7 +139,7 @@ describe('#dBService', () => {
 			const mockFn = jest.fn();
 			await runInTransaction(mockFn);
 			expect(mockFn).toHaveBeenCalled();
-			expect(mockFn).toHaveBeenCalledWith(entityManager);
+			expect(mockFn).toHaveBeenCalledWith(expect.objectContaining({}));
 		});
 
 		test('should return the value from the callback', async () => {

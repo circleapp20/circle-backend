@@ -8,6 +8,8 @@ import {
 } from '../authService';
 import { VERIFICATION_CODE_EMAIL_TEMPLATE } from '../_helpers/templates';
 
+jest.mock('../../../_shared/services/schemaService');
+
 describe('#authService', () => {
 	describe('#getVerificationEmailText', () => {
 		test('should generate a verification text', () => {

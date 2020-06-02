@@ -21,7 +21,7 @@ export const sendSMSMessage = async (args: { message: string; to: string }) => {
 		if (process.env.NODE_ENV === 'production') {
 			await sendSMSWithMNotify([to], message);
 		}
-		printToConsole('SMS message: ' + message);
+		printToConsole(message);
 	} catch (error) {
 		printToConsole(error);
 	}

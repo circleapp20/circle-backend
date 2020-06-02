@@ -17,8 +17,8 @@ export const runQuery = jest
 
 export const runInTransaction = async (callBack: any) => await callBack(entityManager);
 
-export const getSqlInstance = jest.fn().mockResolvedValue({
+export const getSqlInstance = jest.fn(async () => ({
 	manager: entityManager,
-	close: jest.fn().mockResolvedValue(true),
+	close: jest.fn(),
 	transaction: jest.fn((callback) => callback(entityManager))
-});
+}));
