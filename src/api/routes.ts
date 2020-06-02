@@ -12,6 +12,8 @@ import {
 } from './Authentication';
 import {
 	CheckUsernameSchema,
+	ResetPasswordSchema,
+	resetUserPassword,
 	searchUsernameOrEmail,
 	updateProfile,
 	UpdateUserProfileSchema
@@ -61,5 +63,12 @@ export const apiRoutes: IApiRoute[] = [
 		path: '/auth/credentials',
 		method: 'post',
 		controller: verifyUserCredentialsForPasswordReset
+	},
+	{
+		path: '/users/reset/password',
+		method: 'put',
+		controller: resetUserPassword,
+		schema: ResetPasswordSchema,
+		privileges: [Constants.privileges.USER]
 	}
 ];

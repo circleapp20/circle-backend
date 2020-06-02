@@ -50,3 +50,18 @@ export const checkUsernameOrEmailExists = async (username: string, email: string
 		email: Boolean(totalMatchingEmailCount)
 	};
 };
+
+export const updateUserPassword = async (id: string, password: string) => {
+	const user = await runQuery(getUserByIdQuery, [id]);
+	if (!user) throw getBadRequestError('Invalid user account');
+
+	if (bcryptjs.compareSync(password, user.password)) {
+		throw getBadRequestError('Cannot enter the same password');
+	}
+
+	const hashedPassword = bcryptjs.hashSync(password, 12);
+
+	await runQuery(updateUserProfileQuery, [{ id, password: hashedPassword }]);
+
+	return true;
+};

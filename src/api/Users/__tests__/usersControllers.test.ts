@@ -1,6 +1,6 @@
 import { Constants } from '../../../_shared/constants';
 import * as dataService from '../dataService';
-import { searchUsernameOrEmail, updateProfile } from '../usersControllers';
+import { resetUserPassword, searchUsernameOrEmail, updateProfile } from '../usersControllers';
 
 jest.mock('../../../_shared/services/schemaService');
 beforeEach(() => jest.clearAllMocks());
@@ -62,6 +62,16 @@ describe('#usersControllers', () => {
 					success: expect.any(Boolean)
 				})
 			);
+		});
+	});
+
+	describe('#resetUserPassword', () => {
+		test('should send a status of 201 for reset password', async () => {
+			const spy = jest.spyOn(dataService, 'updateUserPassword');
+			spy.mockImplementation(() => Promise.resolve(true));
+			const req: any = { user: { id: '28fn' }, body: { data: { password: '922fif82' } } };
+			await resetUserPassword(req, responseMock);
+			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
 		});
 	});
 });

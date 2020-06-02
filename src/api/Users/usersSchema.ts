@@ -14,3 +14,9 @@ export const CheckUsernameSchema = Joi.object({
 	username: Joi.string().allow(null, ''),
 	email: Joi.string().allow(null, '')
 });
+
+export const ResetPasswordSchema = Joi.object().keys({
+	data: Joi.object().keys({
+		password: Joi.string().required().min(6)
+	})
+});
