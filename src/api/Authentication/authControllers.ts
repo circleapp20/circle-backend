@@ -48,6 +48,10 @@ export const resendUserVerificationCode = async (req: IRequest, res: Response) =
 		sendVerificationCodeByEmail(user.verificationCode, user.email);
 	}
 
+	if (user && user.phoneNumber) {
+		sendVerificationCodeBySMS(user.verificationCode, user.phoneNumber);
+	}
+
 	const responseData = getResponseData(true);
 	res.status(Constants.status.CREATED).json(responseData);
 };

@@ -109,19 +109,22 @@ describe('#authControllers', () => {
 	});
 
 	describe('#resendUserVerificationCode', () => {
-		const user = { id: 'fh3t9j0d2', verificationCode: 'r2gr8', email: 'test@test.com' };
+		const user = {
+			id: 'fh3t9j0d2',
+			verificationCode: 'r2gr8',
+			email: 'test@test.com',
+			phoneNumber: ''
+		};
 		const reqMock: any = { user: { id: 'fh3t9j0d2' } };
 
-		beforeEach(() => {
-			(runQuery.mockResolvedValueOnce as any)(user);
-		});
-
 		test('should send a status of 201 when successful', async () => {
+			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 
 		test('should send verification code to email', async () => {
+			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
 				user.verificationCode,
@@ -130,6 +133,7 @@ describe('#authControllers', () => {
 		});
 
 		test('should send json response for data true', async () => {
+			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(responseMock.json).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -137,6 +141,13 @@ describe('#authControllers', () => {
 					success: expect.any(Boolean)
 				})
 			);
+		});
+
+		test('should send verification code to phoneNumber', async () => {
+			const data = { ...user, phoneNumber: '+2341234567', email: '' };
+			(runQuery.mockResolvedValueOnce as any)(data);
+			await resendUserVerificationCode(reqMock, responseMock);
+			expect(sendVerificationCodeBySMS).toHaveBeenCalled();
 		});
 	});
 });
