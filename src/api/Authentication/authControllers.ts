@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
 import { IAuthUser, IRequest } from '../../_shared/types';
-import { sendVerificationCodeByEmail } from './authService';
+import { sendVerificationCodeByEmail, sendVerificationCodeBySMS } from './authService';
 import {
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues,
@@ -16,6 +16,10 @@ export const verifyUserCredentials = async (req: IRequest, res: Response) => {
 	// send email
 	if (user && req.body.data.email) {
 		sendVerificationCodeByEmail(user.verificationCode, user.email);
+	}
+
+	if (user && req.body.data.phoneNumber) {
+		sendVerificationCodeBySMS(user.verificationCode, user.phoneNumber);
 	}
 
 	const responseData = getResponseData(user);

@@ -7,7 +7,7 @@ import {
 	verifyUserLogin,
 	verifyUserVerificationCode
 } from '../authControllers';
-import { sendVerificationCodeByEmail } from '../authService';
+import { sendVerificationCodeByEmail, sendVerificationCodeBySMS } from '../authService';
 import * as service from '../dataService';
 
 jest.mock('typeorm');
@@ -25,15 +25,21 @@ describe('#authControllers', () => {
 
 	describe('#verifyUserCredentials', () => {
 		const requestMock: any = { body: { data: { email: 'test@test.com' } } };
+		const profile = {
+			id: 'x7i9-3l-n3k4-3i8bi2',
+			verificationCode: '89ej5',
+			email: 'test@test.com',
+			phoneNumber: '+233248252444'
+		};
 
 		test('should create a new user', async () => {
-			(runInTransaction.mockResolvedValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
+			(runInTransaction.mockResolvedValueOnce as any)(profile);
 			await verifyUserCredentials(requestMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 
 		test('should not create a user if exists', (done) => {
-			(runQuery.mockReturnValueOnce as any)({ id: '9383iwe382' });
+			(runQuery.mockReturnValueOnce as any)(profile);
 			verifyUserCredentials(requestMock, responseMock).catch(({ message }) => {
 				expect(responseMock.status).not.toHaveBeenCalled();
 				expect(message).toBe('User already exists');
@@ -41,17 +47,23 @@ describe('#authControllers', () => {
 			});
 		});
 
-		test('should send email', async () => {
-			const createMock = jest.spyOn(service, 'createUserProfileWithDefaultValues');
-			createMock.mockImplementation().mockResolvedValueOnce({
-				id: '393029',
-				verificationCode: '89ej5',
-				email: 'test@test.com'
-			} as any);
-
+		test('should send verification by email', async () => {
+			(runInTransaction.mockResolvedValueOnce as any)(profile);
 			await verifyUserCredentials(requestMock, responseMock);
-			createMock.mockRestore();
-			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith('89ej5', 'test@test.com');
+			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.any(String)
+			);
+		});
+
+		test('should send verification code by sms if phoneNumber', async () => {
+			(runInTransaction.mockResolvedValueOnce as any)(profile);
+			const req: any = { body: { data: { phoneNumber: '+233248252444' } } };
+			await verifyUserCredentials(req, responseMock);
+			expect(sendVerificationCodeBySMS).toHaveBeenCalledWith(
+				expect.any(String),
+				expect.any(String)
+			);
 		});
 	});
 

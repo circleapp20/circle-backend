@@ -8,8 +8,7 @@ import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByCredentialsQuery,
-	getUserByEmailOrPhoneNumberQuery
+	getUserByCredentialsQuery
 } from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
 
@@ -42,7 +41,7 @@ export const createUserProfileWithDefaultValues = async (data: {
 	email?: string;
 	phoneNumber?: string;
 }) => {
-	const user = await runQuery(getUserByEmailOrPhoneNumberQuery, [data]);
+	const user = await runQuery(getUserByCredentialsQuery, [data]);
 	if (user) throw getBadRequestError('User already exists');
 
 	// save user profile into the database

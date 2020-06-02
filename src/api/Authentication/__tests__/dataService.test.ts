@@ -1,4 +1,5 @@
 import { compareSync } from 'bcryptjs';
+import { Constants } from '../../../_shared/constants';
 import { runInsertQuery, runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
@@ -49,16 +50,62 @@ describe('#dataService', () => {
 	});
 
 	describe('#createUserProfileWithDefaultValues', () => {
-		test('should create a new user if not exists', async () => {
-			(runInTransaction.mockResolvedValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
-			await createUserProfileWithDefaultValues({ email: 'test@test.com' });
-			expect(runQuery).toHaveBeenCalled();
-			expect(runInTransaction).toHaveBeenCalled();
+		const profile = {
+			id: 'x7i9-3l-n3k4-3i8bi2',
+			roles: ['user'],
+			email: 'test@test.com',
+			phoneNumber: '+2330102113',
+			username: 'testing',
+			verificationCode: '74ne7p'
+		};
+
+		test('should create new user if email does not exists', async () => {
+			(runQuery.mockResolvedValueOnce as any)(null);
+			(runInTransaction.mockResolvedValueOnce as any)(profile);
+			const user = await createUserProfileWithDefaultValues({ email: 'test@test.com' });
+			expect(user).toEqual(
+				expect.objectContaining({
+					id: expect.any(String),
+					roles: expect.arrayContaining([Constants.privileges.USER]),
+					token: expect.any(String),
+					email: expect.stringMatching('test@test.com'),
+					phoneNumber: expect.any(String),
+					username: expect.any(String),
+					verificationCode: expect.any(String)
+				})
+			);
 		});
 
-		test('should throw an error if user already exists', (done) => {
-			(runQuery.mockReturnValueOnce as any)({ id: 'x7i9-3l-n3k4-3i8bi2' });
+		test('should create new user if phoneNumber does not exists', async () => {
+			(runQuery.mockResolvedValueOnce as any)(null);
+			(runInTransaction.mockResolvedValueOnce as any)(profile);
+			const user = await createUserProfileWithDefaultValues({ phoneNumber: '+2330102113' });
+			expect(user).toEqual(
+				expect.objectContaining({
+					id: expect.any(String),
+					roles: expect.arrayContaining([Constants.privileges.USER]),
+					token: expect.any(String),
+					email: expect.any(String),
+					phoneNumber: expect.any(String),
+					username: expect.any(String),
+					verificationCode: expect.any(String)
+				})
+			);
+		});
+
+		test('should throw an error if email already exists', (done) => {
+			(runQuery.mockResolvedValueOnce as any)(profile);
 			createUserProfileWithDefaultValues({ email: 'test@test.com' }).catch((error) => {
+				expect(error.message).toBe('User already exists');
+				expect(error.status).toBe(400);
+				(runQuery.mockRestore as any)();
+				done();
+			});
+		});
+
+		test('should throw bad request error if phone number already exists', (done) => {
+			(runQuery.mockResolvedValueOnce as any)(profile);
+			createUserProfileWithDefaultValues({ email: '+2339954853' }).catch((error) => {
 				expect(error.message).toBe('User already exists');
 				expect(error.status).toBe(400);
 				(runQuery.mockRestore as any)();
