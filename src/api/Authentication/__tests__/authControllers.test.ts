@@ -8,7 +8,7 @@ import {
 	verifyUserLogin,
 	verifyUserVerificationCode
 } from '../authControllers';
-import { sendVerificationCodeByEmail, sendVerificationCodeBySMS } from '../authService';
+import { sendVerificationCodeByMedia, sendVerificationCodeBySMS } from '../authService';
 import * as service from '../dataService';
 
 jest.mock('typeorm');
@@ -51,19 +51,26 @@ describe('#authControllers', () => {
 		test('should send verification by email', async () => {
 			(runInTransaction.mockResolvedValueOnce as any)(profile);
 			await verifyUserCredentials(requestMock, responseMock);
-			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.any(String)
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('email'),
+					verificationCode: expect.stringMatching(profile.verificationCode),
+					email: expect.stringMatching(profile.email)
+				})
 			);
 		});
 
 		test('should send verification code by sms if phoneNumber', async () => {
-			(runInTransaction.mockResolvedValueOnce as any)(profile);
+			const data = { ...profile, email: '' };
+			(runInTransaction.mockResolvedValueOnce as any)(data);
 			const req: any = { body: { data: { phoneNumber: '+233248252444' } } };
 			await verifyUserCredentials(req, responseMock);
-			expect(sendVerificationCodeBySMS).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.any(String)
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('phoneNumber'),
+					verificationCode: expect.stringMatching(data.verificationCode),
+					phoneNumber: expect.any(String)
+				})
 			);
 		});
 	});
@@ -116,25 +123,29 @@ describe('#authControllers', () => {
 			email: 'test@test.com',
 			phoneNumber: ''
 		};
-		const reqMock: any = { user: { id: 'fh3t9j0d2' } };
+		let reqMock: any = { user: { id: 'fh3t9j0d2' }, query: {} };
+
+		beforeEach(() => {
+			(runQuery.mockResolvedValue as any)(user);
+		});
 
 		test('should send a status of 201 when successful', async () => {
-			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		});
 
 		test('should send verification code to email', async () => {
-			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
-			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
-				user.verificationCode,
-				user.email
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('email'),
+					verificationCode: expect.stringMatching(user.verificationCode),
+					email: expect.stringMatching(user.email)
+				})
 			);
 		});
 
 		test('should send json response for data true', async () => {
-			(runQuery.mockResolvedValueOnce as any)(user);
 			await resendUserVerificationCode(reqMock, responseMock);
 			expect(responseMock.json).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -148,7 +159,26 @@ describe('#authControllers', () => {
 			const data = { ...user, phoneNumber: '+2341234567', email: '' };
 			(runQuery.mockResolvedValueOnce as any)(data);
 			await resendUserVerificationCode(reqMock, responseMock);
-			expect(sendVerificationCodeBySMS).toHaveBeenCalled();
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('phoneNumber'),
+					verificationCode: expect.stringMatching(user.verificationCode),
+					email: expect.stringMatching(''),
+					phoneNumber: expect.any(String)
+				})
+			);
+		});
+
+		test('should send verification code to specified media', async () => {
+			reqMock = { user: { id: 'fh3t9j0d2' }, query: { media: 'email' } };
+			await resendUserVerificationCode(reqMock, responseMock);
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('email'),
+					verificationCode: expect.stringMatching(user.verificationCode),
+					email: expect.stringMatching(user.email)
+				})
+			);
 		});
 	});
 
@@ -162,9 +192,11 @@ describe('#authControllers', () => {
 				email: 'test@test.com'
 			});
 			await verifyUserCredentialsForPasswordReset(req, responseMock);
-			expect(sendVerificationCodeByEmail).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.stringMatching('test@test.com')
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('email'),
+					email: expect.any(String)
+				})
 			);
 			expect(sendVerificationCodeBySMS).not.toHaveBeenCalled();
 			expect(responseMock.json).toHaveBeenCalledWith(
@@ -190,11 +222,12 @@ describe('#authControllers', () => {
 				phoneNumber: '+2339876543'
 			});
 			await verifyUserCredentialsForPasswordReset(req, responseMock);
-			expect(sendVerificationCodeBySMS).toHaveBeenCalledWith(
-				expect.any(String),
-				expect.any(String)
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					media: expect.stringMatching('phoneNumber'),
+					phoneNumber: expect.any(String)
+				})
 			);
-			expect(sendVerificationCodeByEmail).not.toHaveBeenCalled();
 			expect(responseMock.json).toHaveBeenCalledWith(
 				expect.objectContaining({
 					data: expect.objectContaining({
@@ -221,8 +254,12 @@ describe('#authControllers', () => {
 				email: 'test@test.com'
 			});
 			await verifyUserCredentialsForPasswordReset(req, responseMock);
-			expect(sendVerificationCodeByEmail).not.toHaveBeenCalled();
-			expect(sendVerificationCodeBySMS).not.toHaveBeenCalled();
+			expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
+				expect.objectContaining({
+					phoneNumber: expect.stringMatching(''),
+					email: expect.stringMatching('')
+				})
+			);
 			expect(responseMock.json).toHaveBeenCalledWith(
 				expect.objectContaining({
 					data: expect.objectContaining({

@@ -23,3 +23,17 @@ export const sendVerificationCodeBySMS = (code: string, phoneNumber: string) => 
 	const message = `<#> Your circle verification code is :${code}\njdzOJsciqVb`;
 	sendSMSMessage({ message, to: phoneNumber }).catch(printToConsole);
 };
+
+export const sendVerificationCodeByMedia = (args: {
+	verificationCode: string;
+	media: 'email' | 'phoneNumber';
+	email?: string;
+	phoneNumber?: string;
+}) => {
+	const { verificationCode, media, email, phoneNumber } = args;
+	if (email && media === 'email') return sendVerificationCodeByEmail(verificationCode, email);
+	if (phoneNumber && media === 'phoneNumber') {
+		return sendVerificationCodeBySMS(verificationCode, phoneNumber);
+	}
+	return;
+};

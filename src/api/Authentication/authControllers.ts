@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { Constants } from '../../_shared/constants';
 import { getResponseData } from '../../_shared/services/utilities';
 import { IAuthUser, IRequest } from '../../_shared/types';
-import { sendVerificationCodeByEmail, sendVerificationCodeBySMS } from './authService';
+import { sendVerificationCodeByMedia } from './authService';
 import {
 	checkUserVerificationCode,
 	createUserProfileWithDefaultValues,
@@ -14,14 +14,12 @@ import {
 export const verifyUserCredentials = async (req: IRequest, res: Response) => {
 	const user = await createUserProfileWithDefaultValues(req.body.data);
 
-	// send email
-	if (user && req.body.data.email) {
-		sendVerificationCodeByEmail(user.verificationCode, user.email);
-	}
-
-	if (user && req.body.data.phoneNumber) {
-		sendVerificationCodeBySMS(user.verificationCode, user.phoneNumber);
-	}
+	sendVerificationCodeByMedia({
+		media: user.email ? 'email' : 'phoneNumber',
+		verificationCode: user.verificationCode,
+		email: user.email,
+		phoneNumber: user.phoneNumber
+	});
 
 	const responseData = getResponseData(user);
 	res.status(Constants.status.CREATED).json(responseData);
@@ -42,16 +40,15 @@ export const verifyUserLogin = async (req: IRequest, res: Response) => {
 };
 
 export const resendUserVerificationCode = async (req: IRequest, res: Response) => {
+	const { media }: any = req.query;
 	const user = await getUserProfileById(req.user.id);
 
-	// resend verification code to user email
-	if (user && user.email) {
-		sendVerificationCodeByEmail(user.verificationCode, user.email);
-	}
-
-	if (user && user.phoneNumber) {
-		sendVerificationCodeBySMS(user.verificationCode, user.phoneNumber);
-	}
+	sendVerificationCodeByMedia({
+		media: media ? media : user.email ? 'email' : 'phoneNumber',
+		verificationCode: user.verificationCode,
+		email: user.email,
+		phoneNumber: user.phoneNumber
+	});
 
 	const responseData = getResponseData(true);
 	res.status(Constants.status.CREATED).json(responseData);
@@ -70,11 +67,16 @@ export const verifyUserCredentialsForPasswordReset = async (req: IRequest, res: 
 	const { email, verificationCode, phoneNumber } = profile;
 	let message = 'Verification code cannot be sent. User has both email and phone number';
 
+	sendVerificationCodeByMedia({
+		media: phoneNumber ? 'phoneNumber' : 'email',
+		verificationCode,
+		email: email && !phoneNumber ? email : '',
+		phoneNumber: !email && phoneNumber ? phoneNumber : ''
+	});
+
 	if (email && !phoneNumber) {
-		sendVerificationCodeByEmail(verificationCode, email);
 		message = "Verification code sent to user's email";
 	} else if (!email && phoneNumber) {
-		sendVerificationCodeBySMS(verificationCode, phoneNumber);
 		message = "Verification code sent to user's phone number";
 	}
 
