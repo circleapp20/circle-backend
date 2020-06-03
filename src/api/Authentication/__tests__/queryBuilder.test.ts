@@ -77,7 +77,7 @@ describe('#queryBuilder', () => {
 		test('should search database with username if defined', async () => {
 			const values = { username: 'username', phoneNumber: '', email: '' };
 			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('username = :username', {
+			expect(entityManager.where).toHaveBeenCalledWith('u.username = :username', {
 				username: values.username
 			});
 		});
@@ -85,7 +85,7 @@ describe('#queryBuilder', () => {
 		test('should search users with phoneNumber', async () => {
 			const values = { username: '', phoneNumber: '+1-422-847-4939', email: '' };
 			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('phoneNumber = :phoneNumber', {
+			expect(entityManager.where).toHaveBeenCalledWith('u.phoneNumber = :phoneNumber', {
 				phoneNumber: values.phoneNumber
 			});
 		});
@@ -93,7 +93,7 @@ describe('#queryBuilder', () => {
 		test('should search users with email if defined', async () => {
 			const values = { username: '', phoneNumber: '', email: 'test@test.com' };
 			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('email = :email', {
+			expect(entityManager.where).toHaveBeenCalledWith('u.email = :email', {
 				email: values.email
 			});
 		});

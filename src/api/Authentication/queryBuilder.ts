@@ -24,10 +24,10 @@ export const getUserByCredentialsQuery = (
 	values: { email?: string; phoneNumber?: string; username?: string }
 ) => {
 	const { email, phoneNumber, username } = values;
-	const query = manager.getRepository(Users).createQueryBuilder();
-	if (username) query.where('username = :username', { username });
-	else if (phoneNumber) query.where('phoneNumber = :phoneNumber', { phoneNumber });
-	else query.where('email = :email', { email });
+	const query = manager.getRepository(Users).createQueryBuilder('u');
+	if (username) query.where('u.username = :username', { username });
+	else if (phoneNumber) query.where('u.phoneNumber = :phoneNumber', { phoneNumber });
+	else query.where('u.email = :email', { email });
 	return query.getOne();
 };
 
