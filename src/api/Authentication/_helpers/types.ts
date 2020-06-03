@@ -9,4 +9,5 @@ export interface IAddUserProfile {
 	isEmailVerified: boolean;
 	verificationCode: string;
 	roles: string[];
+	name: string;
 }

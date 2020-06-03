@@ -20,6 +20,9 @@ export class BaseModel {
 @Entity()
 export class Users extends BaseModel {
 	@Column()
+	name: string;
+
+	@Column()
 	username: string;
 
 	@Column()

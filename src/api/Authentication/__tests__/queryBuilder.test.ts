@@ -4,7 +4,6 @@ import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByCredentialsQuery,
 	updateUserVerificationCodeQuery
 } from '../queryBuilder';
 import { IAddUserProfile } from '../_helpers/types';
@@ -70,32 +69,6 @@ describe('#queryBuilder', () => {
 		test('should get the total count results of the search', async () => {
 			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
 			expect(entityManager.getCount).toHaveBeenCalled();
-		});
-	});
-
-	describe('#getUserByCredentialsQuery', () => {
-		test('should search database with username if defined', async () => {
-			const values = { username: 'username', phoneNumber: '', email: '' };
-			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('u.username = :username', {
-				username: values.username
-			});
-		});
-
-		test('should search users with phoneNumber', async () => {
-			const values = { username: '', phoneNumber: '+1-422-847-4939', email: '' };
-			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('u.phoneNumber = :phoneNumber', {
-				phoneNumber: values.phoneNumber
-			});
-		});
-
-		test('should search users with email if defined', async () => {
-			const values = { username: '', phoneNumber: '', email: 'test@test.com' };
-			await getUserByCredentialsQuery(entityManager, values);
-			expect(entityManager.where).toHaveBeenCalledWith('u.email = :email', {
-				email: values.email
-			});
 		});
 	});
 

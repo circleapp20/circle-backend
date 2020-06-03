@@ -6,6 +6,7 @@ import { runInTransaction, runQuery } from '../../_shared/services/dBService';
 import {
 	countMatchingEmailQuery,
 	countMatchingUsernameQuery,
+	countUsersMatchingSearchQuery,
 	updateUserProfileQuery
 } from './queryBuilder';
 import { uploadUserProfileImage } from './usersService';
@@ -21,13 +22,23 @@ export const updateUserTransaction = (data: IUpdateUserProfile) => {
 };
 
 export const updateUserProfile = async (data: IUpdateUserProfile) => {
-	const { username, id, password: rawPassword, image } = data;
+	const { username, id, password: rawPassword, image, email, phoneNumber } = data;
 	if (!id) throw getBadRequestError('id is required');
 
 	if (!rawPassword) throw getBadRequestError('password is required');
 
-	const count = await runQuery(countMatchingUsernameQuery, [username]);
-	if (count) throw getBadRequestError('username already exists');
+	const count = await runQuery(countUsersMatchingSearchQuery, [{ username, id }]);
+	if (count !== 1) throw getBadRequestError('username already exists');
+
+	if (phoneNumber) {
+		const total = await runQuery(countUsersMatchingSearchQuery, [{ phoneNumber, id }]);
+		if (total !== 1) throw getBadRequestError('phone number already exists');
+	}
+
+	if (email) {
+		const total = await runQuery(countUsersMatchingSearchQuery, [{ email, id }]);
+		if (total !== 1) throw getBadRequestError('email already exists');
+	}
 
 	// upload image to firebase storage bucket
 	const downloadURL = await uploadUserProfileImage(id, image);
