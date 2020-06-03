@@ -35,7 +35,10 @@ describe('#dataService', () => {
 				id: 'x7i9-3l-n3k4-3i8bi2',
 				image: '',
 				password: '',
-				username: ''
+				username: '',
+				email: '',
+				phoneNumber: '',
+				name: ''
 			};
 
 			const transaction = updateUserTransaction(values);
@@ -57,11 +60,14 @@ describe('#dataService', () => {
 			id: 'x7i9-3l-n3k4-3i8bi2',
 			image: '',
 			password: 'password',
-			username: ''
+			username: '',
+			email: '',
+			phoneNumber: '',
+			name: ''
 		};
 
 		test('should update profile with valid details', async () => {
-			(runQuery.mockResolvedValueOnce as any)(0);
+			(runQuery.mockResolvedValueOnce as any)(1);
 			(runInTransaction.mockImplementation as any)(jest.fn()).mockResolvedValueOnce({
 				id: ''
 			});
@@ -71,7 +77,7 @@ describe('#dataService', () => {
 		});
 
 		test('should throw error if username already exists', (done) => {
-			(runQuery.mockResolvedValueOnce as any)(1);
+			(runQuery.mockResolvedValueOnce as any)(2);
 			updateUserProfile(values).catch((error) => {
 				expect(error.message).toBe('username already exists');
 				done();
@@ -90,6 +96,26 @@ describe('#dataService', () => {
 			const data = Object.assign({}, values, { password: '' });
 			updateUserProfile(data).catch((error) => {
 				expect(error.message).toBe('password is required');
+				done();
+			});
+		});
+
+		test('should throw error if another user has the same email', (done) => {
+			runQuery.mockResolvedValueOnce(1);
+			runQuery.mockResolvedValueOnce(2);
+			const data = Object.assign({}, values, { email: 'testing@test.com' });
+			updateUserProfile(data).catch((error) => {
+				expect(error.message).toBe('email already exists');
+				done();
+			});
+		});
+
+		test('should throw error if phone number already exists', (done) => {
+			runQuery.mockResolvedValueOnce(1);
+			runQuery.mockResolvedValueOnce(2);
+			const data = Object.assign({}, values, { phoneNumber: '555-555-5555' });
+			updateUserProfile(data).catch((error) => {
+				expect(error.message).toBe('phone number already exists');
 				done();
 			});
 		});

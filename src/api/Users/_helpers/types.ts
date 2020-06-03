@@ -5,4 +5,7 @@ export interface IUpdateUserProfile {
 	dob: Date;
 	image: string;
 	biography: string;
+	name: string;
+	email: string;
+	phoneNumber: string;
 }

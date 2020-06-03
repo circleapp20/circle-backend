@@ -19,18 +19,6 @@ export const countMatchingIdAndCodeQuery = (
 		.getCount();
 };
 
-export const getUserByCredentialsQuery = (
-	manager: EntityManager,
-	values: { email?: string; phoneNumber?: string; username?: string }
-) => {
-	const { email, phoneNumber, username } = values;
-	const query = manager.getRepository(Users).createQueryBuilder('u');
-	if (username) query.where('u.username = :username', { username });
-	else if (phoneNumber) query.where('u.phoneNumber = :phoneNumber', { phoneNumber });
-	else query.where('u.email = :email', { email });
-	return query.getOne();
-};
-
 export const updateUserVerificationCodeQuery = (
 	manager: EntityManager,
 	values: { id: string; verificationCode: string }

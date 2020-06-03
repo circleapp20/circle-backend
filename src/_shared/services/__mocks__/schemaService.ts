@@ -1,5 +1,3 @@
-jest.requireMock('typeorm');
-
 export class BaseModel {
 	id: string;
 	createdAt: Date;
@@ -7,6 +5,7 @@ export class BaseModel {
 }
 
 export class Users extends BaseModel {
+	name: string;
 	username: string;
 	password: string;
 	dob: Date;

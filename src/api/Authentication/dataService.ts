@@ -2,13 +2,12 @@ import bcryptjs from 'bcryptjs';
 import { EntityManager } from 'typeorm';
 import { Constants } from '../../_shared/constants';
 import { getBadRequestError, getSignedAuthToken } from '../../_shared/services';
-import { getUserByIdQuery } from '../../_shared/services/dataService';
+import { getUserByCredentialsQuery, getUserByIdQuery } from '../../_shared/services/dataService';
 import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
 import { generateCodeFromNumber } from '../../_shared/services/utilities';
 import {
 	addUserProfileQuery,
 	countMatchingIdAndCodeQuery,
-	getUserByCredentialsQuery,
 	updateUserVerificationCodeQuery
 } from './queryBuilder';
 import { IAddUserProfile } from './_helpers/types';
@@ -29,7 +28,8 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			phoneNumber: phoneNumber || '',
 			isEmailVerified: false,
 			verificationCode,
-			roles: [Constants.privileges.USER]
+			roles: [Constants.privileges.USER],
+			name: ''
 		};
 
 		const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
