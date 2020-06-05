@@ -14,18 +14,17 @@ describe('#utilities', () => {
 
 		test('should generate a random text if non is present', () => {
 			const code = generateCodeFromNumber();
-			const isString = typeof code === 'string';
-			expect(isString).toBeTruthy();
-			expect(code.length).not.toBe(0);
+			expect(code).toEqual(expect.any(String));
 		});
 
-		test('should not generate same code more than once', () => {
-			const codes = Array.from(Array(10), (_, idx) => generateCodeFromNumber(idx));
-			const matchingCodes = codes.filter((code, _, arr) => {
-				const frequency = arr.filter((c) => c === code).length;
-				return frequency > 1;
-			});
-			expect(matchingCodes.length).toBe(0);
+		test('should not have . in generated code', () => {
+			const code = generateCodeFromNumber();
+			expect(code.includes('.')).not.toBeTruthy();
+		});
+
+		test('should generate code with only 6 characters', () => {
+			const code = generateCodeFromNumber();
+			expect(code.length).toBe(6);
 		});
 	});
 

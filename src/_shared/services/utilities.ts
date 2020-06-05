@@ -1,7 +1,7 @@
 import { IResponseData } from '../types';
 
 export const generateRandomValue = () => {
-	return Math.floor(Math.random() * 10e7);
+	return Math.random();
 };
 
 // generateCodeFromNumber function generates a text from the value
@@ -9,7 +9,7 @@ export const generateRandomValue = () => {
 // generateRandomValue function and returns it's code
 export const generateCodeFromNumber = (value?: number) => {
 	const codeNumber = value ? value : generateRandomValue();
-	return codeNumber.toString(32);
+	return codeNumber.toString(32).replace('.', '').slice(0, 6);
 };
 
 export const getResponseData = <T = any>(data?: T, success = true) => {
