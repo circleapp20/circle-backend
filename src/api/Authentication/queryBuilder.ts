@@ -7,8 +7,7 @@ export const countMatchingIdAndCodeQuery = (
 	verificationCode: string
 ) => {
 	return manager
-		.getRepository(Users)
-		.createQueryBuilder('u')
+		.createQueryBuilder(Users, 'u')
 		.where('u.id = :id', { id })
 		.andWhere('u.verificationCode = :code', { code: verificationCode })
 		.getCount();
@@ -20,10 +19,9 @@ export const updateUserVerificationCodeQuery = (
 ) => {
 	const { id, verificationCode } = values;
 	return manager
-		.getRepository(Users)
-		.createQueryBuilder()
+		.createQueryBuilder(Users, 'u')
 		.update()
 		.set({ verificationCode })
-		.where('id = :id', { id })
+		.where('u.id = :id', { id })
 		.execute();
 };

@@ -28,12 +28,12 @@ describe('#queryBuilder', () => {
 
 		test('should call the query builder on the Users table', async () => {
 			await updateUserProfileQuery(entityManager, values);
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+			expect(entityManager.createQueryBuilder).toHaveBeenCalledWith();
 		});
 
 		test('should call update query builder on the Users table', async () => {
 			await updateUserProfileQuery(entityManager, values);
-			expect(entityManager.update).toHaveBeenCalled();
+			expect(entityManager.update).toHaveBeenCalledWith(Users);
 		});
 
 		test('should call set with new values for user expect the id', async () => {
@@ -53,7 +53,9 @@ describe('#queryBuilder', () => {
 		test('should search Users table matching username', async () => {
 			const username = 'test';
 			await countMatchingUsernameQuery(entityManager, username);
-			expect(entityManager.where).toHaveBeenCalledWith('username = :username', { username });
+			expect(entityManager.where).toHaveBeenCalledWith('u.username = :username', {
+				username
+			});
 			expect(entityManager.getCount).toHaveBeenCalled();
 		});
 	});
@@ -61,13 +63,13 @@ describe('#queryBuilder', () => {
 	describe('#countMatchingEmailQuery', () => {
 		test('should create query builder with the Users schema', async () => {
 			await countMatchingEmailQuery(entityManager, 'test@test.com');
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+			expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'u');
 		});
 
 		test('should search users table with email', async () => {
 			const email = 'test@test.com';
 			await countMatchingEmailQuery(entityManager, email);
-			expect(entityManager.where).toHaveBeenCalledWith('email = :email', { email });
+			expect(entityManager.where).toHaveBeenCalledWith('u.email = :email', { email });
 		});
 
 		test('should call getCount on the entityManager', async () => {
@@ -86,7 +88,7 @@ describe('#queryBuilder', () => {
 
 		test('should search the users table', async () => {
 			await countUsersMatchingSearchQuery(entityManager, values);
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+			expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'u');
 		});
 
 		test('should call where with the user id', async () => {

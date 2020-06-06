@@ -13,7 +13,7 @@ describe('#queryBuilder', () => {
 
 		test('should search users table', async () => {
 			await countMatchingIdAndCodeQuery(entityManager, id, verificationCode);
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+			expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'u');
 		});
 
 		test('should use id in the where clause', async () => {
@@ -38,25 +38,21 @@ describe('#queryBuilder', () => {
 		const values = { id: '39fn939f9', verificationCode: '384kde' };
 		test('should update the users table', async () => {
 			await updateUserVerificationCodeQuery(entityManager, values);
-			expect(entityManager.getRepository).toHaveBeenCalledWith(Users);
+			expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'u');
 		});
 
 		test('should set the new verification code', async () => {
 			await updateUserVerificationCodeQuery(entityManager, values);
 			expect(entityManager.set).toHaveBeenCalledWith(
-				expect.objectContaining({
-					verificationCode: expect.any(String)
-				})
+				expect.objectContaining({ verificationCode: expect.any(String) })
 			);
 		});
 
 		test('should update only where the id matches the user id', async () => {
 			await updateUserVerificationCodeQuery(entityManager, values);
 			expect(entityManager.where).toHaveBeenCalledWith(
-				'id = :id',
-				expect.objectContaining({
-					id: expect.any(String)
-				})
+				'u.id = :id',
+				expect.objectContaining({ id: expect.any(String) })
 			);
 		});
 
