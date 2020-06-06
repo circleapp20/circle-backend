@@ -12,5 +12,7 @@ export const entityManagerMock: any = {
 	andWhere: jest.fn().mockReturnThis(),
 	update: jest.fn().mockReturnThis(),
 	set: jest.fn().mockReturnThis(),
-	orWhere: jest.fn().mockReturnThis()
+	orWhere: jest.fn().mockReturnThis(),
+	setParameter: jest.fn().mockReturnThis(),
+	limit: jest.fn().mockReturnThis()
 };

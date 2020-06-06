@@ -3,15 +3,15 @@ import { Express, json, Router, urlencoded } from 'express';
 import { apiRoutes } from './api/routes';
 import { Constants } from './_shared/constants';
 import {
-	createDBSchema,
 	errorMiddleware,
 	getApiRouter,
 	getNextRequestHandler,
-	getNextRouter
+	getNextRouter,
+	setupCircleDatabase
 } from './_shared/services';
 
 export const bootstrap = async (app: Express, callBack?: () => void) => {
-	await createDBSchema();
+	await setupCircleDatabase();
 
 	const handle = await getNextRequestHandler();
 

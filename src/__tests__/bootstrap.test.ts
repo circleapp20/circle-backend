@@ -10,7 +10,7 @@ describe('#bootstrap', () => {
 	beforeEach(() => jest.clearAllMocks());
 
 	const app: any = { listen: jest.fn(), use: jest.fn(), all: jest.fn() };
-	const mockFn = jest.spyOn(storageService, 'createDBSchema').mockImplementation();
+	const mockFn = jest.spyOn(storageService, 'setupCircleDatabase').mockImplementation();
 
 	test('should call the listen on express', async () => {
 		await bootstrap(app);
