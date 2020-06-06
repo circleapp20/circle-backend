@@ -7,4 +7,5 @@ export * from './schemaService';
 export * from './serverService';
 export * from './smsService';
 export * from './storageService';
+export * from './typeService';
 export * from './utilities';

@@ -1,6 +1,8 @@
 import { Users } from '../../../_shared/services';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
-import { getUserByCredentialsQuery, getUserByIdQuery } from '../dataService';
+import { Constants } from '../../constants';
+import { addUserProfileQuery, getUserByCredentialsQuery, getUserByIdQuery } from '../dataService';
+import { IAddUserProfile } from '../typeService';
 
 jest.mock('../schemaService');
 
@@ -38,6 +40,39 @@ describe('#dataService', () => {
 			expect(entityManager.where).toHaveBeenCalledWith('u.email = :email', {
 				email: values.email
 			});
+		});
+	});
+
+	describe('#addUserProfileQuery', () => {
+		const profile: IAddUserProfile = {
+			username: '',
+			password: '',
+			dob: new Date(),
+			image: '',
+			biography: '',
+			email: '',
+			phoneNumber: '',
+			isEmailVerified: false,
+			verificationCode: '',
+			roles: [Constants.privileges.USER],
+			name: ''
+		};
+
+		test('should be called with an entity manager', async () => {
+			await addUserProfileQuery(entityManager, profile);
+			expect(entityManager.insert).toHaveBeenCalledTimes(1);
+			expect(entityManager.values).toHaveBeenCalledTimes(1);
+			expect(entityManager.execute).toHaveBeenCalledTimes(1);
+		});
+
+		test('should call values with profile value', async () => {
+			await addUserProfileQuery(entityManager, profile);
+			expect(entityManager.values).toHaveBeenCalledWith(profile);
+		});
+
+		test('should return insert query results', async () => {
+			const results = await addUserProfileQuery(entityManager, profile);
+			expect(results).toEqual({ generatedMaps: [] });
 		});
 	});
 });

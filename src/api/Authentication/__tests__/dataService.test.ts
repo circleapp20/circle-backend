@@ -1,5 +1,6 @@
 import { compareSync } from 'bcryptjs';
 import { Constants } from '../../../_shared/constants';
+import * as dataService from '../../../_shared/services/dataService';
 import { runInsertQuery, runInTransaction, runQuery } from '../../../_shared/services/dBService';
 import { entityManagerMock as entityManager } from '../../../__testSetup__';
 import {
@@ -10,7 +11,6 @@ import {
 	getUserProfileById,
 	verifyUserLoginCredentials
 } from '../dataService';
-import * as queryBuilder from '../queryBuilder';
 
 jest.mock('../../../_shared/services/schemaService');
 jest.mock('../../../_shared/services/dBService');
@@ -23,7 +23,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('#dataService', () => {
 	describe('#addUserTransaction', () => {
-		const addMock = jest.spyOn(queryBuilder, 'addUserProfileQuery');
+		const addMock = jest.spyOn(dataService, 'addUserProfileQuery');
 		addMock.mockImplementation();
 
 		test('should create user with email', async () => {

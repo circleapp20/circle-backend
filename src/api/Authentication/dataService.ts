@@ -1,16 +1,15 @@
 import bcryptjs from 'bcryptjs';
 import { EntityManager } from 'typeorm';
 import { Constants } from '../../_shared/constants';
-import { getBadRequestError, getSignedAuthToken } from '../../_shared/services';
-import { getUserByCredentialsQuery, getUserByIdQuery } from '../../_shared/services/dataService';
-import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
-import { generateCodeFromNumber } from '../../_shared/services/utilities';
+import { getBadRequestError, getSignedAuthToken, IAddUserProfile } from '../../_shared/services';
 import {
 	addUserProfileQuery,
-	countMatchingIdAndCodeQuery,
-	updateUserVerificationCodeQuery
-} from './queryBuilder';
-import { IAddUserProfile } from './_helpers/types';
+	getUserByCredentialsQuery,
+	getUserByIdQuery
+} from '../../_shared/services/dataService';
+import { runInsertQuery, runInTransaction, runQuery } from '../../_shared/services/dBService';
+import { generateCodeFromNumber } from '../../_shared/services/utilities';
+import { countMatchingIdAndCodeQuery, updateUserVerificationCodeQuery } from './queryBuilder';
 
 export const addUserTransaction = (email = '', phoneNumber = '') => {
 	return async (manager: EntityManager) => {

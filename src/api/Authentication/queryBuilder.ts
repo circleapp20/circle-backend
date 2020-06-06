@@ -1,10 +1,5 @@
 import { EntityManager } from 'typeorm';
 import { Users } from '../../_shared/services';
-import { IAddUserProfile } from './_helpers/types';
-
-export const addUserProfileQuery = (manager: EntityManager, values: IAddUserProfile) => {
-	return manager.getRepository(Users).createQueryBuilder().insert().values(values).execute();
-};
 
 export const countMatchingIdAndCodeQuery = (
 	manager: EntityManager,
