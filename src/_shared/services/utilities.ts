@@ -18,9 +18,13 @@ export const getResponseData = <T = any>(data?: T, success = true) => {
 	return response;
 };
 
-export const printToConsole = (args: any) => {
-	const date = new Date().toUTCString();
-	console.log(`[${date}]:circle-backend - ${String(args).toString()}`);
+export const printToConsole = (args: any, level = 'INFO') => {
+	const timestamp = new Date().toUTCString();
+	let textToPrint = args;
+	if (typeof args === 'object' && !Array.isArray(args)) {
+		textToPrint = JSON.stringify(args, null, 2);
+	}
+	console.log(`\x1b[32m[${timestamp}] [${level}] [circle] -\x1b[0m ${textToPrint}`);
 };
 
 export const getMetaDataFromDataURI = (dataUri: string) => {
