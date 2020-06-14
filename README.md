@@ -6,7 +6,9 @@ This project is built with Typescript, therefore it's highly recommended for con
 
 ## Development
 
-To start development on circle, you need to have Google Cloud account and a firebase account. These can be easily accessed if you have a gmail account. Circle makes use of nodemailer to send its own mail to various clients.
+Circle was developed using node version 12.18.0 and yarn version 1.22.4. Install this version of node and yarn using either nvm or downloading the specific versions from the website.
+
+You need to have Google Cloud account and a firebase account. These can be easily accessed if you have a gmail account. Circle makes use of nodemailer to send its own mail to various clients.
 
 The nodemailer makes use of Google OAuth2 to send emails to clients. Check [here]() to setup nodemailer with Google OAuth2
 

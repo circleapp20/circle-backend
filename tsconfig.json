@@ -3,30 +3,15 @@
 	"compilerOptions": {
 		"module": "esnext",
 		"noEmit": true,
-		"isolatedModules": true,
 		"jsx": "preserve",
-		"baseUrl": ".",
+		"baseUrl": "./src",
 		"allowSyntheticDefaultImports": true,
 		"lib": ["esnext", "dom"],
 		"target": "es5",
 		"allowJs": true,
-		"skipLibCheck": true,
 		"strict": false,
-		"forceConsistentCasingInFileNames": true,
-		"esModuleInterop": true,
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true
+		"moduleResolution": "node"
 	},
 	"include": ["src", "next-env.d.ts"],
-	"exclude": [
-		"**/*.tsx",
-		".next",
-		"next.config.js",
-		"**/__mocks__",
-		"**/__testSetup__",
-		"**/__tests__",
-		"src/setupTests.ts"
-	]
+	"exclude": [".next", "next.config.js"]
 }

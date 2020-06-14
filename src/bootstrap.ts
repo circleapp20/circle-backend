@@ -1,14 +1,10 @@
 import cors from 'cors';
 import { Express, json, Router, urlencoded } from 'express';
-import { apiRoutes } from './api/routes';
-import { Constants } from './_shared/constants';
-import {
-	errorMiddleware,
-	getApiRouter,
-	getNextRequestHandler,
-	getNextRouter,
-	setupCircleDatabase
-} from './_shared/services';
+import { Constants } from 'shared/constants';
+import { setupCircleDatabase } from 'shared/node/database';
+import { getApiRouter, getNextRequestHandler, getNextRouter } from 'shared/node/enhancers';
+import { errorMiddleware } from 'shared/node/errors';
+import { apiRoutes } from './apiRoutes';
 
 export const bootstrap = async (app: Express, callBack?: () => void) => {
 	await setupCircleDatabase();

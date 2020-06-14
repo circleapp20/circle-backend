@@ -2,9 +2,7 @@
 	"extends": "./tsconfig.base.json",
 	"complierOptions": {
 		"module": "commonjs",
-		"noEmit": true,
-		"outDir": "./dist",
-		"jsx": "preserve"
+		"noEmit": false
 	},
 	"exclude": [
 		"**/*.tsx",

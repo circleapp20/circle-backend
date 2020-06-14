@@ -1,16 +1,16 @@
+import { Constants } from 'shared/constants';
+import * as database from 'shared/node/database';
 import { bootstrap } from '../bootstrap';
-import { Constants } from '../_shared/constants';
-import * as storageService from '../_shared/services/storageService';
 
 jest.mock('cors');
-jest.mock('../_shared/services/serverService');
-jest.mock('../_shared/services/schemaService');
+jest.mock('shared/node/enhancers');
+jest.mock('shared/node/schema');
 
 describe('#bootstrap', () => {
 	beforeEach(() => jest.clearAllMocks());
 
 	const app: any = { listen: jest.fn(), use: jest.fn(), all: jest.fn() };
-	const mockFn = jest.spyOn(storageService, 'setupCircleDatabase').mockImplementation();
+	const mockFn = jest.spyOn(database, 'setupCircleDatabase').mockImplementation();
 
 	test('should call the listen on express', async () => {
 		await bootstrap(app);
