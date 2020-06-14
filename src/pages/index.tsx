@@ -1,7 +1,3 @@
-import React from 'react';
+import { Home } from 'feature/web/home/Home';
 
-const Index: React.FC = () => {
-	return <div>Hello world</div>;
-};
-
-export default Index;
+export default Home;
