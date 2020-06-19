@@ -4,7 +4,11 @@ import { bootstrap } from '../bootstrap';
 
 jest.mock('cors');
 jest.mock('shared/node/enhancers');
-jest.mock('shared/node/schema');
+jest.mock('shared/common/schema/entities');
+jest.mock('shared/common/schema/users');
+jest.mock('shared/common/schema/fellows');
+jest.mock('shared/common/schema/baseModel');
+jest.mock('shared/common/schema/locations');
 
 describe('#bootstrap', () => {
 	beforeEach(() => jest.clearAllMocks());

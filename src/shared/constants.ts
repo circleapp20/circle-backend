@@ -18,7 +18,7 @@ export const Constants = {
 		DATABASE_URL: process.env.DATABASE_URL,
 		MAIL_USER: process.env.MAIL_USER,
 		MAIL_PASSWORD: process.env.MAIL_PASSWORD,
-		SECRET: '02gv8989je9n8209nj089a089hq39t4v09',
+		SECRET: process.env.CIRCLE_SECRET_KEY as string,
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 		GOOGLE_CLIENT_REFRESH_TOKEN: process.env.GOOGLE_CLIENT_REFRESH_TOKEN,
@@ -31,10 +31,13 @@ export const Constants = {
 	status: { ...Status },
 	privileges: {
 		SUPER_ADMIN: 'super_admin',
-		USER: 'user'
+		USER: 'user',
+		FELLOW: 'fellow',
+		LEAD_FELLOW: 'lead_fellow'
 	},
 	misc: {
-		NODE_ENV: process.env.NODE_ENV
+		NODE_ENV: process.env.NODE_ENV,
+		BCRYPT_HASHING_SALT: 12
 	},
 	externals: {
 		FIREBASE_DATABASE_URL: 'https://circle-backend-92fb6.firebaseio.com',

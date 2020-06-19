@@ -1,4 +1,4 @@
-import { Users } from 'shared/node/schema';
+import { Users } from 'shared/common/schema/users';
 import { EntityManager } from 'typeorm';
 
 export const countMatchingIdAndCodeQuery = (

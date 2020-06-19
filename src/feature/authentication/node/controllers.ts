@@ -5,7 +5,7 @@ import {
 	getUserAccountWithCredentials,
 	getUserProfileById,
 	verifyUserLoginCredentials
-} from 'feature/authentication/node/dataService';
+} from 'feature/authentication/node/authService';
 import { sendVerificationCodeByMedia } from 'feature/authentication/node/messaging';
 import { getResponseData } from 'shared/common/utilities';
 import { Constants } from 'shared/constants';
@@ -80,6 +80,8 @@ export const verifyUserCredentialsForPasswordReset = async (req: IRequest, res: 
 		message = "Verification code sent to user's phone number";
 	}
 
-	const responseData = getResponseData({ user: profile, message });
+	const { verificationCode: vCode, ...other } = profile;
+
+	const responseData = getResponseData({ user: other, message });
 	res.status(Constants.status.CREATED).json(responseData);
 };

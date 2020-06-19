@@ -1,5 +1,5 @@
 import { IUpdateUserProfile } from 'feature/users/types';
-import { Users } from 'shared/node/schema';
+import { Users } from 'shared/common/schema/users';
 import { EntityManager } from 'typeorm';
 
 export const updateUserProfileQuery = (manager: EntityManager, values: IUpdateUserProfile) => {

@@ -1,7 +1,10 @@
+import { entities } from 'shared/common/schema/entities';
+import { Users } from 'shared/common/schema/users';
+import * as utils from 'shared/common/utilities';
 import { Constants } from 'shared/constants';
 import * as database from 'shared/node/database';
+import * as encryption from 'shared/node/encryption';
 import * as queries from 'shared/node/queries';
-import { entities, Users } from 'shared/node/schema';
 import { entityManager as manager } from 'shared/testUtils/node/entityManager';
 import * as typeorm from 'typeorm';
 
@@ -17,7 +20,13 @@ jest.mock('typeorm', () => {
 		})
 	};
 });
-jest.mock('shared/node/schema');
+jest.mock('shared/common/schema/users');
+jest.mock('shared/common/schema/fellows');
+jest.mock('shared/common/schema/locations');
+jest.mock('shared/common/schema/entities');
+jest.mock('bcryptjs', () => ({
+	hashSync: jest.fn().mockReturnValue('39fm9n30o2f90tn9dm299')
+}));
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -172,11 +181,17 @@ describe('#createDBSchema', () => {
 });
 
 describe('#addUserAsSuperAdmin', () => {
-	test('should call the runInsertQuery with the profile of the super admin', async () => {
+	const spy = jest.spyOn(utils, 'generateCodeFromNumber');
+
+	beforeEach(() => {
+		manager.execute.mockReturnValueOnce({ generatedMaps: [{ id: 'userId' }] });
+	});
+
+	test('should add super admin to users table', async () => {
 		const spy = jest.spyOn(queries, 'addUserProfileQuery');
 		await database.addUserAsSuperAdmin(manager);
 		expect(spy).toHaveBeenCalledWith(
-			expect.objectContaining(manager),
+			manager,
 			expect.objectContaining({
 				biography: expect.any(String),
 				dob: expect.any(Date),
@@ -188,10 +203,39 @@ describe('#addUserAsSuperAdmin', () => {
 				phoneNumber: expect.any(String),
 				roles: expect.arrayContaining([
 					Constants.privileges.SUPER_ADMIN,
-					Constants.privileges.USER
+					Constants.privileges.USER,
+					Constants.privileges.FELLOW,
+					Constants.privileges.LEAD_FELLOW
 				]),
 				username: expect.any(String),
 				verificationCode: expect.any(String)
+			})
+		);
+	});
+
+	test('should generate a secret code', async () => {
+		await database.addUserAsSuperAdmin(manager);
+		expect(spy).toHaveBeenCalledTimes(1);
+	});
+
+	test('should encrypt the generated secret code', async () => {
+		const encryptSpy = jest.spyOn(encryption, 'encryptData');
+		await database.addUserAsSuperAdmin(manager);
+		expect(encryptSpy).toHaveBeenLastCalledWith(
+			expect.objectContaining({
+				text: expect.any(String)
+			})
+		);
+	});
+
+	test('should add user as a fellow', async () => {
+		const spy = jest.spyOn(queries, 'addUserToFellowsQuery');
+		await database.addUserAsSuperAdmin(manager);
+		expect(spy).toHaveBeenCalledWith(
+			manager,
+			expect.objectContaining({
+				id: expect.stringMatching('userId'),
+				secretCode: expect.any(String)
 			})
 		);
 	});
@@ -199,6 +243,7 @@ describe('#addUserAsSuperAdmin', () => {
 
 describe('#createCircleSuperAdmin', () => {
 	test('should create a super admin if no super exists', async () => {
+		manager.execute.mockReturnValueOnce({ generatedMaps: [{ id: 'userId' }] });
 		const spy = jest.spyOn(queries, 'addUserProfileQuery');
 		manager.getCount.mockReturnValueOnce(0);
 		await database.createCircleSuperAdmin();
@@ -215,6 +260,11 @@ describe('#createCircleSuperAdmin', () => {
 
 describe('#setupCircleDatabase', () => {
 	const spy = jest.spyOn(queries, 'addUserProfileQuery');
+
+	beforeEach(() => {
+		manager.execute.mockReturnValueOnce({ generatedMaps: [{ id: 'userId' }] });
+		manager.execute.mockReturnValueOnce({ generatedMaps: [{ id: 'userId' }] });
+	});
 
 	test('should call createCircleSuperAdmin when database exists or created', async () => {
 		await database.setupCircleDatabase();

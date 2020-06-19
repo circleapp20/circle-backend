@@ -8,6 +8,7 @@ import {
 import { uploadUserProfileImage } from 'feature/users/node/uploads';
 import { IUpdateUserProfile } from 'feature/users/types';
 import { getBadRequestError } from 'shared/common/errors';
+import { Constants } from 'shared/constants';
 import { runInTransaction, runQuery } from 'shared/node/database';
 import { getUserByIdQuery } from 'shared/node/queries';
 import { EntityManager } from 'typeorm';
@@ -70,7 +71,7 @@ export const updateUserPassword = async (id: string, password: string) => {
 		throw getBadRequestError('Cannot enter the same password');
 	}
 
-	const hashedPassword = bcryptjs.hashSync(password, 12);
+	const hashedPassword = bcryptjs.hashSync(password, Constants.misc.BCRYPT_HASHING_SALT);
 
 	await runQuery(updateUserProfileQuery, [{ id, password: hashedPassword }]);
 

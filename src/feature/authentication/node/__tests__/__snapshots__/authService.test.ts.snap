@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#checkUserVerificationCode should throw if id is empty 1`] = `"user id and verification code are required"`;
+
+exports[`#checkUserVerificationCode should throw if user is null 1`] = `"Invalid user account"`;
+
+exports[`#checkUserVerificationCode should throw if verificationCode is empty 1`] = `"user id and verification code are required"`;
+
+exports[`#createUserProfileWithDefaultValues should throw an error if email already exists 1`] = `"User already exists"`;
+
+exports[`#createUserProfileWithDefaultValues should throw bad request error if phone number already exists 1`] = `"User already exists"`;
+
+exports[`#getUserAccountWithCredentials should throw if user is not found 1`] = `"Invalid user account"`;
+
+exports[`#getUserProfileById should throw error if user does not exists 1`] = `"Invalid user account"`;

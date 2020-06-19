@@ -1,10 +1,16 @@
 import bcryptJs from 'bcryptjs';
+import { entities } from 'shared/common/schema/entities';
+import { Users } from 'shared/common/schema/users';
 import { generateCodeFromNumber } from 'shared/common/utilities';
 import { Constants } from 'shared/constants';
-import { addUserProfileQuery, countExistingSuperAdminQuery } from 'shared/node/queries';
-import { entities, Users } from 'shared/node/schema';
+import {
+	addUserProfileQuery,
+	addUserToFellowsQuery,
+	countExistingSuperAdminQuery
+} from 'shared/node/queries';
 import { IAddUserProfile } from 'shared/types';
 import * as typeorm from 'typeorm';
+import { encryptData } from './encryption';
 
 export const getSqlInstance = (name = 'default') => {
 	let options: typeorm.ConnectionOptions = {
@@ -30,7 +36,7 @@ interface RunInsertQueryType extends Partial<jest.Mock> {
 		queryBuilder: (
 			manager: typeorm.EntityManager,
 			...params: any[]
-		) => Promise<typeorm.InsertResult>,
+		) => Promise<typeorm.InsertResult | undefined>,
 		params: any[],
 		manager?: typeorm.EntityManager
 	): Promise<typeorm.ObjectLiteral[]>;
@@ -40,13 +46,13 @@ export const runInsertQuery: RunInsertQueryType = async (
 	queryBuilder: (
 		manager: typeorm.EntityManager,
 		...params: any[]
-	) => Promise<typeorm.InsertResult>,
+	) => Promise<typeorm.InsertResult | undefined>,
 	params: any[],
 	manager?: typeorm.EntityManager
 ) => {
 	const getQueryResults = async (entityManager: typeorm.EntityManager) => {
 		const results = await queryBuilder(entityManager, ...params);
-		return results.generatedMaps;
+		return results ? results.generatedMaps : [];
 	};
 
 	// the check for the manager value is to ensure that the runInsertQuery
@@ -132,11 +138,27 @@ export const addUserAsSuperAdmin = async (manager: typeorm.EntityManager) => {
 		name: '',
 		password: bcryptJs.hashSync(Constants.app.MAIL_PASSWORD || '', 12),
 		phoneNumber: '',
-		roles: [Constants.privileges.SUPER_ADMIN, Constants.privileges.USER],
+		roles: [
+			Constants.privileges.SUPER_ADMIN,
+			Constants.privileges.USER,
+			Constants.privileges.LEAD_FELLOW,
+			Constants.privileges.FELLOW
+		],
 		username: '',
 		verificationCode: ''
 	};
-	await runInsertQuery(addUserProfileQuery, [profile], manager);
+
+	const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
+
+	const secretCode = generateCodeFromNumber();
+	const encryptedSecretCode = encryptData({ text: secretCode });
+
+	await runInsertQuery(
+		addUserToFellowsQuery,
+		[{ id: user.id, secretCode: encryptedSecretCode }],
+		manager
+	);
+
 	return true;
 };
 

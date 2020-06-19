@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#verifyUserVerificationCode should throw when user is invalid 1`] = `"Invalid user account"`;
+
+exports[`#verifyUserVerificationCode should throw when verification code is invalid 1`] = `"Invalid verification code"`;

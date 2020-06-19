@@ -1,17 +1,11 @@
 import bcryptjs from 'bcryptjs';
-import {
-	countMatchingIdAndCodeQuery,
-	updateUserVerificationCodeQuery
-} from 'feature/authentication/node/queries';
+import { updateUserVerificationCodeQuery } from 'feature/authentication/node/queries';
 import { getBadRequestError } from 'shared/common/errors';
 import { generateCodeFromNumber } from 'shared/common/utilities';
 import { Constants } from 'shared/constants';
 import { runInsertQuery, runInTransaction, runQuery } from 'shared/node/database';
-import {
-	addUserProfileQuery,
-	getUserByCredentialsQuery,
-	getUserByIdQuery
-} from 'shared/node/queries';
+import { decryptData, encryptData } from 'shared/node/encryption';
+import * as sharedQueries from 'shared/node/queries';
 import { getSignedAuthToken } from 'shared/node/validation';
 import { IAddUserProfile } from 'shared/types';
 import { EntityManager } from 'typeorm';
@@ -20,6 +14,7 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 	return async (manager: EntityManager) => {
 		// generate a verification code for the user
 		const verificationCode = generateCodeFromNumber();
+		const encryptedVerificationCode = encryptData({ text: verificationCode });
 
 		// construct a default user info
 		const profile: IAddUserProfile = {
@@ -31,14 +26,14 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			email: email || '',
 			phoneNumber: phoneNumber || '',
 			isEmailVerified: false,
-			verificationCode,
+			verificationCode: encryptedVerificationCode,
 			roles: [Constants.privileges.USER],
 			name: ''
 		};
 
-		const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
+		const [user] = await runInsertQuery(sharedQueries.addUserProfileQuery, [profile], manager);
 
-		return runQuery(getUserByIdQuery, [user.id], manager);
+		return runQuery(sharedQueries.getUserByIdQuery, [user.id], manager);
 	};
 };
 
@@ -46,7 +41,7 @@ export const createUserProfileWithDefaultValues = async (data: {
 	email?: string;
 	phoneNumber?: string;
 }) => {
-	const user = await runQuery(getUserByCredentialsQuery, [data]);
+	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [data]);
 	if (user) throw getBadRequestError('User already exists');
 
 	// save user profile into the database
@@ -66,8 +61,13 @@ export const checkUserVerificationCode = async (data: { id: string; verification
 		throw getBadRequestError('user id and verification code are required');
 	}
 
-	const count = await runQuery(countMatchingIdAndCodeQuery, [id, verificationCode]);
-	if (!count) throw getBadRequestError('invalid verification code');
+	const user = await runQuery(sharedQueries.getUserByIdQuery, [id]);
+	if (!user) throw getBadRequestError('Invalid user account');
+
+	const decryptedVerificationCode = decryptData({ encryptedText: user.verificationCode });
+	if (verificationCode !== decryptedVerificationCode) {
+		throw getBadRequestError('Invalid verification code');
+	}
 
 	return true;
 };
@@ -84,14 +84,14 @@ export const verifyUserLoginCredentials = async (data: {
 	}
 	if (!password) throw getBadRequestError('password is required');
 
-	const user = await runQuery(getUserByCredentialsQuery, [data]);
+	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [data]);
 	if (!user) throw getBadRequestError('Invalid user account');
 
 	if (!bcryptjs.compareSync(password, user.password)) {
 		throw getBadRequestError('Invalid user account');
 	}
 
-	const { password: hashedPassword, ...other } = user;
+	const { password: hashedPassword, verificationCode, ...other } = user;
 
 	// create user token
 	const token = getSignedAuthToken({ id: user.id, roles: user.roles });
@@ -101,9 +101,11 @@ export const verifyUserLoginCredentials = async (data: {
 };
 
 export const getUserProfileById = async (id: string) => {
-	const user = await runQuery(getUserByIdQuery, [id]);
+	const user = await runQuery(sharedQueries.getUserByIdQuery, [id]);
 	if (!user) throw getBadRequestError('Invalid user account');
-	return user;
+	const { password, verificationCode, ...other } = user;
+	const decryptedVerificationCode = decryptData({ encryptedText: verificationCode });
+	return Object.assign({}, other, { verificationCode: decryptedVerificationCode });
 };
 
 /**
@@ -117,14 +119,19 @@ export const getUserAccountWithCredentials = async (args: {
 	phoneNumber?: string;
 	username?: string;
 }) => {
-	const user = await runQuery(getUserByCredentialsQuery, [args]);
+	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [args]);
 	if (!user) throw getBadRequestError('Invalid user account');
 
 	// generate new verification code
 	const verificationCode = generateCodeFromNumber();
+	const encryptedVerificationCode = encryptData({
+		text: verificationCode
+	});
 
 	// update user profile
-	await runQuery(updateUserVerificationCodeQuery, [{ id: user.id, verificationCode }]);
+	await runQuery(updateUserVerificationCodeQuery, [
+		{ id: user.id, verificationCode: encryptedVerificationCode }
+	]);
 
 	const { password, ...other } = user;
 

@@ -1,5 +1,6 @@
+import { Fellows } from 'shared/common/schema/fellows';
+import { Users } from 'shared/common/schema/users';
 import { Constants } from 'shared/constants';
-import { Users } from 'shared/node/schema';
 import { IAddUserProfile } from 'shared/types';
 import { EntityManager } from 'typeorm';
 
@@ -29,4 +30,17 @@ export const countExistingSuperAdminQuery = (manager: EntityManager) => {
 		.where('u.roles LIKE :role')
 		.setParameter('role', `%${Constants.privileges.SUPER_ADMIN}%`)
 		.getCount();
+};
+
+export const addUserToFellowsQuery = async (
+	manager: EntityManager,
+	values: { id: string; secretCode: string }
+) => {
+	const { id, secretCode } = values;
+	if (!id || !secretCode) return;
+	return manager
+		.createQueryBuilder(Fellows, 'fellow')
+		.insert()
+		.values({ user: { id }, secretCode })
+		.execute();
 };

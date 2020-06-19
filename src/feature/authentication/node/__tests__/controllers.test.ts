@@ -1,3 +1,4 @@
+import * as service from 'feature/authentication/node/authService';
 import {
 	resendUserVerificationCode,
 	verifyUserCredentials,
@@ -5,18 +6,17 @@ import {
 	verifyUserLogin,
 	verifyUserVerificationCode
 } from 'feature/authentication/node/controllers';
-import * as service from 'feature/authentication/node/dataService';
-import {
-	sendVerificationCodeByMedia,
-	sendVerificationCodeBySMS
-} from 'feature/authentication/node/messaging';
-import { getBadRequestError } from 'shared/common/errors';
+import { sendVerificationCodeByMedia } from 'feature/authentication/node/messaging';
+import { createUserFixture } from 'fixtures/users';
 import { Constants } from 'shared/constants';
 import { runInTransaction, runQuery } from 'shared/node/database';
+import { encryptData } from 'shared/node/encryption';
+import { entityManager } from 'shared/testUtils/node/entityManager';
 
-jest.mock('typeorm');
 jest.mock('shared/node/database');
-jest.mock('shared/node/schema');
+jest.mock('shared/common/schema/users');
+jest.mock('shared/common/schema/fellows');
+jest.mock('shared/common/schema/locations');
 jest.mock('feature/authentication/node/messaging');
 
 beforeEach(() => jest.clearAllMocks());
@@ -76,17 +76,19 @@ describe('#verifyUserCredentials', () => {
 		);
 	});
 });
+
 describe('#verifyUserVerificationCode', () => {
+	const profile = createUserFixture();
+
 	const requestMock: any = {
-		body: { data: { verificationCode: '9384k' } },
-		user: { id: 'x7i9-3l-n3k4-3i8bi2' }
+		body: { data: { verificationCode: '123456' } },
+		user: { id: profile.id }
 	};
-	const verifyMock = jest.spyOn(service, 'checkUserVerificationCode');
-	verifyMock.mockImplementation().mockResolvedValueOnce(true);
+	const user = { ...profile, verificationCode: encryptData({ text: '123456' }) };
 
 	test('should send a status of 201 with the json data', async () => {
+		entityManager.getOne.mockReturnValueOnce(user);
 		await verifyUserVerificationCode(requestMock, responseMock);
-		verifyMock.mockRestore();
 		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 		expect(responseMock.json).toHaveBeenCalledWith({
 			data: true,
@@ -94,13 +96,19 @@ describe('#verifyUserVerificationCode', () => {
 		});
 	});
 
-	test('should throw when checkUserVerificationCode fails', (done) => {
-		verifyMock.mockRejectedValueOnce(getBadRequestError('invalid verification code'));
-		verifyUserVerificationCode(requestMock, responseMock).catch((error) => {
-			verifyMock.mockRestore();
-			expect(error.message).toBe('invalid verification code');
-			done();
-		});
+	test('should throw when user is invalid', () => {
+		entityManager.getOne.mockReturnValueOnce(null);
+		expect(
+			verifyUserVerificationCode(requestMock, responseMock)
+		).rejects.toThrowErrorMatchingSnapshot();
+	});
+
+	test('should throw when verification code is invalid', () => {
+		entityManager.getOne.mockReturnValueOnce(user);
+		requestMock.body.data.verificationCode = '098765';
+		expect(
+			verifyUserVerificationCode(requestMock, responseMock)
+		).rejects.toThrowErrorMatchingSnapshot();
 	});
 });
 
@@ -118,35 +126,29 @@ describe('#verifyUserLogin', () => {
 });
 
 describe('#resendUserVerificationCode', () => {
-	const user = {
-		id: 'fh3t9j0d2',
-		verificationCode: 'r2gr8',
-		email: 'test@test.com',
-		phoneNumber: ''
-	};
+	const user = { ...createUserFixture(), verificationCode: encryptData({ text: '123456' }) };
 	let reqMock: any = { user: { id: 'fh3t9j0d2' }, query: {} };
 
-	beforeEach(() => {
-		(runQuery.mockResolvedValue as any)(user);
-	});
-
 	test('should send a status of 201 when successful', async () => {
+		entityManager.getOne.mockReturnValueOnce(user);
 		await resendUserVerificationCode(reqMock, responseMock);
 		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 	});
 
 	test('should send verification code to email', async () => {
+		entityManager.getOne.mockReturnValueOnce(user);
 		await resendUserVerificationCode(reqMock, responseMock);
 		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
 			expect.objectContaining({
 				media: expect.stringMatching('email'),
-				verificationCode: expect.stringMatching(user.verificationCode),
+				verificationCode: expect.stringMatching('123456'),
 				email: expect.stringMatching(user.email)
 			})
 		);
 	});
 
 	test('should send json response for data true', async () => {
+		entityManager.getOne.mockReturnValueOnce(user);
 		await resendUserVerificationCode(reqMock, responseMock);
 		expect(responseMock.json).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -158,25 +160,26 @@ describe('#resendUserVerificationCode', () => {
 
 	test('should send verification code to phoneNumber', async () => {
 		const data = { ...user, phoneNumber: '+2341234567', email: '' };
-		(runQuery.mockResolvedValueOnce as any)(data);
+		entityManager.getOne.mockReturnValueOnce(data);
 		await resendUserVerificationCode(reqMock, responseMock);
 		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
 			expect.objectContaining({
 				media: expect.stringMatching('phoneNumber'),
-				verificationCode: expect.stringMatching(user.verificationCode),
+				verificationCode: expect.stringMatching('123456'),
 				email: expect.stringMatching(''),
-				phoneNumber: expect.any(String)
+				phoneNumber: data.phoneNumber
 			})
 		);
 	});
 
 	test('should send verification code to specified media', async () => {
-		reqMock = { user: { id: 'fh3t9j0d2' }, query: { media: 'email' } };
+		entityManager.getOne.mockReturnValueOnce(user);
+		reqMock = { user: { id: user.id }, query: { media: 'email' } };
 		await resendUserVerificationCode(reqMock, responseMock);
 		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
 			expect.objectContaining({
 				media: expect.stringMatching('email'),
-				verificationCode: expect.stringMatching(user.verificationCode),
+				verificationCode: expect.stringMatching('123456'),
 				email: expect.stringMatching(user.email)
 			})
 		);
@@ -184,93 +187,35 @@ describe('#resendUserVerificationCode', () => {
 });
 
 describe('#verifyUserCredentialsForPasswordReset', () => {
-	const req: any = { body: { data: { email: 'test@test.com' } } };
+	const profile = { ...createUserFixture(), verificationCode: encryptData({ text: '123456' }) };
+	const req: any = { body: { data: { email: profile.email } } };
 
 	test('should send verification code to user email', async () => {
-		(runQuery.mockResolvedValueOnce as any)({
-			id: '3939202',
-			verificationCode: 'jf983w',
-			email: 'test@test.com'
-		});
+		entityManager.getOne.mockReturnValueOnce({ ...profile, phoneNumber: '' });
 		await verifyUserCredentialsForPasswordReset(req, responseMock);
 		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
 			expect.objectContaining({
-				media: expect.stringMatching('email'),
-				email: expect.any(String)
-			})
-		);
-		expect(sendVerificationCodeBySMS).not.toHaveBeenCalled();
-		expect(responseMock.json).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({
-					user: expect.objectContaining({
-						id: expect.any(String),
-						verificationCode: expect.any(String),
-						email: expect.any(String),
-						token: expect.any(String)
-					}),
-					message: expect.stringContaining("Verification code sent to user's email")
-				}),
-				success: expect.any(Boolean)
+				media: 'email'
 			})
 		);
 	});
 
 	test('should send verification code to user phone number', async () => {
-		(runQuery.mockResolvedValueOnce as any)({
-			id: '3939202',
-			verificationCode: 'jf983w',
-			phoneNumber: '+2339876543'
-		});
+		entityManager.getOne.mockReturnValueOnce({ ...profile, email: '' });
 		await verifyUserCredentialsForPasswordReset(req, responseMock);
 		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
 			expect.objectContaining({
-				media: expect.stringMatching('phoneNumber'),
-				phoneNumber: expect.any(String)
-			})
-		);
-		expect(responseMock.json).toHaveBeenCalledWith(
-			expect.objectContaining({
-				data: expect.objectContaining({
-					user: expect.objectContaining({
-						id: expect.any(String),
-						verificationCode: expect.any(String),
-						phoneNumber: expect.any(String),
-						token: expect.any(String)
-					}),
-					message: expect.stringContaining(
-						"Verification code sent to user's phone number"
-					)
-				}),
-				success: expect.any(Boolean)
+				media: expect.stringMatching('phoneNumber')
 			})
 		);
 	});
 
 	test('should not send verification code if user has both phone number and email', async () => {
-		(runQuery.mockResolvedValueOnce as any)({
-			id: '3939202',
-			verificationCode: 'jf983w',
-			phoneNumber: '+2339876543',
-			email: 'test@test.com'
-		});
+		entityManager.getOne.mockReturnValueOnce(profile);
 		await verifyUserCredentialsForPasswordReset(req, responseMock);
-		expect(sendVerificationCodeByMedia).toHaveBeenCalledWith(
-			expect.objectContaining({
-				phoneNumber: expect.stringMatching(''),
-				email: expect.stringMatching('')
-			})
-		);
 		expect(responseMock.json).toHaveBeenCalledWith(
 			expect.objectContaining({
 				data: expect.objectContaining({
-					user: expect.objectContaining({
-						id: expect.any(String),
-						verificationCode: expect.any(String),
-						phoneNumber: expect.any(String),
-						token: expect.any(String),
-						email: expect.any(String)
-					}),
 					message: expect.stringContaining(
 						'Verification code cannot be sent. User has both email and phone number'
 					)
@@ -281,12 +226,7 @@ describe('#verifyUserCredentialsForPasswordReset', () => {
 	});
 
 	test('should send status of 201', async () => {
-		(runQuery.mockResolvedValueOnce as any)({
-			id: '3939202',
-			verificationCode: 'jf983w',
-			phoneNumber: '+2339876543',
-			email: 'test@test.com'
-		});
+		entityManager.getOne.mockReturnValueOnce(profile);
 		await verifyUserCredentialsForPasswordReset(req, responseMock);
 		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
 	});

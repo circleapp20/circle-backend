@@ -1,8 +1,6 @@
-export class BaseModel {
-	id: string;
-	createdAt: Date;
-	updatedAt: Date;
-}
+import { BaseModel } from './baseModel';
+import { Fellows } from './fellows';
+import { Locations } from './locations';
 
 export class Users extends BaseModel {
 	name: string;
@@ -15,12 +13,6 @@ export class Users extends BaseModel {
 	phoneNumber: string;
 	verificationCode: string;
 	roles: string[];
+	locations: Locations[];
+	fellow: Fellows;
 }
-
-export class Campuses extends BaseModel {
-	name: string;
-	latitude: number;
-	longitude: number;
-}
-
-export default [Users, Campuses];
