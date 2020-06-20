@@ -1,9 +1,9 @@
+import { Constants } from 'base/constants';
+import { getApiRouter, getNextRequestHandler, getNextRouter } from 'base/node/enhancers';
+import { errorMiddleware } from 'base/node/errors';
+import { setupCircleDatabase } from 'core/node/database/createCircleDatabase';
 import cors from 'cors';
 import { Express, json, Router, urlencoded } from 'express';
-import { Constants } from 'shared/constants';
-import { setupCircleDatabase } from 'shared/node/database';
-import { getApiRouter, getNextRequestHandler, getNextRouter } from 'shared/node/enhancers';
-import { errorMiddleware } from 'shared/node/errors';
 import { apiRoutes } from './apiRoutes';
 
 export const bootstrap = async (app: Express, callBack?: () => void) => {

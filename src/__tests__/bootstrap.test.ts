@@ -1,14 +1,14 @@
-import { Constants } from 'shared/constants';
-import * as database from 'shared/node/database';
+import { Constants } from 'base/constants';
+import * as database from 'core/node/database/createCircleDatabase';
 import { bootstrap } from '../bootstrap';
 
 jest.mock('cors');
-jest.mock('shared/node/enhancers');
-jest.mock('shared/common/schema/entities');
-jest.mock('shared/common/schema/users');
-jest.mock('shared/common/schema/fellows');
-jest.mock('shared/common/schema/baseModel');
-jest.mock('shared/common/schema/locations');
+jest.mock('base/node/enhancers');
+jest.mock('core/node/database/queryRunners');
+jest.mock('core/node/database/dBInstance');
+jest.mock('base/common/schema/fellows');
+jest.mock('base/common/schema/users');
+jest.mock('base/common/schema/locations');
 
 describe('#bootstrap', () => {
 	beforeEach(() => jest.clearAllMocks());

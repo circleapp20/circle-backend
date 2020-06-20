@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#createUserProfileWithDefaultValues should throw an error if email already exists 1`] = `"User already exists"`;
+
+exports[`#createUserProfileWithDefaultValues should throw bad request error if phone number already exists 1`] = `"User already exists"`;

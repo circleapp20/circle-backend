@@ -1,5 +1,5 @@
+import { Constants } from 'base/constants';
 import faker from 'faker';
-import { Constants } from 'shared/constants';
 
 export const createUserFixture = () => {
 	return {
