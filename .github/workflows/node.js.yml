@@ -31,5 +31,10 @@ jobs:
             - run: yarn run test
               env:
                   DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
-                  MAIL_USER: 'circleapp20@gmail.com'
-                  MAIL_PASSWORD: 'circle'
+                  MAIL_USER: 'testerMe@testingdomain.com'
+                  MAIL_PASSWORD: 'testersPassword'
+                  GOOGLE_CLIENT_ID: '0s9j04j9j0e2mr4832823.apps.googleusercontent.com'
+                  GOOGLE_CLIENT_SECRET: '9003tj309o29jr028'
+                  GOOGLE_CLIENT_REFRESH_TOKEN: 'fk3209t938jk229r20i-340t3h4839j12-0-2r8j'
+                  MNOTIFY_API_KEY: 'jm98j329jrj3t3r9802j9252j9e8j29e2'
+                  CIRCLE_SECRET_KEY: '094r3im39120m09384t3'
