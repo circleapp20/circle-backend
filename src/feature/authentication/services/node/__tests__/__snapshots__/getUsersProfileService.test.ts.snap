@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#getUserProfileById should throw error if user does not exists 1`] = `"Invalid user account"`;

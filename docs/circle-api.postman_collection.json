@@ -1,0 +1,497 @@
+{
+	"info": {
+		"_postman_id": "b9c3ae9e-b15f-4185-96ef-41ec57f98907",
+		"name": "circle-api",
+		"description": "The api documentation for circle. Contains all the various routes available to users and specific users as well. Access to this documentation is strictly given by the backend engineer for circle.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Sign Up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2d249d09-1c09-443f-976e-a09f2d26ec72",
+								"exec": [
+									"pm.test(\"should have an id and verificationCode\", function () {",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"userId\", data.data.id);",
+									"    pm.environment.set(\"verificationCode\", data.data.verificationCode);",
+									"    pm.environment.set(\"token\", data.data.token);",
+									"    pm.environment.set(\"username\", data.data.username);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"email\": \"{{email}}\",\n\t\t\"phoneNumber\": \"{{phoneNumber}}\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/sign-up",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"sign-up"
+							]
+						},
+						"description": "This route provides the user to create a new account on cirle using either the email or the phone number. \nIf the email or the phone number does not exists in the database, a new profile will be created for the said credentials\nIf credentials already exists in the database, and error is thrown"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"verificationCode\": \"{{verificationCode}}\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/code",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"code"
+							]
+						},
+						"description": "This route verifies the verification code sent by the user with their user id attached"
+					},
+					"response": []
+				},
+				{
+					"name": "Sign In",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "270448cc-debb-40aa-b71b-2c413762b56c",
+								"exec": [
+									"pm.test(\"should have an id and verificationCode\", function () {",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"token\", data.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"email\": \"{{email}}\",\n\t\t\"password\": \"{{password}}\",\n\t\t\"username\": \"{{username}}\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/sign-in",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"sign-in"
+							]
+						},
+						"description": "This route verifies user login credentials"
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Verification Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/code/resend?media=email",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"code",
+								"resend"
+							],
+							"query": [
+								{
+									"key": "media",
+									"value": "email"
+								}
+							]
+						},
+						"description": "This routes sends the verification code to the user. The route relies on the authorization header, therefore the request must be send with the authorization header. This validates that the user actually initiated account creation.\n\nThe route also accepts a query of media, where the values can be either email, phoneNumber or null. This will determine where the verification code will be sent. The media query takes precedence if specified. Therefore, if it's specified that, media is email, but the user only has phone number available, the verification code will not be sent.\n\nOnly use the media query param after verifying if the user has both email and phone number available. "
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b24abc99-9235-4502-93e1-f021fd6ab2af",
+								"exec": [
+									"pm.test(\"should have an id and verificationCode\", function () {",
+									"    var data = pm.response.json();",
+									"    pm.environment.set(\"verificationCode\", data.data.user.verificationCode);",
+									"    pm.environment.set(\"token\", data.data.user.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"username\": \"{{username}}\",\n\t\t\"phoneNumber\": \"{{phoneNumber}}\",\n\t\t\"email\": \"{{email}}\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/credentials",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"credentials"
+							]
+						},
+						"description": "The route validates or checks if the user exists in the system. When the user is validated successfully, a new verification code is generated for the user and sent to either the email or the phone number. If the user does have both the email and phone number, the verification code will not be sent, hence a message will be return to indicating the user has both email and phone number\n\nA token is return which will be need in the authorization header when the user is request that the verification code to be send where they specify"
+					},
+					"response": []
+				}
+			],
+			"description": "In the routes for the authentication, an order of precedence is taken into account for routes requiring either username, email or phone number. Username takes foremost precedence when it is provided, and next is the phone number and finally email. Therefore its sturctured as such\nUsername > Phone number > Email",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "376c33ac-b789-4912-bd75-0ca2dae990b3",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e1b022e2-f213-4f5b-af18-df1b5a02d2dd",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"username\": \"{{username}}\",\n        \"password\": \"{{password}}\",\n        \"dob\": \"2020-05-28T09:22:56.000Z\",\n        \"image\": \"\",\n        \"biography\": \"I am a software engineer at Asqii Inc.\",\n        \"name\": \"James\",\n        \"email\": \"{{email}}\",\n        \"phoneNumber\": \"{{phoneNumber}}\",\n        \"locationsId\": []\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						},
+						"description": "The route updates the details of the user, email and phone number updates are not included here, therefore must not be sent. \n\nThe image field should be a base64 string, which then the server will upload it to firebase storage.\n\nThe locationsId should be an array of location id. It can be and empty array but it must not be null. It will return an array of locations object. See get Locations"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Username Or Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/search?email={{email}}&username={{username}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								},
+								{
+									"key": "username",
+									"value": "{{username}}"
+								}
+							]
+						},
+						"description": "This route checks if the username exists or not"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"password\": \"{{password}}\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/reset/password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"reset",
+								"password"
+							]
+						},
+						"description": "The route resets the user's password. The route requires the token in the authorization header, that was returned when verifying the user's credentials.\nThe request will fail if the user enters the same password that was stored previously"
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8790dd6b-8268-4e2e-9118-45be32014caa",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "29819ac0-d3aa-4c18-a68b-b3dcb9786816",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Add Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"data\": {\n\t\t\"name\": \"Central Region\",\n\t\t\"address\": \"\",\n\t\t\"latitude\": 6.973,\n\t\t\"longitude\": 127.3984,\n\t\t\"placeId\": \"84fa52ca-a661-4f73-8202-2fb5ae166bf8\"\n\t}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						},
+						"description": "Any user on cirlce has the option to create or add locations to the system. Lead fellow can authenticate the locations added by users as well as add new location which will be automatically authenticated.\nUsers other than Lead fellow, that add locations will be suggestions in other words, unauthenticated locations, and later the lead fellow authenticate the location."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"locations"
+							]
+						},
+						"description": "This routes returns all the locations on circle, both verified and not verified. The user does not need to be authenticated before accessing this api route"
+					},
+					"response": []
+				}
+			],
+			"description": "Api routes for the locations on circle. It's accessible by all users with the exception of adding a new location or verifying a location which can only be done by an authenticated user through the auth token.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "efbf3dd7-2e1b-4bc3-b30a-11e70106a140",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "11fc6759-f12a-436a-842f-44a06f7eec15",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

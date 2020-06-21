@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#changeLocationPlacesName should rename places: updated location places names 1`] = `
+Array [
+  Object {
+    "address": "",
+    "createdAt": "2020-06-20T15:30:58.957Z",
+    "id": "84fa52ca-a661-4f73-8202-2fb5ae166bf8",
+    "isVerified": false,
+    "latitude": 6.973,
+    "longitude": 127.398,
+    "name": "Ghana",
+    "states": Array [
+      Object {
+        "address": "",
+        "cities": Array [
+          Object {
+            "address": "",
+            "createdAt": "2020-06-20T15:32:13.935Z",
+            "id": "7a530166-0f77-4528-bbd3-cfa355bed328",
+            "isVerified": false,
+            "latitude": 6.973,
+            "longitude": 127.398,
+            "name": "Kumasi",
+            "streets": Array [],
+            "updatedAt": "2020-06-20T15:32:13.000Z",
+          },
+        ],
+        "createdAt": "2020-06-20T15:31:29.641Z",
+        "id": "f039103d-8524-433f-9986-7535c9222464",
+        "isVerified": false,
+        "latitude": 6.973,
+        "longitude": 127.398,
+        "name": "Ashanti",
+        "updatedAt": "2020-06-20T15:31:29.000Z",
+      },
+      Object {
+        "address": "",
+        "cities": Array [],
+        "createdAt": "2020-06-20T22:05:52.398Z",
+        "id": "81f6240f-4fbd-4f10-856c-f9715ae1da8a",
+        "isVerified": false,
+        "latitude": 6.973,
+        "longitude": 127.398,
+        "name": "Greater Accra",
+        "updatedAt": "2020-06-20T22:05:52.000Z",
+      },
+    ],
+    "updatedAt": "2020-06-20T15:30:58.957Z",
+  },
+  Object {
+    "address": "",
+    "createdAt": "2020-06-20T22:04:25.119Z",
+    "id": "0ff59483-a02c-444c-baf1-42b2a443392c",
+    "isVerified": false,
+    "latitude": 6.973,
+    "longitude": 127.398,
+    "name": "Togo",
+    "states": Array [],
+    "updatedAt": "2020-06-20T22:04:25.119Z",
+  },
+]
+`;
