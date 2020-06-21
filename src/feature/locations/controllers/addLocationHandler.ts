@@ -7,6 +7,7 @@ import { addLocationService } from '../services/node/addLocationService';
 export const addLocationHandler = async (request: IRequest, response: Response) => {
 	const { roles } = request.user;
 	const location = await addLocationService(request.body.data, roles);
-	const data = getResponseData(location);
+	const { places, ...other } = location!;
+	const data = getResponseData(other);
 	response.status(Constants.status.CREATED).json(data);
 };

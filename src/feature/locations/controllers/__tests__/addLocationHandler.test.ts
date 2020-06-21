@@ -15,8 +15,12 @@ describe('#addLocationHandler', () => {
 	};
 	const response: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
 
-	test('should send a response of 201 when location is created', async () => {
+	beforeEach(() => {
 		entityManager.execute.mockReturnValueOnce({ generateMaps: [location] });
+		entityManager.getOne.mockReturnValueOnce(location);
+	});
+
+	test('should send a response of 201 when location is created', async () => {
 		await addLocationHandler(request, response);
 		expect(response.status).toHaveBeenCalledWith(201);
 	});

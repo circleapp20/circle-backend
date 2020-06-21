@@ -3,7 +3,7 @@ import { entityManager } from 'base/testUtils/node/entityManager';
 import { runInTransaction } from 'core/node/database/queryRunners';
 import faker from 'faker';
 import * as addLocationQueries from 'feature/locations/queries/addLocationQuery';
-import * as getLocationQueries from 'feature/locations/queries/getLocationByIdQuery';
+import * as getLocationQueries from 'feature/locations/queries/getLocationQueries';
 import { createLocationFixture } from 'fixtures/locations';
 import { addLocationService, addLocationTransaction } from '../addLocationService';
 

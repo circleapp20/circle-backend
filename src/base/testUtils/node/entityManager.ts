@@ -21,5 +21,7 @@ export const entityManager: any = {
 	relation: jest.fn().mockReturnThis(),
 	of: jest.fn().mockReturnThis(),
 	add: jest.fn(),
-	leftJoinAndSelect: jest.fn().mockReturnThis()
+	leftJoinAndSelect: jest.fn().mockReturnThis(),
+	getRawMany: jest.fn(),
+	getMany: jest.fn()
 };

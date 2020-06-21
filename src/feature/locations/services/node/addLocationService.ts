@@ -4,7 +4,7 @@ import {
 	addLocationPlaceQuery,
 	addLocationQuery
 } from 'feature/locations/queries/addLocationQuery';
-import { getLocationByIdQuery } from 'feature/locations/queries/getLocationByIdQuery';
+import { getLocationByIdQuery } from 'feature/locations/queries/getLocationQueries';
 import { EntityManager } from 'typeorm';
 
 interface IAddLocation {
