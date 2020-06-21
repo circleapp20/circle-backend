@@ -1,6 +1,7 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const WebpackBar = require('webpackbar');
 
 module.exports = {
 	mode: 'production',
@@ -23,5 +24,8 @@ module.exports = {
 		path: path.resolve(__dirname, '../dist'),
 		filename: 'index.js'
 	},
-	externals: [nodeExternals()]
+	externals: [nodeExternals({ modulesFromFile: true })],
+	target: 'node',
+	stats: 'errors-only',
+	plugins: [new WebpackBar()]
 };
