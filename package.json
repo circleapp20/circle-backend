@@ -74,7 +74,8 @@
 		"typescript": "3.9.3",
 		"webpack": "4.43.0",
 		"webpack-cli": "3.3.11",
-		"webpack-node-externals": "1.7.2"
+		"webpack-node-externals": "1.7.2",
+		"webpackbar": "4.0.0"
 	},
 	"dependencies": {
 		"@google-cloud/storage": "5.0.1",
