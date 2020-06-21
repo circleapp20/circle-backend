@@ -5,7 +5,11 @@ import { IAddUserProfile } from 'base/types';
 import { EntityManager } from 'typeorm';
 
 export const getUserByIdQuery = (manager: EntityManager, id: string) => {
-	return manager.createQueryBuilder(Users, 'u').where('u.id = :id', { id }).getOne();
+	return manager
+		.createQueryBuilder(Users, 'users')
+		.leftJoinAndSelect('users.locations', 'locations')
+		.where('users.id = :id', { id })
+		.getOne();
 };
 
 export const getUserByCredentialsQuery = (

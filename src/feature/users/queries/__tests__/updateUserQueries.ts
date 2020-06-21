@@ -1,6 +1,7 @@
 import { Users } from 'base/common/schema/users';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { updateUserProfileQuery } from '../updateUserQueries';
+import faker from 'faker';
+import { addUserLocationsQuery, updateUserProfileQuery } from '../updateUserQueries';
 import { IUpdateUserProfile } from '../updateUserTypes';
 
 jest.mock('base/common/schema/users');
@@ -40,5 +41,36 @@ describe('#updateUserProfileQuery', () => {
 	test('should only update user matching the id', async () => {
 		await updateUserProfileQuery(entityManager, values);
 		expect(entityManager.where).toHaveBeenLastCalledWith('id = :id', { id: values.id });
+	});
+});
+
+describe('#addUserLocationsQuery', () => {
+	let values: any;
+
+	beforeAll(() => {
+		values = {
+			id: faker.random.uuid(),
+			locationsId: Array(5).fill(null).map(faker.random.uuid)
+		};
+	});
+
+	test('should create a query builder', async () => {
+		await addUserLocationsQuery(entityManager, values);
+		expect(entityManager.createQueryBuilder).toHaveBeenCalledWith();
+	});
+
+	test('should create a relation between users schema and locations', async () => {
+		await addUserLocationsQuery(entityManager, values);
+		expect(entityManager.relation).toHaveBeenCalledWith(Users, 'locations');
+	});
+
+	test('should add the relation to the user id', async () => {
+		await addUserLocationsQuery(entityManager, values);
+		expect(entityManager.of).toHaveBeenCalledWith(values.id);
+	});
+
+	test('should relate user to multiple locations by ids', async () => {
+		await addUserLocationsQuery(entityManager, values);
+		expect(entityManager.add).toHaveBeenCalledWith(values.locationsId);
 	});
 });

@@ -9,7 +9,8 @@ export const UpdateUserProfileSchema = Joi.object().keys({
 		dob: Joi.date().allow(null, ''),
 		name: Joi.string().required().min(3),
 		email: Joi.string().allow(null, ''),
-		phoneNumber: Joi.string().allow(null, '')
+		phoneNumber: Joi.string().allow(null, ''),
+		locationsId: Joi.array().items(Joi.string()).required()
 	})
 });
 

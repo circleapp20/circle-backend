@@ -1,8 +1,9 @@
 import { entityManager } from 'base/testUtils/node/entityManager';
 import bcryptjs from 'bcryptjs';
 import { runQuery } from 'core/node/database/queryRunners';
+import faker from 'faker';
 import * as queries from 'feature/users/queries/updateUserQueries';
-import { IUpdateUserProfile } from 'feature/users/queries/updateUserTypes';
+import { createUserFixture } from 'fixtures/users';
 import {
 	updateUserPassword,
 	updateUserProfile,
@@ -21,101 +22,86 @@ jest.mock('bcryptjs', () => ({
 beforeEach(() => jest.clearAllMocks());
 
 describe('#updateUserTransaction', () => {
-	test('should update a user profile', async () => {
-		(runQuery.mockImplementationOnce as any)((callBack: any, values: any) => {
-			return callBack(entityManager, values);
-		});
+	let user: any, values: any, transaction: any;
 
-		const updateMock = jest.spyOn(queries, 'updateUserProfileQuery');
-		updateMock.mockImplementation();
-
-		const values: IUpdateUserProfile = {
-			biography: '',
-			dob: new Date(),
-			id: 'x7i9-3l-n3k4-3i8bi2',
-			image: '',
-			password: '',
-			username: '',
-			email: '',
-			phoneNumber: '',
-			name: ''
+	beforeAll(() => {
+		user = createUserFixture();
+		values = {
+			...user,
+			locationsId: Array.from(Array(2), faker.random.uuid)
 		};
+		transaction = updateUserTransaction(values);
+	});
 
-		const transaction = updateUserTransaction(values);
+	test('should update a user profile', async () => {
+		const updateMock = jest.spyOn(queries, 'updateUserProfileQuery');
 		await transaction(entityManager);
-
-		// ensure that the same values are not passed to query builder
-		// especially for the password, cause it is hashed by bcryptjs
 		expect(updateMock).not.toHaveBeenCalledWith(entityManager, values);
-		updateMock.mockRestore();
+	});
 
-		expect(runQuery).toHaveBeenCalledTimes(2);
+	test('should add locations to user', async () => {
+		const spy = jest.spyOn(queries, 'addUserLocationsQuery');
+		await transaction(entityManager);
+		expect(spy).toHaveBeenCalledWith(entityManager, {
+			locationsId: values.locationsId,
+			id: user.id
+		});
+	});
+
+	test("should not add locations to user if there aren't any", async () => {
+		const spy = jest.spyOn(queries, 'addUserLocationsQuery');
+		const runTransaction = updateUserTransaction(
+			Object.assign({}, values, { locationsId: [] })
+		);
+		await runTransaction(entityManager);
+		expect(spy).not.toHaveBeenCalled();
 	});
 });
 
 describe('#updateUserProfile', () => {
-	const values: IUpdateUserProfile = {
-		biography: '',
-		dob: new Date(),
-		id: 'x7i9-3l-n3k4-3i8bi2',
-		image: '',
-		password: 'password',
-		username: '',
-		email: '',
-		phoneNumber: '',
-		name: ''
-	};
+	let user: any, values: any;
+
+	beforeAll(() => {
+		user = createUserFixture();
+		values = {
+			...user,
+			locationsId: Array.from(Array(2), faker.random.uuid)
+		};
+	});
 
 	test('should update profile with valid details', async () => {
-		(<any>runQuery).mockResolvedValueOnce(1);
-		(<any>runQuery).mockResolvedValueOnce(true); // updateUserProfileQuery
-		(<any>runQuery).mockResolvedValueOnce(values);
+		entityManager.getCount.mockReturnValueOnce(1).mockReturnValueOnce(1).mockReturnValueOnce(1);
+		entityManager.execute.mockReturnValueOnce(true);
+		entityManager.getOne.mockReturnValueOnce(values);
 		const user = await updateUserProfile(values);
 		expect(user).toBeDefined();
 	});
 
-	test('should throw error if username already exists', (done) => {
+	test('should throw error if username already exists', () => {
 		(runQuery.mockResolvedValueOnce as any)(2);
-		updateUserProfile(values).catch((error) => {
-			expect(error.message).toBe('username already exists');
-			done();
-		});
+		expect(updateUserProfile(values)).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	test('should throw error if id is invalid', (done) => {
+	test('should throw error if id is invalid', () => {
 		const data = Object.assign({}, values, { id: '' });
-		updateUserProfile(data).catch((error) => {
-			expect(error.message).toBe('id is required');
-			done();
-		});
+		expect(updateUserProfile(data)).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	test('should throw error if password is invalid', (done) => {
+	test('should throw error if password is invalid', () => {
 		const data = Object.assign({}, values, { password: '' });
-		updateUserProfile(data).catch((error) => {
-			expect(error.message).toBe('password is required');
-			done();
-		});
+		expect(updateUserProfile(data)).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	test('should throw error if another user has the same email', (done) => {
-		(<any>runQuery).mockResolvedValueOnce(1);
-		(<any>runQuery).mockResolvedValueOnce(2);
-		const data = Object.assign({}, values, { email: 'testing@test.com' });
-		updateUserProfile(data).catch((error) => {
-			expect(error.message).toBe('email already exists');
-			done();
-		});
+	test('should throw error if phone number already exists', () => {
+		entityManager.getCount.mockReturnValueOnce(1).mockReturnValueOnce(2);
+		const data = Object.assign({}, values, { email: '' });
+		expect(updateUserProfile(data)).rejects.toThrowErrorMatchingSnapshot();
 	});
 
-	test('should throw error if phone number already exists', (done) => {
-		(<any>runQuery).mockResolvedValueOnce(1);
-		(<any>runQuery).mockResolvedValueOnce(2);
-		const data = Object.assign({}, values, { phoneNumber: '555-555-5555' });
-		updateUserProfile(data).catch((error) => {
-			expect(error.message).toBe('phone number already exists');
-			done();
-		});
+	test('should throw error if another user has the same email', () => {
+		entityManager.getCount.mockReturnValueOnce(1).mockReturnValueOnce(2);
+		const data = Object.assign({}, values, { phoneNumber: '' });
+		expect(updateUserProfile(data)).rejects.toThrowErrorMatchingSnapshot();
 	});
 });
 

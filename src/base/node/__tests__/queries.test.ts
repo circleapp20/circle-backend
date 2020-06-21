@@ -4,6 +4,7 @@ import { Constants } from 'base/constants';
 import * as queries from 'base/node/queries';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { IAddUserProfile } from 'base/types';
+import faker from 'faker';
 
 jest.mock('base/common/schema/fellows');
 jest.mock('base/common/schema/users');
@@ -11,16 +12,24 @@ jest.mock('base/common/schema/users');
 beforeEach(() => jest.clearAllMocks());
 
 describe('#getUserByIdQuery', () => {
-	const id = 'dec2ace6-4fd2-4386-b75a-eabbcf0efa77';
+	const id = faker.random.uuid();
 
 	test('should create query builder from Users with the id', async () => {
 		await queries.getUserByIdQuery(entityManager, id);
-		expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'u');
+		expect(entityManager.createQueryBuilder).toHaveBeenCalledWith(Users, 'users');
 	});
 
 	test('should match user id with id in the where clause', async () => {
 		await queries.getUserByIdQuery(entityManager, id);
-		expect(entityManager.where).toHaveBeenCalledWith('u.id = :id', { id });
+		expect(entityManager.where).toHaveBeenCalledWith('users.id = :id', { id });
+	});
+
+	test('should add locations to the query', async () => {
+		await queries.getUserByIdQuery(entityManager, id);
+		expect(entityManager.leftJoinAndSelect).toHaveBeenCalledWith(
+			'users.locations',
+			'locations'
+		);
 	});
 
 	test('should only get one matching user', async () => {

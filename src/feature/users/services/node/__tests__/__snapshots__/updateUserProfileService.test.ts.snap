@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`#updateUserProfile should throw error if another user has the same email 1`] = `"email already exists"`;
+
+exports[`#updateUserProfile should throw error if id is invalid 1`] = `"id is required"`;
+
+exports[`#updateUserProfile should throw error if password is invalid 1`] = `"password is required"`;
+
+exports[`#updateUserProfile should throw error if phone number already exists 1`] = `"phone number already exists"`;
+
+exports[`#updateUserProfile should throw error if username already exists 1`] = `"username already exists"`;

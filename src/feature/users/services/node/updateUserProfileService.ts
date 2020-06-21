@@ -4,21 +4,31 @@ import { getUserByIdQuery } from 'base/node/queries';
 import bcryptjs from 'bcryptjs';
 import { runInTransaction, runQuery } from 'core/node/database/queryRunners';
 import { countUsersMatchingSearchQuery } from 'feature/users/queries/countUsersQueries';
-import { updateUserProfileQuery } from 'feature/users/queries/updateUserQueries';
-import { IUpdateUserProfile } from 'feature/users/queries/updateUserTypes';
+import {
+	addUserLocationsQuery,
+	updateUserProfileQuery
+} from 'feature/users/queries/updateUserQueries';
+import { IAddUserLocation, IUpdateUserProfile } from 'feature/users/queries/updateUserTypes';
 import { uploadUserProfileImage } from 'feature/users/uploads/node/uploadUserProfileImage';
 import { EntityManager } from 'typeorm';
 
-export const updateUserTransaction = (data: IUpdateUserProfile) => {
+type UpdateUser = IUpdateUserProfile & IAddUserLocation;
+
+export const updateUserTransaction = (data: UpdateUser) => {
+	const { locationsId, id, ...rest } = data;
+	const password = bcryptjs.hashSync(data.password, 12);
 	return async (manager: EntityManager) => {
-		const password = bcryptjs.hashSync(data.password, 12);
-		const profile = Object.assign({}, data, { password });
+		const profile = Object.assign({}, rest, { password, id });
 		await runQuery(updateUserProfileQuery, [profile], manager);
+		// add user locations
+		if (locationsId.length) {
+			await runQuery(addUserLocationsQuery, [{ locationsId, id }], manager);
+		}
 		return runQuery(getUserByIdQuery, [data.id], manager);
 	};
 };
 
-export const updateUserProfile = async (data: IUpdateUserProfile) => {
+export const updateUserProfile = async (data: UpdateUser) => {
 	const { username, id, password: rawPassword, image, email, phoneNumber } = data;
 	if (!id) throw getBadRequestError('id is required');
 
