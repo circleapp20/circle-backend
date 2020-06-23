@@ -1,4 +1,4 @@
-import { Locations } from 'base/common/schema/locations';
+import { Locations } from 'core/models/node/locations';
 import { EntityManager } from 'typeorm';
 
 interface IAddLocationValues {

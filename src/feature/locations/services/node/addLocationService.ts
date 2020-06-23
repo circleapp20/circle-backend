@@ -1,5 +1,5 @@
-import { Constants } from 'base/constants';
-import { runInsertQuery, runInTransaction, runQuery } from 'core/node/database/queryRunners';
+import { Constants } from 'base/config/node/constants';
+import { runInsertQuery, runInTransaction, runQuery } from 'core/database/queryRunners';
 import {
 	addLocationPlaceQuery,
 	addLocationQuery

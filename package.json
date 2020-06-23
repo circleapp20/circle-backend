@@ -12,14 +12,16 @@
 		"test": "jest --all",
 		"test:coverage": "jest --coverage",
 		"test:watch": "jest --watch",
-		"dev": "ts-node-dev -r tsconfig-paths/register --project tsconfig.server.json --respawn src/index.ts",
+		"server": "ts-node-dev -r tsconfig-paths/register --project tsconfig.server.json --respawn src/index.ts",
+		"server:next": "next dev",
+		"dev": "concurrently 'yarn run server' 'yarn run server:next'",
 		"build": "next build && rimraf dist && yarn compile",
 		"prettify": "prettier --write 'src/**/*.ts'",
 		"serve": "cross-env NODE_ENV=production node dist/index.js",
 		"start": "node dist/index.js",
 		"lint:fix": "eslint 'src/**/*.{ts,tsx}' --quiet --fix",
 		"lint": "eslint 'src/**/*.{ts,tsx}' --quiet",
-		"compile": "webpack --config config/webpack.config.js"
+		"compile": "webpack --config webpack/webpack.config.js"
 	},
 	"repository": {
 		"type": "git",
@@ -54,6 +56,7 @@
 		"@typescript-eslint/parser": "3.0.2",
 		"babel-jest": "26.0.1",
 		"clean-webpack-plugin": "3.0.0",
+		"concurrently": "5.2.0",
 		"cross-env": "7.0.2",
 		"eslint": "7.1.0",
 		"eslint-config-prettier": "6.11.0",

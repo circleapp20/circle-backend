@@ -1,18 +1,18 @@
-import * as utils from 'base/common/utilities';
 import { entityManager } from 'base/testUtils/node/entityManager';
+import * as utils from 'base/utils/node/codeGenerator';
 import bcryptjs from 'bcryptjs';
-import { runQuery } from 'core/node/database/queryRunners';
-import * as encryption from 'core/node/encryption';
-import { createUserFixture } from 'fixtures/users';
+import { runQuery } from 'core/database/queryRunners';
+import * as encryption from 'core/encryption/node/encryption';
 import {
 	checkUserVerificationCode,
 	getUserAccountWithCredentials,
 	verifyUserLoginCredentials
-} from '../verifyUserCredentialsService';
+} from 'feature/authentication/services/node/verifyUserCredentialsService';
+import { createUserFixture } from 'fixtures/users';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
 
 beforeEach(() => jest.clearAllMocks());
 

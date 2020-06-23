@@ -1,9 +1,9 @@
-import { getResponseData } from 'base/common/utilities';
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IRequest } from 'base/types';
+import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
-import { sendVerificationCodeByMedia } from '../messaging/sendVerificationCode';
-import { getUserProfileById } from '../services/node/getUsersProfileService';
+import { sendVerificationCodeByMedia } from 'feature/authentication/messaging/sendVerificationCode';
+import { getUserProfileById } from 'feature/authentication/services/node/getUsersProfileService';
 
 export const resendUserVerificationCode = async (req: IRequest, res: Response) => {
 	const { media }: any = req.query;

@@ -1,4 +1,4 @@
-import { uploadUserProfileImage } from '../uploadUserProfileImage';
+import { uploadUserProfileImage } from 'feature/users/uploads/node/uploadUserProfileImage';
 
 jest.mock('firebase-admin', () => ({
 	initializeApp: jest.fn().mockReturnValue({

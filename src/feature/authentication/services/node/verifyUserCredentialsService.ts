@@ -1,10 +1,10 @@
-import { getBadRequestError } from 'base/common/errors';
-import { generateCodeFromNumber } from 'base/common/utilities';
-import * as sharedQueries from 'base/node/queries';
-import { getSignedAuthToken } from 'base/node/validation';
+import { getBadRequestError } from 'base/errors/node/badRequestError';
+import { getSignedAuthToken } from 'base/server/validation';
+import { generateCodeFromNumber } from 'base/utils/node/codeGenerator';
 import bcryptjs from 'bcryptjs';
-import { runQuery } from 'core/node/database/queryRunners';
-import { decryptData, encryptData } from 'core/node/encryption';
+import { runQuery } from 'core/database/queryRunners';
+import { decryptData, encryptData } from 'core/encryption/node/encryption';
+import { getUserByCredentialsQuery, getUserByIdQuery } from 'core/queries/userQueries';
 import { updateUserVerificationCodeQuery } from 'feature/authentication/queries/updateUserVerificationCodeQuery';
 
 export const verifyUserLoginCredentials = async (data: {
@@ -19,7 +19,7 @@ export const verifyUserLoginCredentials = async (data: {
 	}
 	if (!password) throw getBadRequestError('password is required');
 
-	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [data]);
+	const user = await runQuery(getUserByCredentialsQuery, [data]);
 	if (!user) throw getBadRequestError('Invalid user account');
 
 	if (!bcryptjs.compareSync(password, user.password)) {
@@ -46,7 +46,7 @@ export const getUserAccountWithCredentials = async (args: {
 	phoneNumber?: string;
 	username?: string;
 }) => {
-	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [args]);
+	const user = await runQuery(getUserByCredentialsQuery, [args]);
 	if (!user) throw getBadRequestError('Invalid user account');
 
 	// generate new verification code
@@ -75,7 +75,7 @@ export const checkUserVerificationCode = async (data: { id: string; verification
 		throw getBadRequestError('user id and verification code are required');
 	}
 
-	const user = await runQuery(sharedQueries.getUserByIdQuery, [id]);
+	const user = await runQuery(getUserByIdQuery, [id]);
 	if (!user) throw getBadRequestError('Invalid user account');
 
 	const decryptedVerificationCode = decryptData({ encryptedText: user.verificationCode });

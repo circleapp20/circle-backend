@@ -1,9 +1,9 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
+import { searchUsernameOrEmail } from 'feature/users/controllers/searchUsers';
 import * as dataService from 'feature/users/services/node/checkUserExistsService';
-import { searchUsernameOrEmail } from '../searchUsers';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
 
 beforeEach(() => jest.clearAllMocks());
 

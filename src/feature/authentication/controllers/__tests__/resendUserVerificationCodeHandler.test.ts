@@ -1,15 +1,15 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { encryptData } from 'core/node/encryption';
+import { encryptData } from 'core/encryption/node/encryption';
+import { resendUserVerificationCode } from 'feature/authentication/controllers/resendUserVerificationCodeHandler';
 import { sendVerificationCodeByMedia } from 'feature/authentication/messaging/sendVerificationCode';
 import { createUserFixture } from 'fixtures/users';
-import { resendUserVerificationCode } from '../resendUserVerificationCodeHandler';
 
 jest.mock('feature/authentication/messaging/sendVerificationCode');
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/locations');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/locations');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
 
 beforeEach(() => jest.clearAllMocks());
 

@@ -1,10 +1,10 @@
 import { entityManager } from 'base/testUtils/node/entityManager';
 import * as query from 'feature/locations/queries/getLocationQueries';
+import { getCircleLocations } from 'feature/locations/services/node/getLocationsService';
 import { locationsList } from 'fixtures/locations';
-import { getCircleLocations } from '../getLocationsService';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/locations');
 
 beforeEach(() => jest.clearAllMocks());
 

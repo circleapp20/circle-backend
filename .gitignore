@@ -16,6 +16,7 @@ yarn-error.log*
 # misc
 .DS_Store
 .env
+firebase-admin.json
 
 # build
 dist

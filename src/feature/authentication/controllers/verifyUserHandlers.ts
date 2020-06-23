@@ -1,14 +1,14 @@
-import { getResponseData } from 'base/common/utilities';
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IRequest } from 'base/types';
+import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
-import { sendVerificationCodeByMedia } from '../messaging/sendVerificationCode';
-import { createUserProfileWithDefaultValues } from '../services/node/createUserProfileService';
+import { sendVerificationCodeByMedia } from 'feature/authentication/messaging/sendVerificationCode';
+import { createUserProfileWithDefaultValues } from 'feature/authentication/services/node/createUserProfileService';
 import {
 	checkUserVerificationCode,
 	getUserAccountWithCredentials,
 	verifyUserLoginCredentials
-} from '../services/node/verifyUserCredentialsService';
+} from 'feature/authentication/services/node/verifyUserCredentialsService';
 
 export const verifyUserCredentials = async (req: IRequest, res: Response) => {
 	const user = await createUserProfileWithDefaultValues(req.body.data);

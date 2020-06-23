@@ -1,11 +1,11 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import faker from 'faker';
+import { addLocationHandler } from 'feature/locations/controllers/addLocationHandler';
 import { createLocationFixture } from 'fixtures/locations';
-import { addLocationHandler } from '../addLocationHandler';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/locations');
 
 describe('#addLocationHandler', () => {
 	const location = createLocationFixture();

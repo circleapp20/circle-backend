@@ -1,5 +1,6 @@
-import { printToConsole } from 'base/common/utilities';
-import { getMailHeaders, sendMail, sendSMSMessage } from 'base/node/messaging';
+import { printToConsole } from 'base/utils/node/printToConsole';
+import { getMailHeaders, sendMail } from 'core/messaging/emailMessaging';
+import { sendSMSMessage } from 'core/messaging/smsMessaging';
 import { getVerificationEmailText } from 'feature/authentication/common/strings';
 
 export const sendVerificationCodeByEmail = (code: string, email: string) => {

@@ -1,8 +1,8 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IApiRoute } from 'base/types';
-import { addLocationHandler } from '../controllers/addLocationHandler';
-import { getLocationsHandler } from '../controllers/getLocationsHandler';
-import { AddLocationSchema } from './schema/addLocationSchema';
+import { AddLocationSchema } from 'feature/locations/api/schema/addLocationSchema';
+import { addLocationHandler } from 'feature/locations/controllers/addLocationHandler';
+import { getLocationsHandler } from 'feature/locations/controllers/getLocationsHandler';
 
 export const locationApiRoutes: IApiRoute[] = [
 	{

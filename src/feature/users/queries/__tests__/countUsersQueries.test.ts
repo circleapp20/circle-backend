@@ -1,12 +1,12 @@
-import { Users } from 'base/common/schema/users';
 import { entityManager } from 'base/testUtils/node/entityManager';
+import { Users } from 'core/models/node/users';
 import {
 	countMatchingEmailQuery,
 	countMatchingUsernameQuery,
 	countUsersMatchingSearchQuery
-} from '../countUsersQueries';
+} from 'feature/users/queries/countUsersQueries';
 
-jest.mock('base/common/schema/users');
+jest.mock('core/models/node/users');
 
 describe('#countMatchingUsernameQuery', () => {
 	test('should search Users table matching username', async () => {
