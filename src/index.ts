@@ -4,8 +4,12 @@ import express from 'express';
 import 'reflect-metadata';
 import { startServer } from './bootstrap/startServer';
 
+const serverRunListener = () => printToConsole(`started running on port ${Constants.app.PORT}`);
+
 const main = () => {
-	startServer(express(), () => printToConsole(`Server running on port ${Constants.app.PORT}`));
+	const app = express();
+
+	startServer(app, serverRunListener);
 
 	// if (process.env.NODE_ENV === 'development') {
 	// 	process.on('unhandledRejection', (error) => {

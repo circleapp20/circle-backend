@@ -1,79 +1,80 @@
-import { Constants } from 'base/config/browser/constants';
-import { updateStateWithFieldChangeValue } from 'base/events/browser/formEvents';
-import { getDataInWebStorage } from 'base/storage/browser/webStorage';
+import { PageLayout } from 'base/components/browser/layouts/PageLayout';
 import { addLocationApiAction } from 'feature/locations/services/browser/addLocationApiAction';
-import Router from 'next/router';
+import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 export const AddLocation: React.FC = () => {
-	const [name, setName] = React.useState('');
-	const [address, setAddress] = React.useState('');
-	const [latitude, setLatitude] = React.useState('');
-	const [longitude, setLongitude] = React.useState('');
+	const { query } = useRouter();
 
-	const [loading, setLoading] = React.useState(true);
-	const [authUser, setAuthUser] = React.useState(null);
 	const [error, setError] = React.useState('');
 
-	React.useEffect(() => {
-		const user = getDataInWebStorage(Constants.keys.STORED_AUTH_USER_KEY);
-		setAuthUser(user);
-		setLoading(false);
-	}, []);
+	const formik = useFormik({
+		initialValues: {
+			name: '',
+			address: '',
+			latitude: 0,
+			longitude: 0,
+			placeId: query.placeId || ''
+		},
+		onSubmit: async (values, actions) => {
+			const response = await addLocationApiAction(values);
 
-	const onAddLocation = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const locationData = { name, address, latitude, longitude, placeId: '' };
-		const response = await addLocationApiAction(locationData);
-		if (response.error) {
-			return setError(response.error);
+			if (response.error) {
+				return setError(response.error);
+			}
+
+			actions.resetForm();
 		}
-		Router.push(Constants.pages.LOCATIONS);
-	};
-
-	if (!loading && !authUser) {
-		Router.replace(Constants.pages.AUTH_SIGN_IN);
-	}
+	});
 
 	return (
-		<main>
-			{loading ? (
-				<h1>Loading page</h1>
-			) : (
-				<div>
-					<h1>Add Location</h1>
-					<form onSubmit={onAddLocation}>
-						<input
-							placeholder="Name of location"
-							minLength={2}
-							onChange={updateStateWithFieldChangeValue(setName)}
-							required
-							type="text"
-						/>
-						<input
-							type="text"
-							placeholder="Address"
-							onChange={updateStateWithFieldChangeValue(setAddress)}
-						/>
-						<input
-							type="number"
-							placeholder="Latitude"
-							required
-							step="any"
-							onChange={updateStateWithFieldChangeValue(setLatitude)}
-						/>
-						<input
-							type="number"
-							placeholder="Longitude"
-							required
-							step="any"
-							onChange={updateStateWithFieldChangeValue(setLongitude)}
-						/>
-						<button type="submit">Add Location</button>
-					</form>
-					{error && <h2>{error}</h2>}
-				</div>
-			)}
-		</main>
+		<PageLayout authenticated>
+			<div>
+				<h1>Add Location</h1>
+				<form onSubmit={formik.handleSubmit}>
+					<input
+						placeholder="Name of location"
+						minLength={2}
+						onChange={formik.handleChange}
+						required
+						type="text"
+						name="name"
+						id="name"
+						value={formik.values.name}
+					/>
+					<input
+						type="text"
+						placeholder="Address"
+						onChange={formik.handleChange}
+						name="address"
+						id="address"
+						value={formik.values.address}
+					/>
+					<input
+						type="number"
+						placeholder="Latitude"
+						required
+						step="any"
+						onChange={formik.handleChange}
+						name="latitude"
+						id="latitude"
+						value={formik.values.latitude}
+					/>
+					<input
+						type="number"
+						placeholder="Longitude"
+						required
+						step="any"
+						onChange={formik.handleChange}
+						name="longitude"
+						id="longitude"
+						value={formik.values.longitude}
+					/>
+					<button type="submit">Add Location</button>
+				</form>
+				{error && <h2>{error}</h2>}
+			</div>
+		</PageLayout>
 	);
 };

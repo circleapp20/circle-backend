@@ -1,12 +1,5 @@
 import { Constants as SharedConstants } from 'base/config/common/constants';
 
-const Pages = {
-	ADD_LOCATION: '/locations/add-location',
-	LOCATIONS: '/locations',
-
-	AUTH_SIGN_IN: '/auth/sign-in'
-};
-
 export const Constants = {
 	...SharedConstants,
 	services:
@@ -19,6 +12,5 @@ export const Constants = {
 			  },
 	keys: {
 		STORED_AUTH_USER_KEY: 'foo4iun71qq8'
-	},
-	pages: { ...Pages }
+	}
 };

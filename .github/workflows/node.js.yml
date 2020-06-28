@@ -15,7 +15,7 @@ jobs:
 
         steps:
             - uses: actions/checkout@v2
-            - name: Use Node.js
+            - name: Circle Testing
               uses: actions/setup-node@v1
               with:
                   node-version: '10.x'
@@ -27,15 +27,14 @@ jobs:
                       ${{ runner.OS }}-
             - run: yarn --frozen-lockfile
             - run: yarn run build
-            - run: yarn run lint
             - run: yarn run test
               env:
-                  DATABASE_URL: 'mysql://root:test@localhost:3306/circle_db'
-                  MAIL_USER: 'testerMe@testingdomain.com'
-                  MAIL_PASSWORD: 'testersPassword'
-                  GOOGLE_CLIENT_ID: '0s9j04j9j0e2mr4832823.apps.googleusercontent.com'
-                  GOOGLE_CLIENT_SECRET: '9003tj309o29jr028'
-                  GOOGLE_CLIENT_REFRESH_TOKEN: 'fk3209t938jk229r20i-340t3h4839j12-0-2r8j'
-                  MNOTIFY_API_KEY: 'jm98j329jrj3t3r9802j9252j9e8j29e2'
-                  CIRCLE_SECRET_KEY: '094r3im39120m09384t3'
-                  FIREBASE_CREDENTIALS: '{"type":"j90a-js0oif","project_id":"circle-39282","private_key_id":"30j03g9j39fm2030g","private_key":"skj829fw82on82fwo","client_email":"dfko@fwiof.sfiow","client_id":"4902238202930","auth_uri":"https://ksdffowf.slfk.sfso/sfs/sfsfwo/sf","token_uri":"https://skfsf922.sfif.sfs/sfjskf","auth_provider_x509_cert_url":"https://sfksfksj.fklssfs.com/oauth2/v1/certs","client_x509_cert_url":"jdlfksjfkjslfkfsf"}'
+                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+                  MAIL_USER: ${{ secrets.MAIL_USER }}
+                  MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+                  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                  GOOGLE_CLIENT_REFRESH_TOKEN: ${{ secrets.GOOGLE_CLIENT_REFRESH_TOKEN }}
+                  MNOTIFY_API_KEY: ${{ secrets.MNOTIFY_API_KEY }}
+                  CIRCLE_SECRET_KEY: ${{ secrets.CIRCLE_SECRET_KEY }}
+                  FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}

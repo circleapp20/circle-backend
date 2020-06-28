@@ -1,49 +1,60 @@
-import { Constants } from 'base/config/browser/constants';
-import { updateStateWithFieldChangeValue } from 'base/events/browser/formEvents';
-import { storeDataInWebStorage } from 'base/storage/browser/webStorage';
+import { PageLayout } from 'base/components/browser/layouts/PageLayout';
+import { PAGES } from 'base/config/browser/pages';
+import { useAuthUser } from 'base/hooks/useAuthUser';
 import { verifyUserCredentials } from 'feature/authentication/services/browser/authUserCredentials';
-import Router from 'next/router';
+import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 export const SignIn: React.FC = () => {
-	const [email, setEmail] = React.useState('');
-	const [password, setPassword] = React.useState('');
+	const { replace } = useRouter();
 	const [error, setError] = React.useState('');
+	const { user, setUser } = useAuthUser();
+	const formik = useFormik({
+		initialValues: { email: '', password: '' },
+		onSubmit: async (values) => {
+			const response = await verifyUserCredentials(values);
 
-	const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-		const response = await verifyUserCredentials({ email, password });
-		if (response.error) {
-			return setError(response.error);
+			if (response.error) {
+				return setError(response.error);
+			}
+
+			setUser(response.data);
 		}
-		storeDataInWebStorage(Constants.keys.STORED_AUTH_USER_KEY, response.data);
-		Router.push(Constants.pages.ADD_LOCATION);
-	};
+	});
+
+	if (user) {
+		replace(PAGES.LOCATIONS);
+	}
 
 	return (
-		<main>
+		<PageLayout>
 			<div>
-				<form onSubmit={onSubmit}>
+				<form onSubmit={formik.handleSubmit}>
 					<input
 						type="email"
 						required
 						minLength={6}
-						onChange={updateStateWithFieldChangeValue(setEmail)}
+						onChange={formik.handleChange}
 						name="email"
 						placeholder="Email"
+						id="email"
+						value={formik.values.email}
 					/>
 					<input
 						type="password"
+						id="password"
 						required
 						minLength={6}
 						name="password"
 						placeholder="Password"
-						onChange={updateStateWithFieldChangeValue(setPassword)}
+						onChange={formik.handleChange}
+						value={formik.values.password}
 					/>
 					<button type="submit">Sign In</button>
 				</form>
 			</div>
 			{error && <p>{error}</p>}
-		</main>
+		</PageLayout>
 	);
 };

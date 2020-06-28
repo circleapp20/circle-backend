@@ -6,19 +6,14 @@ import { getDataInWebStorage } from 'base/storage/browser/webStorage';
 
 export const addLocationApiAction = async (args: {
 	name: string;
-	placeId: string;
+	placeId: any;
 	address: string;
-	latitude: string;
-	longitude: string;
+	latitude: number;
+	longitude: number;
 }): Promise<IApiSuccessResponse> => {
 	try {
 		const user = getDataInWebStorage(Constants.keys.STORED_AUTH_USER_KEY);
-		const data = {
-			...args,
-			latitude: parseFloat(args.latitude),
-			longitude: parseFloat(args.longitude)
-		};
-		await apiPost('/locations', { data }, Constants.services.MAIN, {
+		await apiPost('/locations', { data: args }, Constants.services.MAIN, {
 			authorization: `Bearer ${user!.token}`
 		});
 		return { success: true };

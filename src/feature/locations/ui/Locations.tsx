@@ -1,73 +1,30 @@
-import { getLocationsApiAction } from 'feature/locations/services/browser/getLocationsApiAction';
-import { IApiLocation } from 'feature/locations/services/browser/locationTypes';
+import { LoadPageError } from 'base/components/browser/layouts/LoadPageError';
+import { PageLayout } from 'base/components/browser/layouts/PageLayout';
+import { PAGES } from 'base/config/browser/pages';
+import { Countries } from 'feature/locations/components/Countries';
+import { LocationContext } from 'feature/locations/contexts/browser/locationContext';
+import { useLocations } from 'feature/locations/hooks/useLocations';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 export const Locations: React.FC = () => {
-	const [locations, setLocations] = React.useState<IApiLocation[]>([]);
-	const [loading, setLoading] = React.useState(true);
+	const { push } = useRouter();
+	const { loading, error, data: locations } = useLocations();
 
-	const [error, setError] = React.useState('');
-
-	const isMounted = React.useRef(true);
-
-	React.useEffect(() => {
-		const fetchLocations = async () => {
-			const response = await getLocationsApiAction();
-			if (!isMounted.current) return;
-			if (response.error) return setError(response.error);
-			setLocations(response.data!);
-			setLoading(false);
-		};
-
-		fetchLocations();
-
-		return () => {
-			isMounted.current = false;
-		};
-	}, []);
-
-	const renderLocation = (location: IApiLocation) => {
-		const { states } = location;
-		const statesList = states.map((state) => {
-			const { cities } = state;
-			const citiesList = cities.map((city) => {
-				const { streets } = city;
-				const streetsList = streets.map((street) => {
-					return <li key={street.id}>{street.name}</li>;
-				});
-				return (
-					<li key={city.id}>
-						{city.name}
-						<ul>{React.Children.toArray(streetsList)}</ul>
-					</li>
-				);
-			});
-			return (
-				<li key={state.id}>
-					{state.name}
-					<ul>{React.Children.toArray(citiesList)}</ul>
-				</li>
-			);
-		});
-		return (
-			<li key={location.id}>
-				{location.name}
-				<ul>{React.Children.toArray(statesList)}</ul>
-			</li>
-		);
+	const onViewLocation = (id: string, level: string) => {
+		push(`${PAGES.LOCATION_PROFILE}/${id}?level=${level}`);
 	};
 
 	return (
-		<main>
-			{loading ? (
-				<div>Loading</div>
-			) : (
-				<div>
-					<h1>Locations</h1>
-					{error && <p>{error}</p>}
-					<ul>{React.Children.toArray(locations.map(renderLocation))}</ul>
-				</div>
-			)}
-		</main>
+		<PageLayout authenticated loading={loading}>
+			<LoadPageError error={error}>
+				<LocationContext.Provider value={{ onViewLocation }}>
+					<div>
+						<h1>Locations</h1>
+						<Countries locations={locations || []} />
+					</div>
+				</LocationContext.Provider>
+			</LoadPageError>
+		</PageLayout>
 	);
 };
