@@ -3,6 +3,8 @@ name: Master CI
 on:
     push:
         branches: [master]
+    pull_request:
+        branches: [master]
 
 jobs:
     build:
@@ -23,7 +25,6 @@ jobs:
             - run: yarn --frozen-lockfile
             - run: yarn run build
             - run: yarn run test
-            - run: echo ${{ secrets.FIREBASE_CREDENTIALS }}
             - run: yarn run deploy:web -s ${{ secrets.NETLIFY_SITE_ID }} -a ${{ secrets.NETLIFY_ACCESS_TOKEN }} --prod
               env:
                   DATABASE_URL: ${{ secrets.DATABASE_URL }}
