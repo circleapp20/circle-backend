@@ -1,8 +1,16 @@
 [build]
     # build the web app using next build found in the package.json scrpits section
     # then export the build script to the out directory which will be published to netlify
-    command = "yarn run deploy:web"
+    command = "yarn run build:web"
 
     # the out directory contains the exported next js build for the web app
     # this is the directory which should be published by netlify
     publish = "out"
+
+[[redirects]]
+    # redirect the locations dynamic routes for the details of the location to
+    # /locations/[id].html
+    from = "/locations/details/*"
+    to = "/locations/details/[id].html"
+    status = 200
+    force = true

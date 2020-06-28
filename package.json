@@ -9,7 +9,7 @@
 		"npm": "6.x"
 	},
 	"scripts": {
-		"test": "jest --all --passWithNoTests",
+		"test": "jest --all",
 		"test:coverage": "jest --coverage",
 		"test:watch": "jest --watch",
 		"server": "ts-node-dev -r tsconfig-paths/register --project tsconfig.server.json --respawn src/index.ts",
