@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd ../
+
+yarn run build:web
+
+yarn deploy:web -s [NETLIFY_SITE_ID] -a [NETLIFY_ACCESS_TOKEN] --prod

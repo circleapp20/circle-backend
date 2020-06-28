@@ -21,3 +21,6 @@ firebase-admin.json
 # build
 dist
 out
+
+# scripts
+deploy-web.sh
