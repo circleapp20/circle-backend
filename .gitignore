@@ -20,3 +20,4 @@ firebase-admin.json
 
 # build
 dist
+out

@@ -15,13 +15,16 @@
 		"server": "ts-node-dev -r tsconfig-paths/register --project tsconfig.server.json --respawn src/index.ts",
 		"server:next": "next dev",
 		"dev": "concurrently 'yarn run server' 'yarn run server:next'",
-		"build": "next build && rimraf dist && yarn compile",
+		"build:web": "next build ",
+		"build": "rimraf dist && yarn run compile",
 		"prettify": "prettier --write 'src/**/*.ts'",
 		"serve": "cross-env NODE_ENV=production node dist/index.js",
 		"start": "node dist/index.js",
 		"lint:fix": "eslint 'src/**/*.{ts,tsx}' --quiet --fix",
 		"lint": "eslint 'src/**/*.{ts,tsx}' --quiet",
-		"compile": "webpack --config webpack/webpack.config.js"
+		"compile": "webpack --config webpack/webpack.config.js",
+		"export": "next export",
+		"deploy:web": "yarn run build:web && yarn run export"
 	},
 	"repository": {
 		"type": "git",
