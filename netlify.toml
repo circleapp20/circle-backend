@@ -1,0 +1,8 @@
+[build]
+    # build the web app using next build found in the package.json scrpits section
+    # then export the build script to the out directory which will be published to netlify
+    command = "yarn run deploy:web"
+
+    # the out directory contains the exported next js build for the web app
+    # this is the directory which should be published by netlify
+    publish = "out"

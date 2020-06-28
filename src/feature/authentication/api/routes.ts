@@ -1,17 +1,17 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IApiRoute } from 'base/types';
-import { resendUserVerificationCode } from '../controllers/resendUserVerificationCodeHandler';
+import {
+	VerifyUserCredentialsSchema,
+	VerifyUserLoginSchema,
+	VerifyVerificationCodeSchema
+} from 'feature/authentication/api/schema/verifyUserSchema';
+import { resendUserVerificationCode } from 'feature/authentication/controllers/resendUserVerificationCodeHandler';
 import {
 	verifyUserCredentials,
 	verifyUserCredentialsForPasswordReset,
 	verifyUserLogin,
 	verifyUserVerificationCode
-} from '../controllers/verifyUserHandlers';
-import {
-	VerifyUserCredentialsSchema,
-	VerifyUserLoginSchema,
-	VerifyVerificationCodeSchema
-} from './schema/verifyUserSchema';
+} from 'feature/authentication/controllers/verifyUserHandlers';
 
 export const authRoutes: IApiRoute[] = [
 	{

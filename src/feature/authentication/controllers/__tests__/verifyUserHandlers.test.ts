@@ -1,21 +1,21 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import bcryptjs from 'bcryptjs';
-import { encryptData } from 'core/node/encryption';
+import { encryptData } from 'core/encryption/node/encryption';
 import faker from 'faker';
-import { sendVerificationCodeByMedia } from 'feature/authentication/messaging/sendVerificationCode';
-import { createUserFixture } from 'fixtures/users';
 import {
 	verifyUserCredentials,
 	verifyUserCredentialsForPasswordReset,
 	verifyUserLogin,
 	verifyUserVerificationCode
-} from '../verifyUserHandlers';
+} from 'feature/authentication/controllers/verifyUserHandlers';
+import { sendVerificationCodeByMedia } from 'feature/authentication/messaging/sendVerificationCode';
+import { createUserFixture } from 'fixtures/users';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
+jest.mock('core/models/node/locations');
 jest.mock('feature/authentication/messaging/sendVerificationCode');
 
 beforeEach(() => jest.clearAllMocks());

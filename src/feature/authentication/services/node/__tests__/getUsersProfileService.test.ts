@@ -1,12 +1,12 @@
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { runQuery } from 'core/node/database/queryRunners';
-import { encryptData } from 'core/node/encryption';
+import { runQuery } from 'core/database/queryRunners';
+import { encryptData } from 'core/encryption/node/encryption';
+import { getUserProfileById } from 'feature/authentication/services/node/getUsersProfileService';
 import { createUserFixture } from 'fixtures/users';
-import { getUserProfileById } from '../getUsersProfileService';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
 
 beforeEach(() => jest.clearAllMocks());
 

@@ -1,14 +1,17 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { runInTransaction } from 'core/node/database/queryRunners';
+import { runInTransaction } from 'core/database/queryRunners';
 import faker from 'faker';
 import * as addLocationQueries from 'feature/locations/queries/addLocationQuery';
 import * as getLocationQueries from 'feature/locations/queries/getLocationQueries';
+import {
+	addLocationService,
+	addLocationTransaction
+} from 'feature/locations/services/node/addLocationService';
 import { createLocationFixture } from 'fixtures/locations';
-import { addLocationService, addLocationTransaction } from '../addLocationService';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/locations');
 
 beforeEach(() => jest.clearAllMocks());
 

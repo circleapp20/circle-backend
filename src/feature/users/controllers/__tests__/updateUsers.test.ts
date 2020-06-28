@@ -1,12 +1,12 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import faker from 'faker';
 import { resetUserPassword, updateProfile } from 'feature/users/controllers/updateUsers';
 import * as dataService from 'feature/users/services/node/updateUserProfileService';
 import { createUserFixture } from 'fixtures/users';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
 
 beforeEach(() => jest.clearAllMocks());
 

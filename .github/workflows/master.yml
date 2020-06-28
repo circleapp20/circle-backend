@@ -1,0 +1,36 @@
+name: Master CI
+
+on:
+    push:
+        branches: [master]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+            - name: Circle Backend
+              uses: actions/setup-node@v1
+              with:
+                  node-version: '10.x'
+                  # npm cache files are stored in `~/.npm` on Linux/macOS
+                  path: ~/.npm
+                  key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.OS }}-node-
+                      ${{ runner.OS }}-
+            - run: yarn --frozen-lockfile
+            - run: yarn run build
+            - run: yarn run test
+            - run: yarn run deploy:web -s ${{ secrets.NETLIFY_SITE_ID }} -a ${{ secrets.NETLIFY_ACCESS_TOKEN }} --prod
+              env:
+                  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+                  MAIL_USER: ${{ secrets.MAIL_USER }}
+                  MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+                  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                  GOOGLE_CLIENT_REFRESH_TOKEN: ${{ secrets.GOOGLE_CLIENT_REFRESH_TOKEN }}
+                  MNOTIFY_API_KEY: ${{ secrets.MNOTIFY_API_KEY }}
+                  CIRCLE_SECRET_KEY: ${{ secrets.CIRCLE_SECRET_KEY }}
+                  FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS }}

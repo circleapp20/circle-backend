@@ -1,8 +1,11 @@
-import { getResponseData } from 'base/common/utilities';
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IRequest } from 'base/types';
+import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
-import { updateUserPassword, updateUserProfile } from '../services/node/updateUserProfileService';
+import {
+	updateUserPassword,
+	updateUserProfile
+} from 'feature/users/services/node/updateUserProfileService';
 
 export const updateProfile = async (req: IRequest, res: Response) => {
 	const { id } = req.user;

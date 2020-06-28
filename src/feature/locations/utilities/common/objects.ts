@@ -1,11 +1,17 @@
 export const changeLocationPlacesName = (location: any, index = 0) => {
 	const { places, ...rest } = location;
+
 	let locationPlaces = places;
-	if (locationPlaces.length) {
-		// mutation happens here
+
+	// mutation happens here
+	if (places && places.length) {
 		locationPlaces = places.map((place: any) => changeLocationPlacesName(place, index + 1));
 	}
+
 	const names = ['states', 'cities', 'streets'];
-	if (names[index]) rest[names[index]] = locationPlaces;
+	const locationName = names[index];
+
+	if (locationName) rest[locationName] = locationPlaces;
+
 	return rest;
 };

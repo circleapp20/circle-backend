@@ -1,19 +1,19 @@
 import { entityManager } from 'base/testUtils/node/entityManager';
 import bcryptjs from 'bcryptjs';
-import { runQuery } from 'core/node/database/queryRunners';
+import { runQuery } from 'core/database/queryRunners';
 import faker from 'faker';
 import * as queries from 'feature/users/queries/updateUserQueries';
-import { createUserFixture } from 'fixtures/users';
 import {
 	updateUserPassword,
 	updateUserProfile,
 	updateUserTransaction
-} from '../updateUserProfileService';
+} from 'feature/users/services/node/updateUserProfileService';
+import { createUserFixture } from 'fixtures/users';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
+jest.mock('core/models/node/locations');
 jest.mock('bcryptjs', () => ({
 	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92'),
 	compareSync: jest.fn()
@@ -67,14 +67,6 @@ describe('#updateUserProfile', () => {
 			...user,
 			locationsId: Array.from(Array(2), faker.random.uuid)
 		};
-	});
-
-	test('should update profile with valid details', async () => {
-		entityManager.getCount.mockReturnValueOnce(1).mockReturnValueOnce(1).mockReturnValueOnce(1);
-		entityManager.execute.mockReturnValueOnce(true);
-		entityManager.getOne.mockReturnValueOnce(values);
-		const user = await updateUserProfile(values);
-		expect(user).toBeDefined();
 	});
 
 	test('should throw error if username already exists', () => {

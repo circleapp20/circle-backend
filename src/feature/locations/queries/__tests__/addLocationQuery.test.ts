@@ -1,10 +1,13 @@
-import { Locations } from 'base/common/schema/locations';
 import { entityManager } from 'base/testUtils/node/entityManager';
+import { Locations } from 'core/models/node/locations';
 import faker from 'faker';
+import {
+	addLocationPlaceQuery,
+	addLocationQuery
+} from 'feature/locations/queries/addLocationQuery';
 import { createLocationFixture } from 'fixtures/locations';
-import { addLocationPlaceQuery, addLocationQuery } from '../addLocationQuery';
 
-jest.mock('base/common/schema/locations');
+jest.mock('core/models/node/locations');
 
 beforeEach(() => jest.clearAllMocks());
 

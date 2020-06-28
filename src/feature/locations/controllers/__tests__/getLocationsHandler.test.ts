@@ -1,10 +1,10 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
+import { getLocationsHandler } from 'feature/locations/controllers/getLocationsHandler';
 import { locationsList } from 'fixtures/locations';
-import { getLocationsHandler } from '../getLocationsHandler';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/locations');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/locations');
 
 describe('#getLocationsHandler', () => {
 	const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };

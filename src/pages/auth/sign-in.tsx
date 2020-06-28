@@ -1,3 +1,3 @@
-import { SignIn } from 'feature/authentication/web/signin/SignIn';
+import { SignIn } from 'feature/authentication/ui/SignIn';
 
 export default SignIn;

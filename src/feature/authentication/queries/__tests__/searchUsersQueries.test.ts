@@ -1,8 +1,8 @@
-import { Users } from 'base/common/schema/users';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { countMatchingIdAndCodeQuery } from '../searchUsersQueries';
+import { Users } from 'core/models/node/users';
+import { countMatchingIdAndCodeQuery } from 'feature/authentication/queries/searchUsersQueries';
 
-jest.mock('base/common/schema/users');
+jest.mock('core/models/node/users');
 
 beforeEach(() => jest.clearAllMocks());
 

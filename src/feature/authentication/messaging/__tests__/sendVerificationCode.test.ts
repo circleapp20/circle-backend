@@ -1,10 +1,11 @@
-import { Constants } from 'base/constants';
-import * as messaging from 'base/node/messaging';
+import { Constants } from 'base/config/node/constants';
+import * as emailMessaging from 'core/messaging/emailMessaging';
+import * as smsMessaging from 'core/messaging/smsMessaging';
 import {
 	sendVerificationCodeByEmail,
 	sendVerificationCodeByMedia,
 	sendVerificationCodeBySMS
-} from '../sendVerificationCode';
+} from 'feature/authentication/messaging/sendVerificationCode';
 
 beforeEach(() => jest.clearAllMocks());
 
@@ -12,12 +13,12 @@ let sendSMSMock: jest.SpyInstance;
 let sendMailMock: jest.SpyInstance;
 
 beforeAll(() => {
-	sendSMSMock = jest.spyOn(messaging, 'sendSMSMessage');
+	sendSMSMock = jest.spyOn(smsMessaging, 'sendSMSMessage');
 	sendSMSMock.mockImplementation(jest.fn()).mockReturnValue({
 		catch: jest.fn()
 	});
 
-	sendMailMock = jest.spyOn(messaging, 'sendMail');
+	sendMailMock = jest.spyOn(emailMessaging, 'sendMail');
 	sendMailMock.mockImplementation(jest.fn()).mockReturnValue({
 		catch: jest.fn()
 	});

@@ -1,18 +1,18 @@
-import * as utils from 'base/common/utilities';
-import { Constants } from 'base/constants';
-import * as sharedQueries from 'base/node/queries';
+import { Constants } from 'base/config/node/constants';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import * as encryption from 'core/node/encryption';
+import * as utils from 'base/utils/node/codeGenerator';
+import * as encryption from 'core/encryption/node/encryption';
+import * as sharedQueries from 'core/queries/userQueries';
 import faker from 'faker';
-import { createUserFixture } from 'fixtures/users';
 import {
 	addUserTransaction,
 	createUserProfileWithDefaultValues
-} from '../createUserProfileService';
+} from 'feature/authentication/services/node/createUserProfileService';
+import { createUserFixture } from 'fixtures/users';
 
-jest.mock('core/node/database/queryRunners');
-jest.mock('base/common/schema/users');
-jest.mock('base/common/schema/fellows');
+jest.mock('core/database/queryRunners');
+jest.mock('core/models/node/users');
+jest.mock('core/models/node/fellows');
 jest.mock('bcryptjs', () => ({
 	hashSync: jest.fn().mockReturnValue('$$20yy39nv93n932n92093nf92'),
 	compareSync: jest.fn()

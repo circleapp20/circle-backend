@@ -1,8 +1,8 @@
-import { Users } from 'base/common/schema/users';
 import { entityManager } from 'base/testUtils/node/entityManager';
-import { updateUserVerificationCodeQuery } from '../updateUserVerificationCodeQuery';
+import { Users } from 'core/models/node/users';
+import { updateUserVerificationCodeQuery } from 'feature/authentication/queries/updateUserVerificationCodeQuery';
 
-jest.mock('base/common/schema/users');
+jest.mock('core/models/node/users');
 
 beforeEach(() => jest.clearAllMocks());
 

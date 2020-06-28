@@ -1,11 +1,15 @@
-import { getBadRequestError } from 'base/common/errors';
-import { generateCodeFromNumber } from 'base/common/utilities';
-import { Constants } from 'base/constants';
-import * as sharedQueries from 'base/node/queries';
-import { getSignedAuthToken } from 'base/node/validation';
+import { Constants } from 'base/config/node/constants';
+import { getBadRequestError } from 'base/errors/node/badRequestError';
+import { getSignedAuthToken } from 'base/server/validation';
 import { IAddUserProfile } from 'base/types';
-import { runInsertQuery, runInTransaction, runQuery } from 'core/node/database/queryRunners';
-import { decryptData, encryptData } from 'core/node/encryption';
+import { generateCodeFromNumber } from 'base/utils/node/codeGenerator';
+import { runInsertQuery, runInTransaction, runQuery } from 'core/database/queryRunners';
+import { decryptData, encryptData } from 'core/encryption/node/encryption';
+import {
+	addUserProfileQuery,
+	getUserByCredentialsQuery,
+	getUserByIdQuery
+} from 'core/queries/userQueries';
 import { EntityManager } from 'typeorm';
 
 export const addUserTransaction = (email = '', phoneNumber = '') => {
@@ -29,9 +33,9 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			name: ''
 		};
 
-		const [user] = await runInsertQuery(sharedQueries.addUserProfileQuery, [profile], manager);
+		const [user] = await runInsertQuery(addUserProfileQuery, [profile], manager);
 
-		return runQuery(sharedQueries.getUserByIdQuery, [user.id], manager);
+		return runQuery(getUserByIdQuery, [user.id], manager);
 	};
 };
 
@@ -39,7 +43,7 @@ export const createUserProfileWithDefaultValues = async (data: {
 	email?: string;
 	phoneNumber?: string;
 }) => {
-	const user = await runQuery(sharedQueries.getUserByCredentialsQuery, [data]);
+	const user = await runQuery(getUserByCredentialsQuery, [data]);
 	if (user) throw getBadRequestError('User already exists');
 
 	// save user profile into the database

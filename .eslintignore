@@ -6,4 +6,4 @@ dist
 .github
 node_modules
 jest.config.js
-config/webpack.config.js
+webpack/webpack.config.js

@@ -1,8 +1,8 @@
-import { getBadRequestError } from 'base/common/errors';
-import { Constants } from 'base/constants';
-import { getUserByIdQuery } from 'base/node/queries';
+import { Constants } from 'base/config/node/constants';
+import { getBadRequestError } from 'base/errors/node/badRequestError';
 import bcryptjs from 'bcryptjs';
-import { runInTransaction, runQuery } from 'core/node/database/queryRunners';
+import { runInTransaction, runQuery } from 'core/database/queryRunners';
+import { getUserByIdQuery } from 'core/queries/userQueries';
 import { countUsersMatchingSearchQuery } from 'feature/users/queries/countUsersQueries';
 import {
 	addUserLocationsQuery,

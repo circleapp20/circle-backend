@@ -1,7 +1,7 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import { IApiRoute } from 'base/types';
-import { searchUsernameOrEmail } from '../controllers/searchUsers';
-import { resetUserPassword, updateProfile } from '../controllers/updateUsers';
+import { searchUsernameOrEmail } from 'feature/users/controllers/searchUsers';
+import { resetUserPassword, updateProfile } from 'feature/users/controllers/updateUsers';
 import { CheckUsernameSchema } from './schema/searchUserApiSchema';
 import { ResetPasswordSchema, UpdateUserProfileSchema } from './schema/updateUserApiSchema';
 

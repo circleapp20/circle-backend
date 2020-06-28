@@ -1,4 +1,4 @@
-import { runQuery } from 'core/node/database/queryRunners';
+import { runQuery } from 'core/database/queryRunners';
 import {
 	countMatchingEmailQuery,
 	countMatchingUsernameQuery

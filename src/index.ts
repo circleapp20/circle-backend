@@ -1,11 +1,15 @@
-import { printToConsole } from 'base/common/utilities';
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
+import { printToConsole } from 'base/utils/node/printToConsole';
 import express from 'express';
 import 'reflect-metadata';
-import { bootstrap } from './bootstrap';
+import { startServer } from './bootstrap/startServer';
+
+const serverRunListener = () => printToConsole(`started running on port ${Constants.app.PORT}`);
 
 const main = () => {
-	bootstrap(express(), () => printToConsole(`Server running on port ${Constants.app.PORT}`));
+	const app = express();
+
+	startServer(app, serverRunListener);
 
 	// if (process.env.NODE_ENV === 'development') {
 	// 	process.on('unhandledRejection', (error) => {

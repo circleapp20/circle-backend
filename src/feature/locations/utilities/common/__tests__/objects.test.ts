@@ -1,5 +1,5 @@
+import { changeLocationPlacesName } from 'feature/locations/utilities/common/objects';
 import { locationsList } from 'fixtures/locations';
-import { changeLocationPlacesName } from '../objects';
 
 describe('#changeLocationPlacesName', () => {
 	test('should rename places', () => {

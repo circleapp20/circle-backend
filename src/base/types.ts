@@ -20,11 +20,6 @@ export interface IApiRoute {
 	type?: 'body' | 'query';
 }
 
-export interface IResponseData<T = any> {
-	data?: T;
-	success: boolean;
-}
-
 export interface IRecipientMailConfig {
 	to: string;
 	subject: string;

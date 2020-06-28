@@ -1,4 +1,4 @@
-import { Constants } from 'base/constants';
+import { Constants } from 'base/config/node/constants';
 import faker from 'faker';
 
 export const createUserFixture = () => {

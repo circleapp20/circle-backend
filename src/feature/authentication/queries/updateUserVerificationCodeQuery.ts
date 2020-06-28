@@ -1,4 +1,4 @@
-import { Users } from 'base/common/schema/users';
+import { Users } from 'core/models/node/users';
 import { EntityManager } from 'typeorm';
 
 export const updateUserVerificationCodeQuery = (

@@ -9,11 +9,13 @@
 		"encryptor",
 		"esnext",
 		"fnames",
+		"formik",
 		"gmail",
 		"googleusercontent",
 		"hstore",
 		"postgres",
 		"respawn",
+		"signin",
 		"smtp",
 		"typeorm",
 		"webpackbar"
