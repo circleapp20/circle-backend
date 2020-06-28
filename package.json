@@ -15,7 +15,7 @@
 		"server": "ts-node-dev -r tsconfig-paths/register --project tsconfig.server.json --respawn src/index.ts",
 		"server:next": "next dev",
 		"dev": "concurrently 'yarn run server' 'yarn run server:next'",
-		"build:web": "next build ",
+		"build:web": "next build && next export",
 		"build": "rimraf dist && yarn run compile",
 		"prettify": "prettier --write 'src/**/*.ts'",
 		"serve": "cross-env NODE_ENV=production node dist/index.js",
@@ -23,8 +23,7 @@
 		"lint:fix": "eslint 'src/**/*.{ts,tsx}' --quiet --fix",
 		"lint": "eslint 'src/**/*.{ts,tsx}' --quiet",
 		"compile": "webpack --config webpack/webpack.config.js",
-		"export": "next export",
-		"deploy:web": "yarn run build:web && yarn run export"
+		"deploy:web": "netlify deploy"
 	},
 	"repository": {
 		"type": "git",
@@ -71,6 +70,7 @@
 		"husky": "4.2.5",
 		"jest": "26.0.1",
 		"lint-staged": "10.2.7",
+		"netlify-cli": "2.54.0",
 		"prettier": "2.0.5",
 		"rimraf": "3.0.2",
 		"terser-webpack-plugin": "3.0.6",
