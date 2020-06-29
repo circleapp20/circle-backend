@@ -1,6 +1,6 @@
-import { getBadRequestError } from 'base/errors/node/badRequestError';
-import { getSignedAuthToken } from 'base/server/validation';
+import { getBadRequestError } from 'base/utils/errors/node/badRequestError';
 import { generateCodeFromNumber } from 'base/utils/node/codeGenerator';
+import { getSignedAuthToken } from 'base/utils/server/validation';
 import bcryptjs from 'bcryptjs';
 import { runQuery } from 'core/database/queryRunners';
 import { decryptData, encryptData } from 'core/encryption/node/encryption';

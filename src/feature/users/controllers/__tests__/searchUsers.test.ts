@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { searchUsernameOrEmail } from 'feature/users/controllers/searchUsers';
 import * as dataService from 'feature/users/services/node/checkUserExistsService';
 
@@ -23,7 +23,7 @@ describe('#searchUsernameOrEmail', () => {
 	test('should send status of 200 if username exists or not', async () => {
 		const req: any = { query: { username: 'username' } };
 		await searchUsernameOrEmail(req, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.SUCCESS);
 	});
 
 	test('should send a json object giving state for each search results', async () => {

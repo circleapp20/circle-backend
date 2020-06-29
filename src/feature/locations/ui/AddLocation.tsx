@@ -1,4 +1,4 @@
-import { PageLayout } from 'base/components/browser/layouts/PageLayout';
+import { PageLayout } from 'base/ui/components/layouts/PageLayout';
 import { addLocationApiAction } from 'feature/locations/services/browser/addLocationApiAction';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';

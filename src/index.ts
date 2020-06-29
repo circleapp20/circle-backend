@@ -1,10 +1,10 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { printToConsole } from 'base/utils/node/printToConsole';
 import express from 'express';
 import 'reflect-metadata';
 import { startServer } from './bootstrap/startServer';
 
-const serverRunListener = () => printToConsole(`started running on port ${Constants.app.PORT}`);
+const serverRunListener = () => printToConsole(`started running on port ${SERVER.app.PORT}`);
 
 const main = () => {
 	const app = express();

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { memoize } from 'base/utils/common/functions';
 import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
@@ -6,12 +6,12 @@ import crypto from 'crypto';
 export const generateHashedValue = memoize(bcryptjs.hashSync);
 
 export const getHashedSecretKey = (maxLength?: number) => {
-	const hashedKey = generateHashedValue(Constants.app.SECRET, Constants.misc.BCRYPT_HASHING_SALT);
+	const hashedKey = generateHashedValue(SERVER.app.SECRET, SERVER.misc.BCRYPT_HASHING_SALT);
 	return hashedKey.slice(0, maxLength).padEnd(32, '0');
 };
 
 export const getCryptoIvBuffer = (maxLength?: number) => {
-	const ivString = generateHashedValue(Constants.app.SECRET, 6);
+	const ivString = generateHashedValue(SERVER.app.SECRET, 6);
 	return Buffer.from(ivString.slice(0, maxLength));
 };
 

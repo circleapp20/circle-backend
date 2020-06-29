@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IApiRoute } from 'base/types';
 import {
 	VerifyUserCredentialsSchema,
@@ -24,7 +24,7 @@ export const authRoutes: IApiRoute[] = [
 		path: '/auth/code',
 		method: 'post',
 		controller: verifyUserVerificationCode,
-		privileges: [Constants.privileges.SUPER_ADMIN, Constants.privileges.USER],
+		privileges: [SERVER.privileges.SUPER_ADMIN, SERVER.privileges.USER],
 		schema: VerifyVerificationCodeSchema
 	},
 	{
@@ -37,7 +37,7 @@ export const authRoutes: IApiRoute[] = [
 		path: '/auth/code/resend',
 		method: 'post',
 		controller: resendUserVerificationCode,
-		privileges: [Constants.privileges.USER]
+		privileges: [SERVER.privileges.USER]
 	},
 	{
 		path: '/auth/credentials',

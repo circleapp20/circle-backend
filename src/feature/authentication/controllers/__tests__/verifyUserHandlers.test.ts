@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import bcryptjs from 'bcryptjs';
 import { encryptData } from 'core/encryption/node/encryption';
@@ -37,7 +37,7 @@ describe('#verifyUserCredentials', () => {
 		entityManager.getOne.mockReturnValueOnce(null).mockReturnValueOnce(profile);
 		entityManager.execute.mockReturnValueOnce({ generateMaps: [profile] });
 		await verifyUserCredentials(requestMock, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.CREATED);
 	});
 
 	test('should not create a user if exists', (done) => {
@@ -90,7 +90,7 @@ describe('#verifyUserVerificationCode', () => {
 	test('should send a status of 201 with the json data', async () => {
 		entityManager.getOne.mockReturnValueOnce(user);
 		await verifyUserVerificationCode(requestMock, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.CREATED);
 		expect(responseMock.json).toHaveBeenCalledWith({
 			data: true,
 			success: true
@@ -123,7 +123,7 @@ describe('#verifyUserLogin', () => {
 			password: bcryptjs.hashSync(user.password)
 		});
 		await verifyUserLogin(req, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.CREATED);
 	});
 });
 
@@ -167,6 +167,6 @@ describe('#verifyUserCredentialsForPasswordReset', () => {
 	test('should send status of 201', async () => {
 		entityManager.getOne.mockReturnValueOnce(profile);
 		await verifyUserCredentialsForPasswordReset(req, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.CREATED);
 	});
 });

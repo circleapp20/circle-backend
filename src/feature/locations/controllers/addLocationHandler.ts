@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IRequest } from 'base/types';
 import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
@@ -9,5 +9,5 @@ export const addLocationHandler = async (request: IRequest, response: Response) 
 	const location = await addLocationService(request.body.data, roles);
 	const { places, ...other } = location!;
 	const data = getResponseData(other);
-	response.status(Constants.status.CREATED).json(data);
+	response.status(SERVER.status.CREATED).json(data);
 };

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { runInsertQuery, runInTransaction, runQuery } from 'core/database/queryRunners';
 import {
 	addLocationPlaceQuery,
@@ -26,7 +26,7 @@ export const addLocationTransaction = (args: IAddLocation) => {
 };
 
 export const addLocationService = async (args: IAddLocation, privileges: string[]) => {
-	const isVerified = privileges.includes(Constants.privileges.LEAD_FELLOW);
+	const isVerified = privileges.includes(SERVER.privileges.LEAD_FELLOW);
 	const locationTransaction = addLocationTransaction({ ...args, isVerified });
 	const location = await runInTransaction(locationTransaction);
 	return location;

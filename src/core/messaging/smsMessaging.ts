@@ -1,5 +1,5 @@
-import { apiPost } from 'base/apiService/common/apiAxiosPost';
-import { Constants } from 'base/config/node/constants';
+import { apiPost } from 'base/apiFunctions/apiPost';
+import { SERVER } from 'base/config/server';
 import { printToConsole } from 'base/utils/node/printToConsole';
 
 export const sendSMSWithMNotify = async (to: string[], message: string) => {
@@ -8,10 +8,10 @@ export const sendSMSWithMNotify = async (to: string[], message: string) => {
 		message,
 		recipient: to,
 		schedule_date: '',
-		sender: Constants.app.MNOTIFY_SENDER_ID
+		sender: SERVER.app.MNOTIFY_SENDER_ID
 	};
-	const url = `/sms/quick?key=${Constants.app.MNOTIFY_API_KEY}`;
-	const res = await apiPost(url, data, Constants.services.SMS);
+	const url = `/sms/quick?key=${SERVER.app.MNOTIFY_API_KEY}`;
+	const res = await apiPost(url, data, SERVER.services.SMS);
 	return res;
 };
 

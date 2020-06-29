@@ -1,9 +1,9 @@
-import { apiPost } from 'base/apiService/common/apiAxiosPost';
-import { Constants } from 'base/config/node/constants';
+import { apiPost } from 'base/apiFunctions/apiPost';
+import { SERVER } from 'base/config/server';
 import { printToConsole } from 'base/utils/node/printToConsole';
 import { sendSMSMessage, sendSMSWithMNotify } from 'core/messaging/smsMessaging';
 
-jest.mock('base/apiService/common/apiAxiosPost');
+jest.mock('base/apiFunctions/apiPost');
 jest.mock('base/utils/node/printToConsole', () => ({
 	printToConsole: jest.fn()
 }));
@@ -20,9 +20,9 @@ describe('#sendSMSWithMNotify', () => {
 				message: expect.stringMatching('testing sms message'),
 				recipient: expect.arrayContaining(['+233248252444']),
 				schedule_date: expect.any(String),
-				sender: expect.stringMatching(Constants.app.MNOTIFY_SENDER_ID)
+				sender: expect.stringMatching(SERVER.app.MNOTIFY_SENDER_ID)
 			}),
-			expect.stringMatching(Constants.services.SMS)
+			expect.stringMatching(SERVER.services.SMS)
 		);
 	});
 });

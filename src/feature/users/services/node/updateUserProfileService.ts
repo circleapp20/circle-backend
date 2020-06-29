@@ -1,5 +1,5 @@
-import { Constants } from 'base/config/node/constants';
-import { getBadRequestError } from 'base/errors/node/badRequestError';
+import { SERVER } from 'base/config/server';
+import { getBadRequestError } from 'base/utils/errors/node/badRequestError';
 import bcryptjs from 'bcryptjs';
 import { runInTransaction, runQuery } from 'core/database/queryRunners';
 import { getUserByIdQuery } from 'core/queries/userQueries';
@@ -66,7 +66,7 @@ export const updateUserPassword = async (id: string, password: string) => {
 		throw getBadRequestError('Cannot enter the same password');
 	}
 
-	const hashedPassword = bcryptjs.hashSync(password, Constants.misc.BCRYPT_HASHING_SALT);
+	const hashedPassword = bcryptjs.hashSync(password, SERVER.misc.BCRYPT_HASHING_SALT);
 
 	await runQuery(updateUserProfileQuery, [{ id, password: hashedPassword }]);
 

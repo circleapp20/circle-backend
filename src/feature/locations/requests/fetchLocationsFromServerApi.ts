@@ -1,9 +1,9 @@
-import { apiGet } from 'base/apiService/common/apiAxiosGet';
-import { Constants } from 'base/config/browser/constants';
-import { LocationConstants } from 'feature/locations/config/constants';
+import { apiGet } from 'base/apiFunctions/apiGet';
+import { BROWSER } from 'base/config/browser';
+import { LOCATION } from 'feature/locations/config/location';
 import { IApiLocation } from 'feature/locations/requests/locationTypes';
 
 export const fetchLocationsFromServerApi = async (): Promise<IApiLocation[]> => {
-	const response = await apiGet(LocationConstants.api.LOCATIONS, Constants.services.MAIN);
+	const response = await apiGet(LOCATION.api.LOCATIONS, BROWSER.services.MAIN);
 	return response.data;
 };

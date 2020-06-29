@@ -1,7 +1,7 @@
-import { apiPost } from 'base/apiService/common/apiAxiosPost';
-import { IApiDataResponse } from 'base/apiService/common/responseTypes';
-import { Constants } from 'base/config/browser/constants';
-import { processApiResponseError } from 'base/errors/browser/processApiResponseError';
+import { apiPost } from 'base/apiFunctions/apiPost';
+import { IApiDataResponse } from 'base/apiFunctions/responseTypes';
+import { BROWSER } from 'base/config/browser';
+import { processApiResponseError } from 'base/utils/errors/browser/processApiResponseError';
 
 export const verifyUserCredentials = async (credentials: {
 	email: string;
@@ -11,7 +11,7 @@ export const verifyUserCredentials = async (credentials: {
 		const response = await apiPost(
 			'/auth/sign-in',
 			{ data: credentials },
-			Constants.services.MAIN
+			BROWSER.services.MAIN
 		);
 		return { data: response.data };
 	} catch (error) {

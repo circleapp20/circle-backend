@@ -1,4 +1,4 @@
-import { uploadImageToFirebaseStorage } from 'base/storage/node/firebaseStorageBucket';
+import { uploadImageToFirebaseStorage } from 'base/utils/storage/node/firebaseStorageBucket';
 
 export const uploadUserProfileImage = async (id: string, image: string) => {
 	if (!image || !id) return '';

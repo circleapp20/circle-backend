@@ -1,11 +1,11 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entities } from 'core/models/node/entities';
 import * as typeorm from 'typeorm';
 
 export const getSqlInstance = (name = 'default') => {
 	let options: typeorm.ConnectionOptions = {
 		type: 'mysql',
-		url: Constants.app.DATABASE_URL,
+		url: SERVER.app.DATABASE_URL,
 		name,
 		entities
 	};

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IRecipientMailConfig } from 'base/types';
 import { getGoogleOAuth2AccessToken } from 'core/messaging/googleOAuth2';
 import nodemailer from 'nodemailer';
@@ -11,12 +11,12 @@ export const getMailTransportInstance = async () => {
 		port: 465,
 		secure: true,
 		auth: {
-			user: Constants.app.MAIL_USER,
-			pass: Constants.app.MAIL_PASSWORD,
+			user: SERVER.app.MAIL_USER,
+			pass: SERVER.app.MAIL_PASSWORD,
 			type: 'OAuth2',
-			clientId: Constants.app.GOOGLE_CLIENT_ID,
-			clientSecret: Constants.app.GOOGLE_CLIENT_SECRET,
-			refreshToken: Constants.app.GOOGLE_CLIENT_REFRESH_TOKEN,
+			clientId: SERVER.app.GOOGLE_CLIENT_ID,
+			clientSecret: SERVER.app.GOOGLE_CLIENT_SECRET,
+			refreshToken: SERVER.app.GOOGLE_CLIENT_REFRESH_TOKEN,
 			accessToken
 		}
 	};
@@ -27,7 +27,7 @@ export const getMailTransportInstance = async () => {
 export const getMailHeaders = (args: IRecipientMailConfig) => {
 	return {
 		...args,
-		from: Constants.accounts.EMAIL_ADDRESS
+		from: SERVER.accounts.EMAIL_ADDRESS
 	};
 };
 

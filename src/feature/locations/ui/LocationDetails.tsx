@@ -1,8 +1,8 @@
-import { LoadPageError } from 'base/components/browser/layouts/LoadPageError';
-import { PageLayout } from 'base/components/browser/layouts/PageLayout';
-import { PAGES } from 'base/config/browser/pages';
-import { LocationConstants } from 'feature/locations/config/constants';
-import { useLocationDetails } from 'feature/locations/hooks/useLocationDetails';
+import { PAGES } from 'base/config/pages';
+import { LoadPageError } from 'base/ui/components/layouts/LoadPageError';
+import { PageLayout } from 'base/ui/components/layouts/PageLayout';
+import { LOCATION } from 'feature/locations/config/location';
+import { useLocationDetails } from 'feature/locations/ui/hooks/useLocationDetails';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -40,7 +40,7 @@ export const LocationDetails: React.FC = () => {
 								<strong>Longitude:</strong> {location.longitude}
 							</li>
 						</ul>
-						{query.level !== LocationConstants.levels.STREET && (
+						{query.level !== LOCATION.levels.STREET && (
 							<button onClick={onAddLocation}>Add location</button>
 						)}
 					</div>

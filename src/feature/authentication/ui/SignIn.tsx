@@ -1,6 +1,6 @@
-import { PageLayout } from 'base/components/browser/layouts/PageLayout';
-import { PAGES } from 'base/config/browser/pages';
-import { useAuthUser } from 'base/hooks/useAuthUser';
+import { PAGES } from 'base/config/pages';
+import { PageLayout } from 'base/ui/components/layouts/PageLayout';
+import { useAuthUser } from 'base/ui/hooks/useAuthUser';
 import { verifyUserCredentials } from 'feature/authentication/services/browser/authUserCredentials';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';

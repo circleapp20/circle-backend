@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { Users } from 'core/models/node/users';
 import { countExistingSuperAdminQuery } from 'core/queries/adminQueries';
@@ -23,7 +23,7 @@ describe('#countExistingSuperAdminQuery', () => {
 		await countExistingSuperAdminQuery(entityManager);
 		expect(entityManager.setParameter).toHaveBeenCalledWith(
 			'role',
-			`%${Constants.privileges.SUPER_ADMIN}%`
+			`%${SERVER.privileges.SUPER_ADMIN}%`
 		);
 	});
 

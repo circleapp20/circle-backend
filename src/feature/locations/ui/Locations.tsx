@@ -1,9 +1,9 @@
-import { LoadPageError } from 'base/components/browser/layouts/LoadPageError';
-import { PageLayout } from 'base/components/browser/layouts/PageLayout';
-import { PAGES } from 'base/config/browser/pages';
-import { Countries } from 'feature/locations/components/Countries';
-import { LocationContext } from 'feature/locations/contexts/browser/locationContext';
-import { useLocations } from 'feature/locations/hooks/useLocations';
+import { PAGES } from 'base/config/pages';
+import { LoadPageError } from 'base/ui/components/layouts/LoadPageError';
+import { PageLayout } from 'base/ui/components/layouts/PageLayout';
+import { Countries } from 'feature/locations/ui/components/Countries';
+import { LocationContext } from 'feature/locations/ui/contexts/browser/locationContext';
+import { useLocations } from 'feature/locations/ui/hooks/useLocations';
 import { useRouter } from 'next/router';
 import React from 'react';
 
