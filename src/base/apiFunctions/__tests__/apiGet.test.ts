@@ -16,7 +16,7 @@ describe('#apiGet', () => {
 		expect(getSecureAxiosInstance).toHaveBeenCalled();
 	});
 
-	test('should call the get function from axios', async () => {
+	test('should call get function from axios', async () => {
 		await apiGet('/tests');
 		expect(get).toHaveBeenCalledWith('/tests');
 	});
