@@ -4,7 +4,7 @@ orbs:
 jobs:
     build:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
             - restore_cache:
@@ -19,21 +19,45 @@ jobs:
                   key: yarn-packages-v1-{{ checksum "yarn.lock" }}
                   paths:
                       - ~/.cache/yarn
-            - run: yarn build
+            - run: yarn run build
 
     test:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
-            - run: yarn test
+            - restore_cache:
+                  name: Restore Yarn Package Cache
+                  keys:
+                      - yarn-packages-v1-{{ checksum "yarn.lock" }}
+            - run:
+                  name: Installing dependencies
+                  command: yarn install --immutable
+            - save_cache:
+                  name: Save Yarn Package Cache
+                  key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+                  paths:
+                      - ~/.cache/yarn
+            - run: yarn run test
 
     deploy:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
-            - run: npm run deploy:web -- -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
+            - restore_cache:
+                  name: Restore Yarn Package Cache
+                  keys:
+                      - yarn-packages-v1-{{ checksum "yarn.lock" }}
+            - run:
+                  name: Installing dependencies
+                  command: yarn install --immutable
+            - save_cache:
+                  name: Save Yarn Package Cache
+                  key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+                  paths:
+                      - ~/.cache/yarn
+            - run: yarn run deploy:web -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
 
 workflows:
     build_and_test:
