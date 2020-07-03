@@ -1,0 +1,54 @@
+version: 2.1
+orbs:
+    node: circleci/node@1.1.6
+jobs:
+    build:
+        docker:
+            - image: circleci/node:10.18.0
+        steps:
+            - checkout
+            - restore_cache:
+                  name: Restore Yarn Package Cache
+                  keys:
+                      - yarn-packages-v1-{{ checksum "yarn.lock" }}
+            - run:
+                  name: Installing dependencies
+                  command: yarn install --immutable
+            - save_cache:
+                  name: Save Yarn Package Cache
+                  key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+                  paths:
+                      - ~/.cache/yarn
+            - run: yarn build
+
+    test:
+        docker:
+            - image: circleci/node:10.18.0
+        steps:
+            - checkout
+            - run: yarn test
+
+    deploy:
+        docker:
+            - image: circleci/node:10.18.0
+        steps:
+            - checkout
+            - run: npm run deploy:web -- -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
+
+workflows:
+    build_and_test:
+        jobs:
+            - build
+            - test:
+                  requires:
+                      - build
+
+    build_and_deploy:
+        jobs:
+            - build
+            - deploy:
+                  requires:
+                      - build
+                  filters:
+                      branches:
+                          only: master
