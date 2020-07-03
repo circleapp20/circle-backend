@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IApiRoute } from 'base/types';
 import { searchUsernameOrEmail } from 'feature/users/controllers/searchUsers';
 import { resetUserPassword, updateProfile } from 'feature/users/controllers/updateUsers';
@@ -10,7 +10,7 @@ export const usersRoutes: IApiRoute[] = [
 		path: '/users/profile',
 		method: 'put',
 		controller: updateProfile,
-		privileges: [Constants.privileges.USER],
+		privileges: [SERVER.privileges.USER],
 		schema: UpdateUserProfileSchema
 	},
 	{
@@ -25,6 +25,6 @@ export const usersRoutes: IApiRoute[] = [
 		method: 'put',
 		controller: resetUserPassword,
 		schema: ResetPasswordSchema,
-		privileges: [Constants.privileges.USER]
+		privileges: [SERVER.privileges.USER]
 	}
 ];

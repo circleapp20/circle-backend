@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { IAddUserProfile } from 'base/types';
 import { Users } from 'core/models/node/users';
@@ -78,7 +78,7 @@ describe('#addUserProfileQuery', () => {
 		phoneNumber: '',
 		isEmailVerified: false,
 		verificationCode: '',
-		roles: [Constants.privileges.USER],
+		roles: [SERVER.privileges.USER],
 		name: ''
 	};
 

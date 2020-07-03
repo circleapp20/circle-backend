@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import * as emailMessaging from 'core/messaging/emailMessaging';
 import * as smsMessaging from 'core/messaging/smsMessaging';
 import {
@@ -34,7 +34,7 @@ describe('#sendVerificationCodeByEmail', () => {
 		sendVerificationCodeByEmail('fu83m', 'test@test.com');
 		expect(sendMailMock).toHaveBeenCalledWith(
 			expect.objectContaining({
-				from: Constants.accounts.EMAIL_ADDRESS,
+				from: SERVER.accounts.EMAIL_ADDRESS,
 				html: expect.any(String),
 				subject: expect.stringMatching('Circle Verification Code'),
 				to: expect.stringMatching('test@test.com')

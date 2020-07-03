@@ -1,12 +1,12 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { google } from 'googleapis';
 
 export const getGoogleOAuth2AccessToken = () => {
 	const client = new google.auth.OAuth2(
-		Constants.app.GOOGLE_CLIENT_ID,
-		Constants.app.GOOGLE_CLIENT_SECRET,
-		Constants.externals.OAUTH2_REDIRECT_URL
+		SERVER.app.GOOGLE_CLIENT_ID,
+		SERVER.app.GOOGLE_CLIENT_SECRET,
+		SERVER.externals.OAUTH2_REDIRECT_URL
 	);
-	client.setCredentials({ refresh_token: Constants.app.GOOGLE_CLIENT_REFRESH_TOKEN });
+	client.setCredentials({ refresh_token: SERVER.app.GOOGLE_CLIENT_REFRESH_TOKEN });
 	return client.getAccessToken();
 };

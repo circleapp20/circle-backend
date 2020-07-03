@@ -1,12 +1,12 @@
-import { apiGet } from 'base/apiService/common/apiAxiosGet';
-import { IApiDataResponse } from 'base/apiService/common/responseTypes';
-import { Constants } from 'base/config/browser/constants';
-import { processApiResponseError } from 'base/errors/browser/processApiResponseError';
+import { apiGet } from 'base/apiFunctions/apiGet';
+import { IApiDataResponse } from 'base/apiFunctions/responseTypes';
+import { BROWSER } from 'base/config/browser';
+import { processApiResponseError } from 'base/utils/errors/browser/processApiResponseError';
 import { IApiLocation } from 'feature/locations/requests/locationTypes';
 
 export const getLocationsApiAction = async (): Promise<IApiDataResponse<IApiLocation[]>> => {
 	try {
-		const response = await apiGet('/locations', Constants.services.MAIN);
+		const response = await apiGet('/locations', BROWSER.services.MAIN);
 		return { data: response.data };
 	} catch (error) {
 		const e = processApiResponseError(error);

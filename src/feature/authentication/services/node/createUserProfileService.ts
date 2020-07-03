@@ -1,8 +1,8 @@
-import { Constants } from 'base/config/node/constants';
-import { getBadRequestError } from 'base/errors/node/badRequestError';
-import { getSignedAuthToken } from 'base/server/validation';
+import { SERVER } from 'base/config/server';
 import { IAddUserProfile } from 'base/types';
+import { getBadRequestError } from 'base/utils/errors/node/badRequestError';
 import { generateCodeFromNumber } from 'base/utils/node/codeGenerator';
+import { getSignedAuthToken } from 'base/utils/server/validation';
 import { runInsertQuery, runInTransaction, runQuery } from 'core/database/queryRunners';
 import { decryptData, encryptData } from 'core/encryption/node/encryption';
 import {
@@ -29,7 +29,7 @@ export const addUserTransaction = (email = '', phoneNumber = '') => {
 			phoneNumber: phoneNumber || '',
 			isEmailVerified: false,
 			verificationCode: encryptedVerificationCode,
-			roles: [Constants.privileges.USER],
+			roles: [SERVER.privileges.USER],
 			name: ''
 		};
 
@@ -51,7 +51,10 @@ export const createUserProfileWithDefaultValues = async (data: {
 	const verificationCode = decryptData({ encryptedText: userProfile!.verificationCode });
 
 	// add token to user profile
-	const token = getSignedAuthToken({ id: userProfile!.id, roles: [Constants.privileges.USER] });
+	const token = getSignedAuthToken({
+		id: userProfile!.id,
+		roles: [SERVER.privileges.USER]
+	});
 	const profile = Object.assign({}, userProfile, { token, verificationCode });
 
 	return profile;

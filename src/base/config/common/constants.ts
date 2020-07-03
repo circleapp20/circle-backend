@@ -1,4 +1,4 @@
-export const Constants = {
+export const CONSTANTS = {
 	status: {
 		SUCCESS: 200,
 		CREATED: 201,

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { encryptData } from 'core/encryption/node/encryption';
 import { resendUserVerificationCode } from 'feature/authentication/controllers/resendUserVerificationCodeHandler';
@@ -25,7 +25,7 @@ describe('#resendUserVerificationCode', () => {
 	test('should send a status of 201 when successful', async () => {
 		entityManager.getOne.mockReturnValueOnce(user);
 		await resendUserVerificationCode(reqMock, responseMock);
-		expect(responseMock.status).toHaveBeenCalledWith(Constants.status.CREATED);
+		expect(responseMock.status).toHaveBeenCalledWith(SERVER.status.CREATED);
 	});
 
 	test('should send verification code to email', async () => {

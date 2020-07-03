@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import * as dBInstance from 'core/database/dBInstance';
 import { entities } from 'core/models/node/entities';
 import * as typeorm from 'typeorm';
@@ -40,7 +40,7 @@ describe('#getSqlInstance', () => {
 		await dBInstance.getSqlInstance();
 		expect(typeorm.createConnection).toHaveBeenCalledWith({
 			type: 'mysql',
-			url: Constants.app.DATABASE_URL,
+			url: SERVER.app.DATABASE_URL,
 			name: 'default',
 			entities
 		});
@@ -50,7 +50,7 @@ describe('#getSqlInstance', () => {
 		await dBInstance.getSqlInstance('testing');
 		expect(typeorm.createConnection).toHaveBeenCalledWith({
 			type: 'mysql',
-			url: Constants.app.DATABASE_URL,
+			url: SERVER.app.DATABASE_URL,
 			name: 'testing',
 			entities
 		});
@@ -61,7 +61,7 @@ describe('#getSqlInstance', () => {
 		await dBInstance.getSqlInstance('testing');
 		expect(typeorm.createConnection).toHaveBeenCalledWith({
 			type: 'postgres',
-			url: Constants.app.DATABASE_URL,
+			url: SERVER.app.DATABASE_URL,
 			name: 'testing',
 			entities,
 			extra: { ssl: { rejectUnauthorized: false } },

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { getMailHeaders, getMailTransportInstance, sendMail } from 'core/messaging/emailMessaging';
 import nodemailer from 'nodemailer';
 
@@ -34,7 +34,7 @@ describe('#getMailHeaders', () => {
 			text: 'This is the body of the message'
 		});
 		expect(headers).toEqual({
-			from: Constants.accounts.EMAIL_ADDRESS,
+			from: SERVER.accounts.EMAIL_ADDRESS,
 			to: 'test@test.com',
 			subject: 'Testing mail service',
 			text: 'This is the body of the message'
@@ -48,7 +48,7 @@ describe('#getMailHeaders', () => {
 			text: 'This is the body of the message'
 		});
 		expect(headers).toEqual({
-			from: Constants.accounts.EMAIL_ADDRESS,
+			from: SERVER.accounts.EMAIL_ADDRESS,
 			to: 'recipient@gmail.com',
 			subject: 'Testing services',
 			text: 'This is the body of the message'
@@ -62,7 +62,7 @@ describe('#getMailHeaders', () => {
 			html: '<b>Testing html</b>'
 		});
 		expect(headers).toEqual({
-			from: Constants.accounts.EMAIL_ADDRESS,
+			from: SERVER.accounts.EMAIL_ADDRESS,
 			to: 'recipient@gmail.com',
 			subject: 'Testing services',
 			html: '<b>Testing html</b>'

@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IRequest } from 'base/types';
 import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
@@ -17,5 +17,5 @@ export const resendUserVerificationCode = async (req: IRequest, res: Response) =
 	});
 
 	const responseData = getResponseData(true);
-	res.status(Constants.status.CREATED).json(responseData);
+	res.status(SERVER.status.CREATED).json(responseData);
 };

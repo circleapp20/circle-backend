@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { getLocationsHandler } from 'feature/locations/controllers/getLocationsHandler';
 import { locationsList } from 'fixtures/locations';
@@ -15,7 +15,7 @@ describe('#getLocationsHandler', () => {
 
 	test('should send response as 200', async () => {
 		await getLocationsHandler({} as any, res);
-		expect(res.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
+		expect(res.status).toHaveBeenCalledWith(SERVER.status.SUCCESS);
 	});
 
 	test('should send an array of locations', async () => {

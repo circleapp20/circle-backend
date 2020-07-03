@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IRequest } from 'base/types';
 import { getResponseData } from 'base/utils/node/formatDataFunctions';
 import { Response } from 'express';
@@ -21,7 +21,7 @@ export const verifyUserCredentials = async (req: IRequest, res: Response) => {
 	});
 
 	const responseData = getResponseData(user);
-	res.status(Constants.status.CREATED).json(responseData);
+	res.status(SERVER.status.CREATED).json(responseData);
 };
 
 export const verifyUserVerificationCode = async (req: IRequest, res: Response) => {
@@ -29,13 +29,13 @@ export const verifyUserVerificationCode = async (req: IRequest, res: Response) =
 	const data = Object.assign({}, req.body.data, { id });
 	const status = await checkUserVerificationCode(data);
 	const responseData = getResponseData(status);
-	res.status(Constants.status.CREATED).json(responseData);
+	res.status(SERVER.status.CREATED).json(responseData);
 };
 
 export const verifyUserLogin = async (req: IRequest, res: Response) => {
 	const user = await verifyUserLoginCredentials(req.body.data);
 	const responseData = getResponseData(user);
-	res.status(Constants.status.CREATED).json(responseData);
+	res.status(SERVER.status.CREATED).json(responseData);
 };
 
 /**
@@ -67,5 +67,5 @@ export const verifyUserCredentialsForPasswordReset = async (req: IRequest, res: 
 	const { verificationCode: vCode, ...other } = profile;
 
 	const responseData = getResponseData({ user: other, message });
-	res.status(Constants.status.CREATED).json(responseData);
+	res.status(SERVER.status.CREATED).json(responseData);
 };

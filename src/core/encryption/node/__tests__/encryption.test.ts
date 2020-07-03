@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import * as encryption from 'core/encryption/node/encryption';
 
 describe('#generateHashedValue', () => {
@@ -33,7 +33,7 @@ describe('#generateHashedValue', () => {
 describe('#getHashedSecretKey', () => {
 	test('should return a hashed string of the secret key', () => {
 		const results = encryption.getHashedSecretKey();
-		expect(results).not.toBe(Constants.app.SECRET);
+		expect(results).not.toBe(SERVER.app.SECRET);
 	});
 
 	test('should not return an empty string', () => {

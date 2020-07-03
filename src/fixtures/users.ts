@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import faker from 'faker';
 
 export const createUserFixture = () => {
@@ -15,6 +15,6 @@ export const createUserFixture = () => {
 		email: faker.internet.email(),
 		phoneNumber: faker.phone.phoneNumber(),
 		verificationCode: faker.random.uuid().slice(0, 6),
-		roles: [Constants.privileges.USER]
+		roles: [SERVER.privileges.USER]
 	};
 };

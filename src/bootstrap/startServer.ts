@@ -1,6 +1,6 @@
-import { Constants } from 'base/config/node/constants';
-import { errorHandlerMiddleware } from 'base/errors/node/errorHandlerMiddleware';
-import { getApiRouter } from 'base/server/utilities';
+import { SERVER } from 'base/config/server';
+import { errorHandlerMiddleware } from 'base/utils/errors/node/errorHandlerMiddleware';
+import { getApiRouter } from 'base/utils/server/utilities';
 import { setupCircleDatabase } from 'core/database/createCircleDatabase';
 import cors from 'cors';
 import { Express, json, Router, urlencoded } from 'express';
@@ -21,5 +21,5 @@ export const startServer = async (app: Express, callBack?: () => void) => {
 	// back to the client
 	app.use(errorHandlerMiddleware);
 
-	app.listen(Constants.app.PORT, callBack);
+	app.listen(SERVER.app.PORT, callBack);
 };

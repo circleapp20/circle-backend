@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import * as utils from 'base/utils/node/codeGenerator';
 import { addUserAsSuperAdmin, createCircleSuperAdmin } from 'core/database/createSuperAdmin';
@@ -37,10 +37,10 @@ describe('#addUserAsSuperAdmin', () => {
 				password: expect.any(String),
 				phoneNumber: expect.any(String),
 				roles: expect.arrayContaining([
-					Constants.privileges.SUPER_ADMIN,
-					Constants.privileges.USER,
-					Constants.privileges.FELLOW,
-					Constants.privileges.LEAD_FELLOW
+					SERVER.privileges.SUPER_ADMIN,
+					SERVER.privileges.USER,
+					SERVER.privileges.FELLOW,
+					SERVER.privileges.LEAD_FELLOW
 				]),
 				username: expect.any(String),
 				verificationCode: expect.any(String)

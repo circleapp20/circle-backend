@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { runInTransaction } from 'core/database/queryRunners';
 import faker from 'faker';
@@ -65,19 +65,19 @@ describe('#addLocation', () => {
 	});
 
 	test('should run queries in transaction', async () => {
-		await addLocationService({ ...location, placeId }, [Constants.privileges.LEAD_FELLOW]);
+		await addLocationService({ ...location, placeId }, [SERVER.privileges.LEAD_FELLOW]);
 		expect(runInTransaction).toHaveBeenCalled();
 	});
 
 	test('should set isVerified to true if user has lead role', async () => {
-		await addLocationService({ ...location, placeId }, [Constants.privileges.LEAD_FELLOW]);
+		await addLocationService({ ...location, placeId }, [SERVER.privileges.LEAD_FELLOW]);
 		expect(entityManager.values).toHaveBeenCalledWith(
 			expect.objectContaining({ isVerified: true })
 		);
 	});
 
 	test('should set isVerified to false if user does not have lead role', async () => {
-		await addLocationService({ ...location, placeId }, [Constants.privileges.FELLOW]);
+		await addLocationService({ ...location, placeId }, [SERVER.privileges.FELLOW]);
 		expect(entityManager.values).toHaveBeenCalledWith(
 			expect.objectContaining({ isVerified: false })
 		);

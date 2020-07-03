@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IAddUserProfile } from 'base/types';
 import { generateCodeFromNumber } from 'base/utils/node/codeGenerator';
 import bcryptJs from 'bcryptjs';
@@ -13,17 +13,17 @@ export const addUserAsSuperAdmin = async (manager: typeorm.EntityManager) => {
 	const profile: IAddUserProfile = {
 		biography: '',
 		dob: new Date(),
-		email: Constants.app.MAIL_USER || '',
+		email: SERVER.app.MAIL_USER || '',
 		image: '',
 		isEmailVerified: true,
 		name: '',
-		password: bcryptJs.hashSync(Constants.app.MAIL_PASSWORD || '', 12),
+		password: bcryptJs.hashSync(SERVER.app.MAIL_PASSWORD || '', 12),
 		phoneNumber: '',
 		roles: [
-			Constants.privileges.SUPER_ADMIN,
-			Constants.privileges.USER,
-			Constants.privileges.LEAD_FELLOW,
-			Constants.privileges.FELLOW
+			SERVER.privileges.SUPER_ADMIN,
+			SERVER.privileges.USER,
+			SERVER.privileges.LEAD_FELLOW,
+			SERVER.privileges.FELLOW
 		],
 		username: '',
 		verificationCode: ''

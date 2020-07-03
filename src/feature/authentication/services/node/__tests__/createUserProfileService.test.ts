@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import * as utils from 'base/utils/node/codeGenerator';
 import * as encryption from 'core/encryption/node/encryption';
@@ -61,7 +61,7 @@ describe('#addUserTransaction', () => {
 				password: '',
 				email: expect.stringMatching('test@test.com'),
 				phoneNumber: '',
-				roles: expect.arrayContaining([Constants.privileges.USER]),
+				roles: expect.arrayContaining([SERVER.privileges.USER]),
 				verificationCode: expect.any(String)
 			})
 		);
@@ -87,7 +87,7 @@ describe('#addUserTransaction', () => {
 				id: expect.any(String),
 				email: expect.stringMatching('test@test.com'),
 				phoneNumber: '',
-				roles: expect.arrayContaining([Constants.privileges.USER]),
+				roles: expect.arrayContaining([SERVER.privileges.USER]),
 				verificationCode: expect.any(String)
 			})
 		);

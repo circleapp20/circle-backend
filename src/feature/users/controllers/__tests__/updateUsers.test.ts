@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import faker from 'faker';
 import { resetUserPassword, updateProfile } from 'feature/users/controllers/updateUsers';
 import * as dataService from 'feature/users/services/node/updateUserProfileService';
@@ -33,7 +33,7 @@ describe('#updateProfile', () => {
 		updateMock.mockImplementationOnce(jest.fn()).mockResolvedValueOnce(values);
 
 		await updateProfile(req, res);
-		expect(res.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
+		expect(res.status).toHaveBeenCalledWith(SERVER.status.SUCCESS);
 	});
 });
 
@@ -52,6 +52,6 @@ describe('#resetUserPassword', () => {
 		spy.mockImplementation(() => Promise.resolve(true));
 		const req: any = { user: { id: '28fn' }, body: { data: { password: '922fif82' } } };
 		await resetUserPassword(req, res);
-		expect(res.status).toHaveBeenCalledWith(Constants.status.SUCCESS);
+		expect(res.status).toHaveBeenCalledWith(SERVER.status.SUCCESS);
 	});
 });

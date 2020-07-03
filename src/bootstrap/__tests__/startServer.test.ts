@@ -1,9 +1,9 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { startServer } from 'bootstrap/startServer';
 import * as database from 'core/database/createCircleDatabase';
 
 jest.mock('cors');
-jest.mock('base/server/utilities');
+jest.mock('base/utils/server/utilities');
 jest.mock('core/database/queryRunners');
 jest.mock('core/database/dBInstance');
 jest.mock('core/models/node/fellows');
@@ -23,7 +23,7 @@ describe('#startServer', () => {
 
 	test('should start the server on port 4000', async () => {
 		await startServer(app);
-		expect(app.listen).toBeCalledWith(Constants.app.PORT, undefined);
+		expect(app.listen).toBeCalledWith(SERVER.app.PORT, undefined);
 	});
 
 	test('should add middleware to the server', async () => {

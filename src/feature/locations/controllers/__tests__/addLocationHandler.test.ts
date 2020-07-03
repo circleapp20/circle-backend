@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import faker from 'faker';
 import { addLocationHandler } from 'feature/locations/controllers/addLocationHandler';
@@ -10,7 +10,7 @@ jest.mock('core/models/node/locations');
 describe('#addLocationHandler', () => {
 	const location = createLocationFixture();
 	const request: any = {
-		user: { roles: [Constants.privileges.FELLOW] },
+		user: { roles: [SERVER.privileges.FELLOW] },
 		body: { data: { ...location, placeId: '' } }
 	};
 	const response: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };

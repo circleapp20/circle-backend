@@ -1,4 +1,4 @@
-import { Constants } from 'base/config/node/constants';
+import { SERVER } from 'base/config/server';
 import { IApiRoute } from 'base/types';
 import { AddLocationSchema } from 'feature/locations/api/schema/addLocationSchema';
 import { addLocationHandler } from 'feature/locations/controllers/addLocationHandler';
@@ -14,9 +14,9 @@ export const locationApiRoutes: IApiRoute[] = [
 		controller: addLocationHandler,
 		schema: AddLocationSchema,
 		privileges: [
-			Constants.privileges.FELLOW,
-			Constants.privileges.LEAD_FELLOW,
-			Constants.privileges.USER
+			SERVER.privileges.FELLOW,
+			SERVER.privileges.LEAD_FELLOW,
+			SERVER.privileges.USER
 		]
 	},
 	{
