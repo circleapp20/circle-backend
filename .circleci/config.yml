@@ -58,7 +58,7 @@ jobs:
                   key: yarn-packages-v1-{{ checksum "yarn.lock" }}
                   paths:
                       - ~/.cache/yarn
-            - run: yarn run build
+            - run: yarn run build:web
             - run: yarn run deploy:web -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
 
 workflows:
