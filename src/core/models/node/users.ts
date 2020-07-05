@@ -1,7 +1,8 @@
+import { BaseModel } from 'core/models/node/baseModel';
+import { Fellows } from 'core/models/node/fellows';
+import { Locations } from 'core/models/node/locations';
+import { Stores } from 'core/models/node/stores';
 import * as typeorm from 'typeorm';
-import { BaseModel } from './baseModel';
-import { Fellows } from './fellows';
-import { Locations } from './locations';
 
 @typeorm.Entity()
 export class Users extends BaseModel {
@@ -40,4 +41,10 @@ export class Users extends BaseModel {
 
 	@typeorm.OneToOne(() => Fellows, (fellow) => fellow.user)
 	fellow: Fellows;
+
+	@typeorm.OneToMany(() => Stores, (store) => store.user)
+	stores: Stores[];
+
+	@typeorm.ManyToMany(() => Stores, (store) => store.followers)
+	follows: Stores[];
 }

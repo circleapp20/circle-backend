@@ -1,10 +1,10 @@
 import { SERVER } from 'base/config/server';
 import { runInsertQuery, runInTransaction, runQuery } from 'core/database/queryRunners';
+import { getLocationByIdQuery } from 'core/queries/locationDetailsQueries';
 import {
 	addLocationPlaceQuery,
 	addLocationQuery
 } from 'feature/locations/queries/addLocationQuery';
-import { getLocationByIdQuery } from 'feature/locations/queries/getLocationQueries';
 import { EntityManager } from 'typeorm';
 
 interface IAddLocation {

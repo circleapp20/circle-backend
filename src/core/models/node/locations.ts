@@ -1,6 +1,7 @@
+import { BaseModel } from 'core/models/node/baseModel';
+import { Stores } from 'core/models/node/stores';
+import { Users } from 'core/models/node/users';
 import * as typeorm from 'typeorm';
-import { BaseModel } from './baseModel';
-import { Users } from './users';
 
 @typeorm.Entity()
 export class Locations extends BaseModel {
@@ -27,4 +28,7 @@ export class Locations extends BaseModel {
 
 	@typeorm.ManyToOne(() => Users, (user) => user.locations)
 	user: Users;
+
+	@typeorm.OneToMany(() => Stores, (store) => store.location)
+	stores: Stores[];
 }
