@@ -1,9 +1,9 @@
 import { SERVER } from 'base/config/server';
 import { entityManager } from 'base/testUtils/node/entityManager';
 import { runInTransaction } from 'core/database/queryRunners';
+import * as sharedLocationQueries from 'core/queries/locationDetailsQueries';
 import faker from 'faker';
 import * as addLocationQueries from 'feature/locations/queries/addLocationQuery';
-import * as getLocationQueries from 'feature/locations/queries/getLocationQueries';
 import {
 	addLocationService,
 	addLocationTransaction
@@ -41,7 +41,7 @@ describe('#addLocationTransaction', () => {
 	});
 
 	test('should return newly added location', async () => {
-		const spy = jest.spyOn(getLocationQueries, 'getLocationByIdQuery');
+		const spy = jest.spyOn(sharedLocationQueries, 'getLocationByIdQuery');
 		await runTransaction(entityManager);
 		expect(spy).toHaveBeenCalledWith(entityManager, locationId);
 	});

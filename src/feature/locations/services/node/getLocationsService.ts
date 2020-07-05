@@ -1,9 +1,7 @@
 import { getBadRequestError } from 'base/utils/errors/node/badRequestError';
 import { runQuery } from 'core/database/queryRunners';
-import {
-	getLocationByIdQuery,
-	getLocationsQuery
-} from 'feature/locations/queries/getLocationQueries';
+import { getLocationByIdQuery } from 'core/queries/locationDetailsQueries';
+import { getLocationsQuery } from 'feature/locations/queries/getLocationQueries';
 import { changeLocationPlacesName } from 'feature/locations/utilities/common/objects';
 
 export const getCircleLocations = async () => {

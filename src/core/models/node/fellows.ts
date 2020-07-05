@@ -1,6 +1,6 @@
+import { BaseModel } from 'core/models/node/baseModel';
+import { Users } from 'core/models/node/users';
 import * as typeorm from 'typeorm';
-import { BaseModel } from './baseModel';
-import { Users } from './users';
 
 @typeorm.Entity()
 export class Fellows extends BaseModel {

@@ -1,10 +1,11 @@
 version: 2.1
 orbs:
     node: circleci/node@1.1.6
+    heroku: circleci/heroku@0.0.10
 jobs:
     build:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
             - restore_cache:
@@ -19,21 +20,46 @@ jobs:
                   key: yarn-packages-v1-{{ checksum "yarn.lock" }}
                   paths:
                       - ~/.cache/yarn
-            - run: yarn build
+            - run: echo $FIREBASE_CREDENTIALS
+            - run: yarn run build
 
     test:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
-            - run: yarn test
+            - restore_cache:
+                  name: Restore Yarn Package Cache
+                  keys:
+                      - yarn-packages-v1-{{ checksum "yarn.lock" }}
+            - run:
+                  name: Installing dependencies
+                  command: yarn install --immutable
+            - save_cache:
+                  name: Save Yarn Package Cache
+                  key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+                  paths:
+                      - ~/.cache/yarn
+            - run: yarn run test
 
     deploy:
         docker:
-            - image: circleci/node:10.18.0
+            - image: circleci/node:10.21.0
         steps:
             - checkout
-            - run: npm run deploy:web -- -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
+            - restore_cache:
+                  name: Restore Yarn Package Cache
+                  keys:
+                      - yarn-packages-v1-{{ checksum "yarn.lock" }}
+            - run:
+                  name: Installing dependencies
+                  command: yarn install --immutable
+            - save_cache:
+                  name: Save Yarn Package Cache
+                  key: yarn-packages-v1-{{ checksum "yarn.lock" }}
+                  paths:
+                      - ~/.cache/yarn
+            - run: yarn run deploy:web -s $NETLIFY_SITE_ID -a $NETLIFY_ACCESS_TOKEN --prod
 
 workflows:
     build_and_test:
@@ -42,13 +68,15 @@ workflows:
             - test:
                   requires:
                       - build
-
-    build_and_deploy:
-        jobs:
-            - build
             - deploy:
                   requires:
-                      - build
+                      - test
+                  filters:
+                      branches:
+                          only: master
+            - heroku/deploy-via-git:
+                  requires:
+                      - test
                   filters:
                       branches:
                           only: master

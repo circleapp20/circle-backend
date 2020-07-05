@@ -9,6 +9,7 @@ jest.mock('core/database/dBInstance');
 jest.mock('core/models/node/fellows');
 jest.mock('core/models/node/users');
 jest.mock('core/models/node/locations');
+jest.mock('core/models/node/stores');
 
 beforeEach(() => jest.clearAllMocks());
 
