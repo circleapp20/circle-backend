@@ -101,7 +101,7 @@
 		"jsonwebtoken": "8.5.1",
 		"mysql2": "2.1.0",
 		"next": "9.4.2",
-		"nodemailer": "6.4.6",
+		"nodemailer": "6.4.16",
 		"pg": "8.2.1",
 		"pg-hstore": "2.3.3",
 		"react": "16.13.1",
